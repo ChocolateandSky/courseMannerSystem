@@ -22,3 +22,10 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function updatePassword() {
+  return request({
+    url: '/vue-element-admin/user/logout',
+    method: 'post'
+  })
+}

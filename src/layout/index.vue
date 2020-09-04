@@ -12,6 +12,12 @@
         <settings />
       </right-panel>
     </div>
+    <div class="rs-footer">
+      <div class="footer-content" :class="footerClass">
+        <span>copyright@</span>
+        <span>四个菜鸟</span>
+      </div>
+    </div>
   </div>
 </template>
 
