@@ -105,6 +105,19 @@ export const constantRoutes = [
         meta: { title: '计划安排进度', icon: 'clipboard', noCache: true }
       }
     ]
+  },
+  {
+    path: '/manage-course-design',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/manage-course-design/index'),
+        name: 'manage-course-design',
+        meta: { title: '课程设计管理', icon: 'el-icon-school', noCache: true }
+      }
+    ]
   }
 ]
 
