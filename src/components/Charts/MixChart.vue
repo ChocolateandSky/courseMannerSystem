@@ -28,7 +28,19 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      design: {
+        name: '软件工程'
+      }
+    }
+  },
+  computed: {
+    legendData() {
+      const data = []
+      this.design.list.forEach(element => {
+        data.push(element.name)
+      })
+      return data
     }
   },
   mounted() {
@@ -46,15 +58,15 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id))
       const xData = (function() {
         const data = []
-        for (let i = 1; i < 13; i++) {
-          data.push(i + 'month')
+        for (let i = 1; i < 7; i++) {
+          data.push(i + 'week')
         }
         return data
       }())
       this.chart.setOption({
         backgroundColor: '#344b58',
         title: {
-          text: 'statistics',
+          text: '汇报统计',
           x: '20',
           top: '20',
           textStyle: {
@@ -90,7 +102,7 @@ export default {
           textStyle: {
             color: '#90979c'
           },
-          data: ['female', 'male', 'average']
+          data: [this.design.name]
         },
         calculable: true,
         xAxis: [{
@@ -162,7 +174,7 @@ export default {
           end: 35
         }],
         series: [{
-          name: 'female',
+          name: this.design.name,
           type: 'bar',
           stack: 'total',
           barMaxWidth: 35,
@@ -195,72 +207,6 @@ export default {
             3372,
             2484,
             4078
-          ]
-        },
-
-        {
-          name: 'male',
-          type: 'bar',
-          stack: 'total',
-          itemStyle: {
-            normal: {
-              color: 'rgba(0,191,183,1)',
-              barBorderRadius: 0,
-              label: {
-                show: true,
-                position: 'top',
-                formatter(p) {
-                  return p.value > 0 ? p.value : ''
-                }
-              }
-            }
-          },
-          data: [
-            327,
-            1776,
-            507,
-            1200,
-            800,
-            482,
-            204,
-            1390,
-            1001,
-            951,
-            381,
-            220
-          ]
-        }, {
-          name: 'average',
-          type: 'line',
-          stack: 'total',
-          symbolSize: 10,
-          symbol: 'circle',
-          itemStyle: {
-            normal: {
-              color: 'rgba(252,230,48,1)',
-              barBorderRadius: 0,
-              label: {
-                show: true,
-                position: 'top',
-                formatter(p) {
-                  return p.value > 0 ? p.value : ''
-                }
-              }
-            }
-          },
-          data: [
-            1036,
-            3693,
-            2962,
-            3810,
-            2519,
-            1915,
-            1748,
-            4675,
-            6209,
-            4323,
-            2865,
-            4298
           ]
         }
         ]

@@ -69,16 +69,29 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        path: 'home',
+        component: () => import('@/views/home/index'),
+        name: 'home',
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/profile',
     component: Layout,
@@ -103,6 +116,19 @@ export const constantRoutes = [
         component: () => import('@/views/scheduing/index'),
         name: 'scheduing',
         meta: { title: '计划安排进度', icon: 'clipboard', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/statistics',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/statistics/index'),
+        name: 'statistics',
+        meta: { title: '汇报统计', icon: 'clipboard', noCache: true }
       }
     ]
   },

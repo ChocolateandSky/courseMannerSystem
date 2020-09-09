@@ -37,7 +37,7 @@ export default {
       dialogFormVisible: false,
       tableData: [{ date: '2016-05-01', name: '小明' }, { date: '2016-05-02', name: '小明' }, { date: '2016-05-03', name: '小明' }, { date: '2016-05-04', name: '小明' }, { date: '2016-05-05', name: '小明' }, { date: '2016-05-07', name: '小明' }, { date: '2016-05-08', name: '小明' }, { date: '2016-05-09', name: '小明' }, { date: '2016-05-10', name: '小明' }, { date: '2016-05-11', name: '小明' }, { date: '2016-05-12', name: '小明' }, { date: '2016-05-13', name: '小明' }, { date: '2016-05-14', name: '小明' }, { date: '2016-05-15', name: '小明' }, { date: '2016-05-16', name: '小明' }, { date: '2016-06-01', name: '小明' }, { date: '2016-7-02', name: '小明' }, { date: '2016-08-01', name: '小明' }],
       currentPage: 1,
-      pageSize: 7
+      pageSize: 6
     }
   },
   methods: {
