@@ -35,8 +35,9 @@ export default {
 </script>
 
 <style scoped>
-.manage-course-design-box{
-    background-color: #FFFFFF;
+.el-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-
 </style>
