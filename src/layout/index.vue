@@ -53,6 +53,11 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
+    },
+    footerClass() {
+      return {
+        'footer-side': !this.sidebar.opened
+      }
     }
   },
   methods: {
@@ -104,5 +109,27 @@ export default {
 
   .mobile .fixed-header {
     width: 100%;
+  }
+
+  .rs-footer {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+    background-color: #F0F2F5;
+    height: 50px;
+    line-height: 50px;
+    z-index: 10;
+
+    .footer-content {
+      margin-left: 210px;
+      text-align: center;
+      font-size: 12px;
+      color: gray;
+    }
+
+    .footer-side {
+      margin-left: 54px;
+    }
   }
 </style>
