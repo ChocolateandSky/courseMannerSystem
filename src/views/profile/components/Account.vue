@@ -2,7 +2,7 @@
   <div class="acount">
     <el-row>
       <el-col :span="11" style="margin-right: 40px">
-        <el-form label-width="100px" style="flex:1">
+        <el-form label-width="100px" style="flex:1" :model="ruleForm">
           <el-form-item label="教师编号:">
             <el-input v-model.trim="user.teacherId" />
           </el-form-item>
@@ -35,7 +35,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submit">更改</el-button>
+            <el-button type="primary" @click="submitInfo">更改基本信息</el-button>
+            <el-button type="primary" @click="submitPsw">更改密码</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -81,7 +82,8 @@ export default {
       }, {
         value: '信息安全',
         label: '信息安全'
-      }]
+      }],
+      ruleForm: {}
     }
   },
   computed: {
@@ -90,12 +92,15 @@ export default {
     }
   },
   methods: {
-    submit() {
+    submitInfo() {
       this.$message({
-        message: 'User information has been updated successfully',
+        message: '成功修改基本信息',
         type: 'success',
         duration: 5 * 1000
       })
+    },
+    submitPsw() {
+      console.log('修改密码')
     }
   }
 }
