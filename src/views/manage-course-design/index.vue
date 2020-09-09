@@ -18,7 +18,7 @@
         <el-table-column label="创建人" width="180" prop="name" align="center" />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-delete" @click="$">编辑</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="$">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
           </template>
         </el-table-column>
