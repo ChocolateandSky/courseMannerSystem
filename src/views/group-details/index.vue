@@ -31,7 +31,7 @@ export default {
   methods: {
     getAutoHeight() {
       this.$nextTick(() => {
-        this.autoHeight = window.innerHeight - (100) + 'px'
+        this.autoHeight = window.innerHeight - (140) + 'px'
       })
     }
   }

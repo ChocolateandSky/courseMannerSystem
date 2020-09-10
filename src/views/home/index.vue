@@ -2,11 +2,10 @@
   <div class="app-container">
     <div
       class="filter-container"
-      :style="{height:autoHeight}"
     >
       <el-row>
         <el-col v-for="(item,index) in 4" :key="index" :span="6">
-          <el-card v-waves :body-style="{ padding: '0px' }" @click.native="groupDetails">
+          <el-card v-waves :body-style="{ padding: '0px' }">
             <div slot="header" class="clearfix">
               <span>项目名称：课程管理系统</span>
             </div>
@@ -14,6 +13,16 @@
               <p>小组名称：课程管理系统小队</p>
               <p>组长名字：谭维国</p>
               <p>小组人数：4</p>
+            </div>
+            <div class="card-foot">
+              <el-row>
+                <el-col :span="12">
+                  <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
+                </el-col>
+                <el-col :span="12">
+                  <el-link icon="el-icon-delete" type="danger">删除</el-link>
+                </el-col>
+              </el-row>
             </div>
           </el-card>
         </el-col>
@@ -28,6 +37,16 @@
               <p>小组名称：课程管理系统小队</p>
               <p>组长名字：谭维国</p>
               <p>小组人数：4</p>
+            </div>
+            <div class="card-foot">
+              <el-row>
+                <el-col :span="12">
+                  <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
+                </el-col>
+                <el-col :span="12">
+                  <el-link icon="el-icon-delete" type="danger">删除</el-link>
+                </el-col>
+              </el-row>
             </div>
           </el-card>
         </el-col>
@@ -96,9 +115,24 @@ export default {
       font-size: 14px;
       .el-row{
         margin-bottom: 100px;
-        .el-col{
+      .el-col{
         padding: 0 2%;
       }
+      }
+
+      .card-foot{
+        padding: 0 20px;
+        margin: 0 0 20px 0;
+        .el-row{
+          margin: 0;
+          text-align: center;
+          .el-link{
+              font-size: 15px;
+          }
+          .el-link:hover{
+            color:rgb(100,217,214)
+          }
+        }
       }
     }
  }
