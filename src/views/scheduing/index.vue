@@ -7,8 +7,7 @@
             ref="ruleForm"
             :model="ruleForm"
             :rules="rules"
-            label-width="auto"
-            class="demo-ruleForm"
+            label-width="170px"
           >
             <el-row>
               <el-col :span="12">
@@ -70,6 +69,7 @@
                 <el-form-item label="实施时间:" prop="time">
                   <el-date-picker
                     v-model="ruleForm.time"
+                    style="width:65%"
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
@@ -95,7 +95,7 @@
                 <el-button size="small" type="success" @click="addRow">新增表格内容</el-button>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row class="workTable">
               <el-col :span="24">
                 <el-table
                   ref="workTable"
@@ -103,14 +103,13 @@
                   highlight-current-row
                   max-height="300px"
                   style="width: 100%"
-                  class="workTable"
                   :header-cell-style="{background:'#f0f9eb'}"
                   :default-sort="{prop: 'sort', order: 'ascending'}"
                 >
                   <el-table-column label="具体工作内容" align="center">
                     <template slot-scope="{row}">
                       <template v-if="row.edit">
-                        <el-input v-model="row.workContent" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
+                        <el-input v-model="row.workContent" resize="none" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
                       </template>
                       <span v-else>{{ row.workContent }}</span>
                     </template>
@@ -118,7 +117,7 @@
                   <el-table-column label="时间(周次，星期几，第几大节) 安排/地点" align="center">
                     <template slot-scope="{row}">
                       <template v-if="row.edit">
-                        <el-input v-model="row.details" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
+                        <el-input v-model="row.details" resize="none" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
                       </template>
                       <span v-else>{{ row.details }}</span>
                     </template>
@@ -145,12 +144,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="填表人:" prop="fillFormName">
-                  <el-input v-model="ruleForm.fillFormName" style="width:250px" size="small" clearable />
+                  <el-input v-model="ruleForm.fillFormName" style="width:70%" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="教研室主任:" prop="chairman">
-                  <el-input v-model="ruleForm.chairman" style="width:250px" size="small" clearable />
+                  <el-input v-model="ruleForm.chairman" style="width:70%" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -159,15 +158,19 @@
                     v-model="ruleForm.date"
                     size="small"
                     type="date"
-                    style="width:250px"
+                    style="width:70%"
                     placeholder="选择日期"
                   />
                 </el-form-item></el-col>
             </el-row>
-            <el-form-item>
-              <el-button type="primary" @click="exportWord('ruleForm')">导出word文档</el-button>
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
-            </el-form-item>
+            <el-row :style="{'margin-bottom':'50px'}">
+              <el-col :span="24">
+                <el-form-item>
+                  <el-button class="pan-btn green-btn" @click="exportWord('ruleForm')">导出word文档</el-button>
+                  <el-button class="pan-btn yellow-btn" @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </div>
       </div>
@@ -176,18 +179,15 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
 import docxtemplater from 'docxtemplater'
-// eslint-disable-next-line no-unused-vars
 import PizZip from 'pizzip'
-// eslint-disable-next-line no-unused-vars
 import JSZipUtils from 'jszip-utils'
-// eslint-disable-next-line no-unused-vars
 import { saveAs } from 'file-saver'
 
 export default {
   data() {
     return {
+      autoHeight: '200px',
       collegeList: ['软件工程', '计算机科学与技术'],
       courseId: ['软件工程课程设计AT1000', '嵌入式课程设计AT1001'],
       wokerTable: { workeContent: '', details: '', edit: true },
@@ -242,6 +242,13 @@ export default {
           { message: '请填写所面向的年级专业', trigger: 'blur' }
         ]
       }
+    }
+  },
+  mounted() {
+    this.getAutoHeight()
+    window.onresize = () => {
+      this.getAutoHeight()
+      console.log(this.autoHeight)
     }
   },
   methods: {
@@ -327,18 +334,17 @@ export default {
     },
     deleteRow(index) {
       this.ruleForm.newList.splice(index, 1)
+    },
+    getAutoHeight() {
+      this.$nextTick(() => {
+        this.autoHeight = window.innerHeight - (110) + 'px'
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-   .form-table{
-        margin: 0 auto;
-      }
-      .el-range-editor.el-input__inner{
-        width: 300px;
-      }
     .app-container{
     padding: 12px;
     .filter-container{
@@ -350,16 +356,13 @@ export default {
         margin: 0 auto;
       }
       .el-select{
-        width: 300px;
+        width: 65%;
       }
         .el-input {
-        width: 300px;
+        width: 65%;
       }
       .workTable{
         margin-bottom: 50px;
-      }
-      .search {
-        margin-left: 10px;
       }
     }
 

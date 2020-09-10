@@ -5,7 +5,7 @@
       :visible.sync="visible"
       width="600px"
       :close-on-press-escape="false"
-      :show-close="false"
+      :show-close="true"
       :close-on-click-modal="false"
     >
       <el-form ref="ruleForm" label-width="120px" :model="user" :rules="rules" class="demo-ruleForm">
@@ -24,13 +24,13 @@
         <el-form-item label="电话:">
           <el-input v-model.trim="user.phone" placeholder="请输入您的电话号码" />
         </el-form-item>
-        <el-form-item label="Email:">
+        <el-form-item label="Email:" prop="email">
           <el-input v-model.trim="user.email" placeholder="请输入您的邮件" />
         </el-form-item>
-        <el-form-item label="管理年级:">
+        <el-form-item label="管理年级:" prop="grade">
           <el-input v-model.trim="user.grade" placeholder="请输入您所管理的年级" />
         </el-form-item>
-        <el-form-item label="所属学院专业:">
+        <el-form-item label="所属学院专业:" prop="major">
           <el-select v-model.trim="user.major" filterable placeholder="请选择所属专业">
             <el-option
               v-for="item in majorList"
@@ -42,6 +42,9 @@
         </el-form-item>
         <el-form-item label="新密码:">
           <el-input v-model="user.password" placeholder="请输入密码" show-password />
+        </el-form-item>
+        <el-form-item label="再次确认密码:">
+          <el-input v-model="newPassword" show-password />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -67,11 +70,15 @@ export default {
     var checkPsw = (rule, value, callback) => {
       if (value.length < 6) {
         return callback(new Error('新密码位数不能小于6位'))
+      } else if (value !== this.newPassword) {
+        this.newPassword = ''
+        return callback(new Error('两次密码不一样'))
       } else {
         callback()
       }
     }
     return {
+      newPassword: '',
       user: {
         teacherId: '',
         name: '',
@@ -94,6 +101,9 @@ export default {
         ],
         password: [
           { validator: checkPsw, trigger: 'blur' }
+        ],
+        grade: [
+          { required: true, message: '请填写所管理年级', trigger: 'blur' }
         ]
       },
       majorList: [{
@@ -131,8 +141,14 @@ export default {
   },
   methods: {
     submit() {
-      console.log('asdadd')
-      this.closeDialog()
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.closeDialog()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     closeDialog() {
       this.$emit('close')
