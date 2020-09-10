@@ -141,7 +141,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/manage-course-design/index'),
         name: 'manage-course-design',
-        meta: { title: '课程设计管理', icon: 'el-icon-school', noCache: true }
+        meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true }
       }
     ]
   }
