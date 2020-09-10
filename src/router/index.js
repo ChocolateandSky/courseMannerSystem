@@ -144,6 +144,19 @@ export const constantRoutes = [
         meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true }
       }
     ]
+  },
+  {
+    path: '/groupDetails',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/group-details/index'),
+        name: 'GroupDetails',
+        meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true }
+      }
+    ]
   }
 ]
 

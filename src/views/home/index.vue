@@ -73,7 +73,9 @@ export default {
       })
     },
     groupDetails() {
-      console.log('asdqw')
+      this.$router.push({
+        name: 'GroupDetails'
+      })
     }
   }
 }
