@@ -7,12 +7,20 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <el-badge :value="12" class="item" type="primary">
+            <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          </el-badge>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
             <el-dropdown-item>个人主页</el-dropdown-item>
+          </router-link>
+          <router-link to="/profile/index">
+            <el-dropdown-item>
+              消息
+              <el-badge class="mark" type="primary" :value="12" />
+            </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>

@@ -6,12 +6,28 @@
     >
       <el-row>
         <el-col v-for="(item,index) in 4" :key="index" :span="6">
+          <el-card v-waves :body-style="{ padding: '0px' }" @click.native="groupDetails">
+            <div slot="header" class="clearfix">
+              <span>项目名称：课程管理系统</span>
+            </div>
+            <div style="padding: 20px;">
+              <p>小组名称：课程管理系统小队</p>
+              <p>组长名字：谭维国</p>
+              <p>小组人数：4</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col v-for="(item,index) in 4" :key="index" :span="6">
           <el-card v-waves :body-style="{ padding: '0px' }">
             <div slot="header" class="clearfix">
-              <span>项目名称:</span>
+              <span>项目名称：课程管理系统</span>
             </div>
-            <div style="padding: 14px;">
-              <span>队长名称:</span>
+            <div style="padding: 20px;">
+              <p>小组名称：课程管理系统小队</p>
+              <p>组长名字：谭维国</p>
+              <p>小组人数：4</p>
             </div>
           </el-card>
         </el-col>
@@ -55,6 +71,9 @@ export default {
       this.$nextTick(() => {
         this.autoHeight = window.innerHeight - (100) + 'px'
       })
+    },
+    groupDetails() {
+      console.log('asdqw')
     }
   }
 }
@@ -73,8 +92,11 @@ export default {
       background-color: #fff ;
       padding: 20px 20px 10px 20px;
       font-size: 14px;
-      .el-col{
+      .el-row{
+        margin-bottom: 100px;
+        .el-col{
         padding: 0 2%;
+      }
       }
     }
  }
