@@ -27,6 +27,7 @@
               <span style="margin-left: 10px">{{ scope.row.date }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="课程设计名称" width="200" prop="className" align="center" />
           <el-table-column label="创建人" width="180" prop="name" align="center" />
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
