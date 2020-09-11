@@ -4,7 +4,18 @@
       <el-header>
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
         <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible">
-          <el-form :model="tableData" />
+          <el-form :model="tableData" label-width="80px">
+            <el-form-item label="课程名称">
+              <el-input v-model="form.name" />
+            </el-form-item>
+            <el-form-item label="简介">
+              <el-input v-model="form.desc" type="textarea" rows="5" />
+            </el-form-item>
+          </el-form>
+          <div slot="footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          </div>
         </el-dialog>
       </el-header>
       <el-main>
@@ -38,6 +49,10 @@ export default {
     return {
       dialogFormVisible: false,
       tableData: [{ date: '2016-05-01', name: '小明' }, { date: '2016-05-02', name: '小明' }, { date: '2016-05-03', name: '小明' }, { date: '2016-05-04', name: '小明' }, { date: '2016-05-05', name: '小明' }, { date: '2016-05-07', name: '小明' }, { date: '2016-05-08', name: '小明' }, { date: '2016-05-09', name: '小明' }, { date: '2016-05-10', name: '小明' }, { date: '2016-05-11', name: '小明' }, { date: '2016-05-12', name: '小明' }, { date: '2016-05-13', name: '小明' }, { date: '2016-05-14', name: '小明' }, { date: '2016-05-15', name: '小明' }, { date: '2016-05-16', name: '小明' }, { date: '2016-05-17', name: '小明' }, { date: '2016-7-02', name: '小明' }, { date: '2016-08-01', name: '小明' }],
+      form: {
+        name: '',
+        desc: ''
+      },
       currentPage: 1,
       pageSize: 6
     }
@@ -47,11 +62,26 @@ export default {
       return (this.currentPage - 1) * this.pageSize + index + 1
     },
     deleteRow(index, rows) {
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+      // this.$message({
+      //   message: '删除成功',
+      //   type: 'success'
+      // })
+      this.$confirm('此操作将永久删除该课程设计, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+        rows.splice(index, 1)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-      rows.splice(index, 1)
     },
     handleSizeChange(val) {
       this.pageSize = val
