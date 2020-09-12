@@ -80,7 +80,21 @@
             </div>
           </template>
           <template slot="paneR">
-            <div class="bottom-container">消息发送</div>
+            <div class="bottom-container">
+              <el-card>
+                <div slot="header" class="clearfix">
+                  <h2 style="text-align: center;margin:0 auto;color:rgb(100,217,214)">邮件通知</h2>
+                </div>
+                <div class="text item">
+                  <el-input
+                    type="textarea"
+                    :rows="12"
+                    placeholder="请输入内容"
+                  />
+                  <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
+                </div>
+              </el-card>
+            </div>
           </template>
         </split-pane>
       </template>
@@ -129,12 +143,40 @@ export default {
         type: 'success',
         message: '图片上传成功'
       })
+    },
+    handlePostMessage() {
+      this.$confirm('确定要发送消息吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('发送成功')
+      }).catch(() => {
+        console.error('catch err')
+      })
     }
   }
 }
 </script>
 
 <style lang="scss">
+.text {
+    font-size: 14px;
+  }
+
+  .item {
+    margin-bottom: 18px;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
 .components-container {
   position: relative;
   margin: 0 auto;
@@ -208,8 +250,15 @@ export default {
 
   .bottom-container {
     width: 100%;
-    background-color: #95e1d3;
     height: 100%;
+    .el-card{
+      height: 100%;
+      .message-btn{
+        position: relative;
+        margin-top: 20px;
+        left: 80%;
+      }
+    }
   }
 }
 
