@@ -4,12 +4,15 @@
       <el-header>
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
         <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible">
-          <el-form :model="tableData" label-width="80px">
+          <el-form :model="formData" label-width="80px">
             <el-form-item label="课程名称">
-              <el-input v-model="form.name" />
+              <el-input v-model="formData.name" />
+            </el-form-item>
+            <el-form-item label="指导老师">
+              <el-cascader :style="{width:'50%'}" :options="options" :props="{multiple:true }" />
             </el-form-item>
             <el-form-item label="简介">
-              <el-input v-model="form.desc" type="textarea" rows="5" />
+              <el-input v-model="formData.desc" type="textarea" rows="5" />
             </el-form-item>
           </el-form>
           <div slot="footer">
@@ -19,15 +22,22 @@
         </el-dialog>
       </el-header>
       <el-main>
-        <el-table ref="multipleTable" :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)" style="width: 100%" :header-cell-style="{background:'#DCDFE6',color:'#303133'}" border>
+        <el-table
+          ref="multipleTable"
+          :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+          style="width: 100%"
+          :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
+          height="auto"
+        >
           <el-table-column type="index" :index="indexMethod" width="50" align="center" />
-          <el-table-column label="日期" width="180" prop="date" align="center">
+          <el-table-column label="日期" width="180" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
               <span style="margin-left: 10px">{{ scope.row.date }}</span>
             </template>
           </el-table-column>
           <el-table-column label="课程设计名称" width="200" prop="className" align="center" />
+          <el-table-column label="课程设计编号" width="250" prop="classNumber" align="center" />
           <el-table-column label="创建人" width="180" prop="name" align="center" />
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
@@ -38,7 +48,14 @@
         </el-table>
       </el-main>
       <el-footer>
-        <el-pagination layout="prev, pager, next" :total="tableData.length" :current-page="currentPage" :page-size="pageSize" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+        <el-pagination
+          layout="prev, pager, next"
+          :total="tableData.length"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </el-footer>
     </el-container>
   </div>
@@ -49,8 +66,28 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      tableData: [{ date: '2016-05-01', name: '小明' }, { date: '2016-05-02', name: '小明' }, { date: '2016-05-03', name: '小明' }, { date: '2016-05-04', name: '小明' }, { date: '2016-05-05', name: '小明' }, { date: '2016-05-07', name: '小明' }, { date: '2016-05-08', name: '小明' }, { date: '2016-05-09', name: '小明' }, { date: '2016-05-10', name: '小明' }, { date: '2016-05-11', name: '小明' }, { date: '2016-05-12', name: '小明' }, { date: '2016-05-13', name: '小明' }, { date: '2016-05-14', name: '小明' }, { date: '2016-05-15', name: '小明' }, { date: '2016-05-16', name: '小明' }, { date: '2016-05-17', name: '小明' }, { date: '2016-7-02', name: '小明' }, { date: '2016-08-01', name: '小明' }],
-      form: {
+      options: [{
+        value: 1,
+        label: '计算机与信息安全学院',
+        children: [
+          {
+            value: 2,
+            label: '软件工程专业',
+            children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
+          },
+          { value: 5, label: '计算机科学专业' }
+        ]
+      }],
+      tableData: [
+        { date: '2016-05-01', name: '小明', desc: '' },
+        { date: '2016-05-02', name: '小明', desc: '' },
+        { date: '2016-05-03', name: '小明', desc: '' },
+        { date: '2016-05-04', name: '小明', desc: '' },
+        { date: '2016-05-02', name: '小明', desc: '' },
+        { date: '2016-05-02', name: '小明', desc: '' },
+        { date: '2016-05-02', name: '小明', desc: '' }
+      ],
+      formData: {
         name: '',
         desc: ''
       },
@@ -59,24 +96,26 @@ export default {
     }
   },
   methods: {
+    // 获取当前列的序号
     indexMethod(index) {
       return (this.currentPage - 1) * this.pageSize + index + 1
     },
+    // 删除当前列的内容
     deleteRow(index, rows) {
       // this.$message({
       //   message: '删除成功',
       //   type: 'success'
       // })
       this.$confirm('此操作将永久删除该课程设计, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
         type: 'warning'
       }).then(() => {
         this.$message({
           message: '删除成功',
           type: 'success'
         })
-        rows.splice(index, 1)
+        this.tableData.splice(index, 1)
       }).catch(() => {
         this.$message({
           type: 'info',
