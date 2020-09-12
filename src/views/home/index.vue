@@ -3,7 +3,7 @@
     <div
       class="filter-container"
     >
-      <el-row>
+      <el-row v-for="(rowNum) in lineNum/2" :key="rowNum">
         <el-col v-for="(item,index) in 4" :key="index" :span="6">
           <el-card v-waves :body-style="{ padding: '0px' }">
             <div slot="header" class="clearfix">
@@ -20,31 +20,7 @@
                   <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
                 </el-col>
                 <el-col :span="12">
-                  <el-link icon="el-icon-delete" type="danger">删除</el-link>
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col v-for="(item,index) in 4" :key="index" :span="6">
-          <el-card v-waves :body-style="{ padding: '0px' }">
-            <div slot="header" class="clearfix">
-              <span>项目名称：课程管理系统</span>
-            </div>
-            <div style="padding: 20px;">
-              <p>小组名称：课程管理系统小队</p>
-              <p>组长名字：谭维国</p>
-              <p>小组人数：4</p>
-            </div>
-            <div class="card-foot">
-              <el-row>
-                <el-col :span="12">
-                  <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
-                </el-col>
-                <el-col :span="12">
-                  <el-link icon="el-icon-delete" type="danger">删除</el-link>
+                  <el-link icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
                 </el-col>
               </el-row>
             </div>
@@ -72,7 +48,8 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      autoHeight: '200px'
+      autoHeight: '200px',
+      lineNum: 4
     }
   },
   mounted() {
@@ -94,6 +71,20 @@ export default {
     groupDetails() {
       this.$router.push({
         name: 'GroupDetails'
+      })
+    },
+    DeteleGroup($event) {
+      console.log($event)
+      delete $event.target
+      this.$confirm('确定删除该类型吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('删除成功')
+      }).catch(() => {
+        console.error('catch err')
+        this.$message.error('删除失败')
       })
     }
   }
@@ -119,8 +110,8 @@ export default {
         padding: 0 2%;
       }
       }
-
-      .card-foot{
+    .el-card{
+   .card-foot{
         padding: 0 20px;
         margin: 0 0 20px 0;
         .el-row{
@@ -134,6 +125,13 @@ export default {
           }
         }
       }
+        &:hover {
+        box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2);
+        backface-visibility: hidden;
+        transform: translateY(-5px);
+        cursor: pointer;
+      }
+    }
     }
  }
  .time {

@@ -58,14 +58,14 @@ function handleClick(el, binding) {
 
 export default {
   bind(el, binding) {
-    el.addEventListener('mouseover', handleClick(el, binding), false)
+    el.addEventListener('click', handleClick(el, binding), false)
   },
   update(el, binding) {
-    el.removeEventListener('mouseover', el[context].removeHandle, false)
-    el.addEventListener('mouseover', handleClick(el, binding), false)
+    el.removeEventListener('click', el[context].removeHandle, false)
+    el.addEventListener('click', handleClick(el, binding), false)
   },
   unbind(el) {
-    el.removeEventListener('mouseover', el[context].removeHandle, false)
+    el.removeEventListener('click', el[context].removeHandle, false)
     el[context] = null
     delete el[context]
   }
