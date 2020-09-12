@@ -2,17 +2,23 @@
   <div class="app-container">
     <el-container>
       <el-header>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+          prefix-icon="el-icon-search"
+          :style="{width: '250px', 'margin-right': '20px'} "
+        />
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
-        <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible">
+        <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
           <el-form :model="formData" label-width="80px">
             <el-form-item label="课程名称">
-              <el-input v-model="formData.name" />
+              <el-input v-model="formData.name" :style="{width: '80%'}" />
             </el-form-item>
             <el-form-item label="指导老师">
-              <el-cascader :style="{width:'50%'}" :options="options" :props="{multiple:true }" />
+              <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
             </el-form-item>
-            <el-form-item label="简介">
-              <el-input v-model="formData.desc" type="textarea" rows="5" />
+            <el-form-item label="课程简介">
+              <el-input v-model="formData.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
             </el-form-item>
           </el-form>
           <div slot="footer">
@@ -65,6 +71,7 @@
 export default {
   data() {
     return {
+      input: '',
       dialogFormVisible: false,
       options: [{
         value: 1,
@@ -75,7 +82,11 @@ export default {
             label: '软件工程专业',
             children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
           },
-          { value: 5, label: '计算机科学专业' }
+          {
+            value: 5,
+            label: '计算机科学专业',
+            children: [{ value: 6, label: '小明' }, { value: 7, label: '小红' }]
+          }
         ]
       }],
       tableData: [
