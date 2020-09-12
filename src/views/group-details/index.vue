@@ -1,10 +1,9 @@
 <template>
   <div class="app-container">
     <div
-      class="filter-container"
-      :style="{height:autoHeight}"
+      class="filter-container "
     >
-      <one-groups />
+      <one-groups class="one-groups" :style="{height:autoHeight}" />
     </div>
   </div>
 </template>
@@ -31,21 +30,31 @@ export default {
   methods: {
     getAutoHeight() {
       this.$nextTick(() => {
-        this.autoHeight = window.innerHeight - (140) + 'px'
+        this.autoHeight = window.innerHeight + 'px'
       })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+
+ .clearfix:before,
+  .clearfix:after {
+      display: table;
+      content: "";
+  }
+
+  .clearfix:after {
+      clear: both
+  }
  .app-container{
-    height: 100%;
+    height: auto;
     width: 100%;
-    padding: 12px;
+    padding: 12px 12px 50px 12px;
     .filter-container{
       align-items: center;
       background-color: #fff ;
-      padding: 20px 20px 10px 20px;
+      height: 100%;
       font-size: 14px;
     }
  }

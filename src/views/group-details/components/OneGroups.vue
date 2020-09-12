@@ -7,30 +7,33 @@
             <div slot="header" class="box-card-header">
               <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
             </div>
-            <div style="position:relative;">
+            <div>
               <span style="font-size:18px;color:rgb(100,217,214)">项目简单介绍:</span>
               <el-divider />
-              <p style="padding:0 10px">啥数据货到付款时候都快粉红色的开发和收快递费hi玩儿会uh风格我还不赶紧和第三个福建省高房价的方便球完全地方和计划为过去五二分管委会visdufhiwhe9qheowh</p>
+              <p style="padding:0 10px;  line-height:25px;">啥数据货到付款时候都快粉红色的开发和收快递费hi玩儿会uh风格我
+                还不赶紧和第三个福建省高房价的方便球完全地方和计划为过去五二分管委会visdufhiwhe9qheowh
+                加快速度不分开吧缉毒风暴武二哥氨基酸不放假韩阿世界杯的骄傲和备份时间按时发把交话费报价函
+                案件是否能卡比我快减法安会计师的板卡积分比去网吧卡视角的把控减肥把控技术部分卡视角发布按时
+                阿萨德你去安慰计划表求的供求外国一覆盖发神经开始登记卡汇顶科技啊阿斯加德哈开奖号打卡机卡时间和</p>
               <el-divider style="margin-bootom:30px" />
               <span style="font-size:18px;color:rgb(100,217,214)">团队成员:</span>
               <el-divider />
-              <el-collapse v-model="activeNames" @change="handleChange">
-                <el-collapse-item title="一致性 Consistency" name="1">
-                  <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                  <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+              <el-collapse>
+                <el-collapse-item title="组长：谭维国" name="1">
+                  <div>学号：1800301322</div>
+                  <div>任务：负责整个队伍走向，把握项目进度，同时负责后端设计</div>
                 </el-collapse-item>
-                <el-collapse-item title="反馈 Feedback" name="2">
-                  <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                  <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+                <el-collapse-item title="组员：刘镇猛" name="2">
+                  <div>学号：1800301322</div>
+                  <div>任务：主要负责前端设计</div>
                 </el-collapse-item>
-                <el-collapse-item title="效率 Efficiency" name="3">
-                  <div>简化流程：设计简洁直观的操作流程；</div>
-                  <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-                  <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+                <el-collapse-item title="组员：邓天生" name="3">
+                  <div>学号：1800301322</div>
+                  <div>任务：主要负责前端设计</div>
                 </el-collapse-item>
-                <el-collapse-item title="可控 Controllability" name="4">
-                  <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-                  <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+                <el-collapse-item title="组员：聂城星" name="4">
+                  <div>学号：1800301322</div>
+                  <div>任务：负责后端设计</div>
                 </el-collapse-item>
               </el-collapse>
             </div>
@@ -40,7 +43,29 @@
       <template slot="paneR">
         <split-pane split="horizontal">
           <template slot="paneL">
-            <div class="top-container" />
+            <div class="top-container">
+              <el-card class="box-card" style="height:100%">
+                <el-tabs v-model="fileActiveName">
+                  <el-tab-pane label="小组所上传文件" name="first">
+                    小组上传的文件
+                  </el-tab-pane>
+                  <el-tab-pane label="上传文件" name="second">
+                    <el-upload
+                      drag
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :before-upload="beforeUpload"
+                      :on-error="onError"
+                      :on-success="onSuccess"
+                      :file-list="fileList"
+                    >
+                      <i class="el-icon-upload" />
+                      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                      <div slot="tip" class="el-upload__tip">可上传.doc .docx .xls .xlsx .txt .pdf</div>
+                    </el-upload>
+                  </el-tab-pane>
+                </el-tabs>
+              </el-card>
+            </div>
           </template>
           <template slot="paneR">
             <div class="bottom-container" />
@@ -57,50 +82,52 @@ import splitPane from 'vue-splitpane'
 export default {
   name: 'OneGroups',
   components: { splitPane },
+  data() {
+    return {
+      fileActiveName: 'first',
+      fileList: []
+    }
+  },
   methods: {
     resize() {
       console.log('resize')
+    },
+    beforeUpload(file) {
+      console.log(file)
+      const AllUpExt = `.doc|.docx|.xls|.xlsx|.txt|.pdf`
+      const extName = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
+      const fileSize = file.size / 1024 / 1024 < 5
+      if (AllUpExt.indexOf(extName + '|') === -1) {
+        this.$message.error('文件格式不对')
+        return false
+      } else if (!fileSize) {
+        this.$message.error('文件大小不能超过5M')
+        return false
+      } else {
+        return true
+      }
+    },
+    onError() {
+      this.$message.error('图片上传失败')
+    },
+    onSuccess() {
+      this.$message({
+        type: 'success',
+        message: '图片上传成功'
+      })
     }
   }
 }
 </script>
 
-<style lang="scss"  scoped>
+<style lang="scss">
   .components-container {
     position: relative;
-    height: 100%;
-    margin: 0;
-    .el-divider{
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-  }
-
-  .left-container {
-    height: 100%;
-  }
-
-  // .right-container {
-  //   background-color: #FCE38A;
-  //   height: 200px;
-  // }
-
-  .top-container {
-    background-color: #FCE38A;
-    width: 100%;
-    height: 100%;
-  }
-
-  .bottom-container {
-    width: 100%;
-    background-color: #95E1D3;
-    height: 100%;
-  }
-  .box-card-component {
-    height: 100%;
+    margin: 0 auto;
+    .box-card-component {
+      height: 100%;
   .box-card-header {
-    position: relative;
-    height: 220px;
+    height: 250px;
     img {
       width: 100%;
       height: 100%;
@@ -112,4 +139,49 @@ export default {
     }
   }
   }
+    .el-divider{
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+  .left-container {
+    height: 100%;
+  }
+  .top-container {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+    .el-card{
+      .el-card__body{
+        height: 100%;
+      }
+       .el-tabs{
+          height: 100%;
+          .el-tabs__content{
+            height: 100%;
+          }
+        }
+    }
+    .el-tab-pane {
+      .el-upload{
+        width: 100%;
+        .el-upload-dragger{
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .bottom-container {
+    width: 100%;
+    background-color: #95E1D3;
+    height: 100%;
+  }
+  }
+
+  // .right-container {
+  //   background-color: #FCE38A;
+  //   height: 200px;
+  // }
+
 </style>
