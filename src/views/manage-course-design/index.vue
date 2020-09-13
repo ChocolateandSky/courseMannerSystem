@@ -3,16 +3,25 @@
     <el-container>
       <el-header>
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
-        <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible">
+        <div class="searchBox">
+          <el-input
+            v-model="input"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            :style="{width: '250px', 'margin-right': '10px'} "
+          />
+          <el-button icon="el-icon-search" circle />
+        </div>
+        <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
           <el-form :model="formData" label-width="80px">
             <el-form-item label="课程名称">
-              <el-input v-model="formData.name" />
+              <el-input v-model="formData.name" :style="{width: '80%'}" />
             </el-form-item>
             <el-form-item label="指导老师">
-              <el-cascader :style="{width:'50%'}" :options="options" :props="{multiple:true }" />
+              <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
             </el-form-item>
-            <el-form-item label="简介">
-              <el-input v-model="formData.desc" type="textarea" rows="5" />
+            <el-form-item label="课程简介">
+              <el-input v-model="formData.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
             </el-form-item>
           </el-form>
           <div slot="footer">
@@ -65,7 +74,10 @@
 export default {
   data() {
     return {
-      dialogFormVisible: false,
+      input: '', // 搜索关键字
+      dialogFormVisible: false, // 新增课程设计表单
+      currentPage: 1,
+      pageSize: 6,
       options: [{
         value: 1,
         label: '计算机与信息安全学院',
@@ -75,9 +87,17 @@ export default {
             label: '软件工程专业',
             children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
           },
-          { value: 5, label: '计算机科学专业' }
+          {
+            value: 5,
+            label: '计算机科学专业',
+            children: [{ value: 6, label: '小明' }, { value: 7, label: '小红' }]
+          }
         ]
       }],
+      formData: {
+        name: '',
+        desc: ''
+      },
       tableData: [
         { date: '2016-05-01', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' },
@@ -86,13 +106,7 @@ export default {
         { date: '2016-05-02', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' }
-      ],
-      formData: {
-        name: '',
-        desc: ''
-      },
-      currentPage: 1,
-      pageSize: 6
+      ]
     }
   },
   methods: {
@@ -147,6 +161,12 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
+}
+
+.app-container .el-container .el-header .searchBox {
+  position: absolute;
+  right: 15px;
 }
 
 .app-container .el-container .el-footer {
