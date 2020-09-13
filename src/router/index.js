@@ -148,13 +148,26 @@ export const constantRoutes = [
   {
     path: '/groupDetails',
     component: Layout,
-    hidden: false,
+    hidden: true,
     children: [
       {
         path: 'index',
         component: () => import('@/views/group-details/index'),
         name: 'GroupDetails',
         meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/groupManager',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/groupManager/index'),
+        name: 'groupManager',
+        meta: { title: '小组管理', icon: 'el-icon-s-help', noCache: true }
       }
     ]
   }

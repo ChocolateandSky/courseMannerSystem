@@ -159,7 +159,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style  lang="scss">
 .text {
     font-size: 14px;
   }
