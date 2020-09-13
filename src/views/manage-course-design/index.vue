@@ -2,13 +2,16 @@
   <div class="app-container">
     <el-container>
       <el-header>
-        <el-input
-          v-model="input"
-          placeholder="请输入内容"
-          prefix-icon="el-icon-search"
-          :style="{width: '250px', 'margin-right': '20px'} "
-        />
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
+        <div class="searchBox">
+          <el-input
+            v-model="input"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            :style="{width: '250px', 'margin-right': '10px'} "
+          />
+          <el-button icon="el-icon-search" circle />
+        </div>
         <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
           <el-form :model="formData" label-width="80px">
             <el-form-item label="课程名称">
@@ -71,8 +74,10 @@
 export default {
   data() {
     return {
-      input: '',
-      dialogFormVisible: false,
+      input: '', // 搜索关键字
+      dialogFormVisible: false, // 新增课程设计表单
+      currentPage: 1,
+      pageSize: 6,
       options: [{
         value: 1,
         label: '计算机与信息安全学院',
@@ -89,6 +94,10 @@ export default {
           }
         ]
       }],
+      formData: {
+        name: '',
+        desc: ''
+      },
       tableData: [
         { date: '2016-05-01', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' },
@@ -97,13 +106,7 @@ export default {
         { date: '2016-05-02', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' },
         { date: '2016-05-02', name: '小明', desc: '' }
-      ],
-      formData: {
-        name: '',
-        desc: ''
-      },
-      currentPage: 1,
-      pageSize: 6
+      ]
     }
   },
   methods: {
@@ -158,6 +161,12 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
+}
+
+.app-container .el-container .el-header .searchBox {
+  position: absolute;
+  right: 15px;
 }
 
 .app-container .el-container .el-footer {
