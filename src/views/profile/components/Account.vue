@@ -21,7 +21,7 @@
           <el-form-item label="Email:">
             <el-input v-model.trim="user.email" />
           </el-form-item>
-          <el-form-item label="年级:">
+          <el-form-item label="管理年级:">
             <el-input v-model.trim="user.grade" />
           </el-form-item>
           <el-form-item label="所属专业:">

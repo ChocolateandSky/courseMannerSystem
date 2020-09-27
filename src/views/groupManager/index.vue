@@ -45,16 +45,33 @@
         </el-collapse-item>
       </el-collapse>
     </div>
+    <notice
+      :dialog-table-visible="dialogShow"
+      @close="close"
+    />
   </div>
 </template>
 
 <script>
+import notice from './components/notice'
+
 export default {
   components: {
-
+    notice
   },
   data() {
-    return {}
+    return {
+      dialogShow: false
+    }
+  },
+  methods: {
+    handlePostMessage() {
+      console.log('adwqq')
+      this.dialogShow = true
+    },
+    close() {
+      this.dialogShow = false
+    }
   }
 }
 </script>
@@ -73,7 +90,7 @@ export default {
 
       .header {
         margin-bottom: 20px;
-        margin-left: 80%;
+        display: flex;
       }
 
       .groupCollapse {

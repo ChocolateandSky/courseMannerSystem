@@ -19,10 +19,25 @@
 
     <div class="user-bio">
       <div class="user-education user-bio-section">
-        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>个人介绍</span></div>
+        <div class="user-bio-section-header">
+          <svg-icon icon-class="education" />
+          <span style="margin-right:50%">个人介绍</span>
+          <el-link type="primary" @click="updateItd">更改介绍</el-link>
+        </div>
         <div class="user-bio-section-body">
-          <div class="text-muted">
-            阿USD好尬结果还是的骄傲和广东省江安河过三等奖阿贡火山的骄傲和过三等奖阿贡火山等几十个
+          <el-input
+            v-model="introductions[index]"
+            :class="{active:!readonly}"
+            type="textarea"
+            autosize
+            :rows="8"
+            :readonly="readonly"
+            resize="none"
+            placeholder="请输入内容"
+          />
+          <div class="body-button">
+            <el-button v-show="!readonly" round size="mini" @click="cancle">取消</el-button>
+            <el-button v-show="!readonly" type="primary" round size="mini" @click="submin">确定</el-button>
           </div>
         </div>
       </div>
@@ -32,7 +47,7 @@
 
 <script>
 import PanThumb from '@/components/PanThumb'
-
+import '../css/index.css'
 export default {
   components: { PanThumb },
   props: {
@@ -43,9 +58,36 @@ export default {
           name: '',
           email: '',
           avatar: '',
-          role: ''
+          role: '',
+          introduction: '氨基酸的哈可接受的就看书打卡机水电卡技术的卡号是档卡户水电卡大石街道哈克斯的哈考试的花开时接电话卡号地块按计划打卡机是会看到是看得见阿哈萨克的就好肯说的开始的看到空间'
         }
       }
+    }
+  },
+  data() {
+    return {
+      introductions: [
+        '111111',
+        '111111'
+      ],
+      index: 0,
+      readonly: true
+    }
+  },
+  methods: {
+    updateItd() {
+      this.readonly = false
+      this.index = 1
+    },
+    submin() {
+      this.readonly = true
+      this.introductions[0] = this.introductions[1]
+      this.index = 0
+    },
+    cancle() {
+      this.readonly = true
+      this.introductions[1] = this.introductions[0]
+      this.index = 0
     }
   }
 }
@@ -96,7 +138,9 @@ export default {
   span {
     padding-left: 4px;
   }
-
+  .itd-style{
+     color: red;
+  }
   .user-bio-section {
     font-size: 14px;
     padding: 15px 0;
@@ -106,6 +150,15 @@ export default {
       padding-bottom: 10px;
       margin-bottom: 10px;
       font-weight: bold;
+    }
+    .user-bio-section-body{
+      .active{
+        border: solid 1px;
+        margin-bottom: 15px;
+      }
+      .body-button{
+        margin-left: 50%;
+      }
     }
   }
 }
