@@ -10,6 +10,7 @@
               <span>项目名称：课程管理系统</span>
             </div>
             <div style="padding: 20px;">
+              <p>指导老师：王宇英</p>
               <p>小组名称：课程管理系统小队</p>
               <p>组长名字：谭维国</p>
               <p>小组人数：4</p>
@@ -53,13 +54,19 @@ export default {
     }
   },
   mounted() {
+    this.judgeFirstLogin()
     this.getAutoHeight()
     window.onresize = () => {
       this.getAutoHeight()
     }
-    this.dialogFormVisible = true
   },
   methods: {
+    judgeFirstLogin() {
+      console.log(this.$store.getters.loginCount)
+      if (this.$store.getters.loginCount === 1) {
+        this.dialogFormVisible = false
+      }
+    },
     close() {
       this.dialogFormVisible = false
     },

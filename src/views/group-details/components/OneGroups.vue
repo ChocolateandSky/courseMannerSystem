@@ -17,10 +17,11 @@
                 案件是否能卡比我快减法安会计师的板卡积分比去网吧卡视角的把控减肥把控技术部分卡视角发布按时
                 阿萨德你去安慰计划表求的供求外国一覆盖发神经开始登记卡汇顶科技啊阿斯加德哈开奖号打卡机卡时间和
               </p>
-              <el-divider style="margin-bootom:30px" />
-              <span style="font-size:18px;color:rgb(100,217,214)">团队成员:</span>
               <el-divider />
-              <el-collapse>
+              <span style="font-size:18px;color:rgb(100,217,214)">指导老师：王宇英</span>
+              <el-divider style="margin-bootom:30px" />
+              <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
+              <el-collapse style="margin-top:10px">
                 <el-collapse-item title="组长：谭维国" name="1">
                   <div>学号：1800301322</div>
                   <div>任务：负责整个队伍走向，把握项目进度，同时负责后端设计</div>

@@ -8,7 +8,8 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [],
-  user: {}
+  user: {},
+  loginCount: 1
 }
 
 const mutations = {
@@ -29,6 +30,9 @@ const mutations = {
   },
   SET_USER: (state, user) => {
     state.user = user
+  },
+  SET_LOGINCOUNT: (state, loginCount) => {
+    state.loginCount = loginCount
   }
 }
 
@@ -43,6 +47,7 @@ const actions = {
         console.log(data)
         commit('SET_USER', data)
         commit('SET_TOKEN', data.token)
+        commit('SET_LOGINCOUNT', data.logincount)
         setToken(data.token)
         resolve()
       }).catch(error => {

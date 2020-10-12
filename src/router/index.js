@@ -122,7 +122,7 @@ export const constantRoutes = [
   {
     path: '/statistics',
     component: Layout,
-    hidden: false,
+    hidden: true,
     children: [
       {
         path: 'index',

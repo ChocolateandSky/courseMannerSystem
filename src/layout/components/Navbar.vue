@@ -22,6 +22,18 @@
               <el-badge class="mark" type="primary" :value="12" />
             </el-dropdown-item>
           </router-link>
+          <el-dropdown-item>
+            <el-popover
+              placement="left"
+              width="100"
+              trigger="hover"
+            >
+              <div v-for="o in 5" :key="o" class="teacher" style="text-align: center;margin-bottom:5px;border-bottom:rgb(220,223,230) 1px solid;padding-bottom: 5px;" @click="changeAdmin">
+                <div>王宇英</div>
+              </div>
+              <el-button slot="reference" style="color:rgb(96,98,102)" type="text">转让管理员</el-button>
+            </el-popover>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
@@ -55,19 +67,39 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    changeAdmin() {
+      this.$confirm('你确定要将管理员权限转给他(她)吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '更改成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '更改失败'
+        })
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .teacher:hover{
+    background-color: rgb(220,223,230);
+   cursor: pointer;
+  }
 .navbar {
   height: 50px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
-
   .hamburger-container {
     line-height: 46px;
     height: 100%;
