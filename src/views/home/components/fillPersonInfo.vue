@@ -9,10 +9,10 @@
       :close-on-click-modal="false"
     >
       <el-form ref="ruleForm" label-width="120px" :model="user" :rules="rules" class="demo-ruleForm">
-        <el-form-item label="教师编号:">
+        <!-- <el-form-item label="教师编号:">
           <el-input v-model.trim="user.teacherId" placeholder="请输入教师编号" />
-        </el-form-item>
-        <el-form-item label="姓名:">
+        </el-form-item> -->
+        <!-- <el-form-item label="姓名:">
           <el-input v-model.trim="user.name" prop="name" placeholder="请输入您的姓名" />
         </el-form-item>
         <el-form-item label="性别:">
@@ -20,7 +20,7 @@
             <el-radio label="男" />
             <el-radio label="女" />
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="电话:">
           <el-input v-model.trim="user.phone" placeholder="请输入您的电话号码" />
         </el-form-item>

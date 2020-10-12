@@ -7,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  user: {}
 }
 
 const mutations = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_USER: (state, user) => {
+    state.user = user
   }
 }
 
@@ -34,8 +38,9 @@ const actions = {
     const { username, password } = userInfo
     console.log('开始登陆')
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ userName: username.trim(), password: password }).then(response => {
         const { data } = response
+        console.log(data)
         commit('SET_USER', data)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -56,15 +61,17 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
+        console.log(data)
+        // eslint-disable-next-line no-unused-vars
+        data.avatar = `https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif`
         const { roles, name, avatar, introduction } = data
-
         // roles must be a non-empty array
+        const role = [roles]
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-
-        commit('SET_ROLES', roles)
+        // eslint-disable-next-line no-const-assign
+        commit('SET_ROLES', role)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
