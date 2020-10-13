@@ -1,54 +1,37 @@
 <template>
   <div class="app-container">
     <el-container>
+      <!-- 头部内容 -->
       <el-header>
-        <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible=true">新增</el-button>
-        <div class="searchBox">
-          <el-input
-            v-model="input"
-            placeholder="请输入内容"
-            prefix-icon="el-icon-search"
-            :style="{width: '250px', 'margin-right': '10px'} "
-          />
-          <el-button icon="el-icon-search" circle />
-        </div>
-        <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
-          <el-form :model="formData" label-width="80px">
-            <el-form-item label="课程名称">
-              <el-input v-model="formData.name" :style="{width: '80%'}" />
-            </el-form-item>
-            <el-form-item label="指导老师">
-              <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
-            </el-form-item>
-            <el-form-item label="课程简介">
-              <el-input v-model="formData.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
-            </el-form-item>
-          </el-form>
-          <div slot="footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-          </div>
-        </el-dialog>
+        <HeaderContainer />
       </el-header>
+      <!-- 主要内容 -->
       <el-main>
         <el-table
           ref="multipleTable"
           :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
           style="width: 100%"
           :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
-          height="auto"
+          height="371.2"
         >
-          <el-table-column type="index" :index="indexMethod" width="50" align="center" />
-          <el-table-column label="日期" width="180" align="center">
+          <el-table-column label="序号" type="index" :index="indexMethod" width="50" align="center" />
+          <el-table-column label="课程名称" width="120" prop="courseName" align="center" />
+          <el-table-column label="课程编号" width="120" prop="courseNumber" align="center" />
+          <el-table-column label="课程容量" width="120" prop="" align="center" />
+          <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
+              <span style="margin-left: 10px">{{ scope.row.beginDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="课程设计名称" width="200" prop="className" align="center" />
-          <el-table-column label="课程设计编号" width="250" prop="classNumber" align="center" />
-          <el-table-column label="创建人" width="180" prop="name" align="center" />
-          <el-table-column label="操作" align="center">
+          <el-table-column label="结束日期" width="170" align="center">
+            <template slot-scope="scope">
+              <i class="el-icon-time" />
+              <span style="margin-left: 10px">{{ scope.row.endDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="管理员" width="150" prop="adminName" align="center" />
+          <el-table-column label="操作" width="auto" align="center">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-edit" @click="$">编辑</el-button>
               <el-button type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
@@ -56,6 +39,7 @@
           </el-table-column>
         </el-table>
       </el-main>
+      <!-- 底部内容 -->
       <el-footer>
         <el-pagination
           layout="prev, pager, next"
@@ -71,41 +55,23 @@
 </template>
 
 <script>
+import HeaderContainer from './components/HeaderContainer'
 export default {
+  components: {
+    HeaderContainer
+  },
   data() {
     return {
-      input: '', // 搜索关键字
-      dialogFormVisible: false, // 新增课程设计表单
-      currentPage: 1,
-      pageSize: 6,
-      options: [{
-        value: 1,
-        label: '计算机与信息安全学院',
-        children: [
-          {
-            value: 2,
-            label: '软件工程专业',
-            children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
-          },
-          {
-            value: 5,
-            label: '计算机科学专业',
-            children: [{ value: 6, label: '小明' }, { value: 7, label: '小红' }]
-          }
-        ]
-      }],
-      formData: {
-        name: '',
-        desc: ''
-      },
+      currentPage: 1, // 当前页数
+      pageSize: 5, // 页面大小
       tableData: [
-        { date: '2016-05-01', name: '小明', desc: '' },
-        { date: '2016-05-02', name: '小明', desc: '' },
-        { date: '2016-05-03', name: '小明', desc: '' },
-        { date: '2016-05-04', name: '小明', desc: '' },
-        { date: '2016-05-02', name: '小明', desc: '' },
-        { date: '2016-05-02', name: '小明', desc: '' },
-        { date: '2016-05-02', name: '小明', desc: '' }
+        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
+        { beginDate: '2016-05-03', endDate: '2016-05-01', adminName: '小明', desc: '' }
       ]
     }
   },
@@ -114,7 +80,7 @@ export default {
     indexMethod(index) {
       return (this.currentPage - 1) * this.pageSize + index + 1
     },
-    // 删除当前列的内容
+    // 删除选中的列
     deleteRow(index, rows) {
       // this.$message({
       //   message: '删除成功',
@@ -137,8 +103,8 @@ export default {
         })
       })
     },
-    handleSizeChange(val) {
-      this.pageSize = val
+    handleSizeChange(size) {
+      this.pageSize = size
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage
@@ -148,25 +114,9 @@ export default {
 </script>
 
 <style scoped>
-.app-container {
-  padding: 12px;
-}
-
 .app-container .el-container {
   background-color: #FFFFFF;
   padding: 20px 20px 10px 20px;
-}
-
-.app-container .el-container .el-header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
-}
-
-.app-container .el-container .el-header .searchBox {
-  position: absolute;
-  right: 15px;
 }
 
 .app-container .el-container .el-footer {
