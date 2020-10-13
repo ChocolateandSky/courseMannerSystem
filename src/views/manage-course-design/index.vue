@@ -3,7 +3,16 @@
     <el-container>
       <!-- 头部内容 -->
       <el-header>
-        <HeaderContainer />
+        <el-button type="success" icon="el-icon-plus" style="float: left" @click="dialogFormVisible=true">新增</el-button>
+        <div class="searchBox">
+          <el-input
+            v-model="input"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            :style="{width: '250px', 'margin': '0px 10px'} "
+          />
+          <el-button icon="el-icon-search" circle />
+        </div>
       </el-header>
       <!-- 主要内容 -->
       <el-main>
@@ -33,7 +42,7 @@
           <el-table-column label="管理员" width="150" prop="adminName" align="center" />
           <el-table-column label="操作" width="auto" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" @click="$">编辑</el-button>
+              <el-button type="primary" icon="el-icon-edit" @click="showEditDialog">编辑</el-button>
               <el-button type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
             </template>
           </el-table-column>
@@ -51,14 +60,82 @@
         />
       </el-footer>
     </el-container>
+    <!-- 添加课程设计的对话框 -->
+    <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
+      <el-form :model="formData" label-width="80px">
+        <el-form-item label="课程名称:">
+          <el-input v-model="formData.name" :style="{width: '80%'}" />
+        </el-form-item>
+        <el-form-item label="课程容量">
+          <el-input-number v-model="formData.stuTotal" controls-position="right" :min="1" @change="$" />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-date-picker
+            v-model="formData.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="指导老师:">
+          <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
+        </el-form-item>
+        <el-form-item label="简介:">
+          <el-input v-model="formData.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 修改课程设计的对话框 -->
+    <el-dialog
+      title="修改用户"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      @close="editDialogClosed"
+    >
+      <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="80px">
+        <el-form-item label="课程名称:" prop="className">
+          <el-input v-model="editForm.className" :style="{width: '80%'}" />
+        </el-form-item>
+        <el-form-item label="管理员:" prop="adminName">
+          <el-input v-model="editForm.adminName" :style="{width: '80%'}" />
+        </el-form-item>
+        <el-form-item label="课程容量" prop="stuTotal">
+          <el-input-number v-model="editForm.stuTotal" controls-position="right" :min="1" @change="$" />
+        </el-form-item>
+        <el-form-item label="时间" prop="date">
+          <el-date-picker
+            v-model="editForm.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="指导老师:" prop="tearchers">
+          <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
+        </el-form-item>
+        <el-form-item label="简介:" prop="desc">
+          <el-input v-model="editForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogClosed">取 消</el-button>
+        <el-button type="primary" @click="editDialogClosed">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import HeaderContainer from './components/HeaderContainer'
+// import HeaderContainer from './components/HeaderContainer'
 export default {
   components: {
-    HeaderContainer
+    // HeaderContainer
   },
   data() {
     return {
@@ -72,7 +149,36 @@ export default {
         { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
         { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
         { beginDate: '2016-05-03', endDate: '2016-05-01', adminName: '小明', desc: '' }
-      ]
+      ],
+      input: '', // 搜索关键字
+      // 添加课程设计对话框内容
+      dialogFormVisible: false,
+      options: [
+        {
+          value: 1,
+          label: '计算机与信息安全学院',
+          children: [
+            {
+              value: 2,
+              label: '软件工程专业',
+              children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
+            }, {
+              value: 5,
+              label: '计算机科学专业',
+              children: [{ value: 6, label: '小明' }, { value: 7, label: '小红' }]
+            }
+          ]
+        }],
+      formData: {
+        name: '',
+        stuTotal: 0,
+        date: ''
+      },
+      // 修改课程设计对话框内容
+      // 控制修改用户对话框的显示与隐藏，默认为隐藏
+      editDialogVisible: false,
+      // 查询到的用户信息对象
+      editForm: {}
     }
   },
   methods: {
@@ -108,6 +214,21 @@ export default {
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage
+    },
+    // 展示编辑用户的对话框
+    async showEditDialog(id) {
+      // console.log(id)
+      // const { data: res } = await this.$http.get('users/' + id)
+      // if (res.meta.status !== 200) {
+      //   return this.$message.error('查询用户信息失败！')
+      // }
+      // this.editForm = res.data
+      this.editDialogVisible = true
+    },
+    // 监听修改用户对话框的关闭
+    editDialogClosed() {
+      this.editDialogVisible = false
+      this.$refs.editFormRef.resetFields()
     }
   }
 }
