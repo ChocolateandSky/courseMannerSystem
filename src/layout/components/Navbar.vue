@@ -16,7 +16,7 @@
           <router-link to="/profile/index">
             <el-dropdown-item>个人主页</el-dropdown-item>
           </router-link>
-          <router-link to="/profile/index">
+          <router-link to="/natification/index">
             <el-dropdown-item>
               消息
               <el-badge class="mark" type="primary" :value="12" />

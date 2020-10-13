@@ -3,7 +3,7 @@
     <div class="filter-container">
       <div class="header">
         <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">发布公告</el-button>
-        <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">上传文件</el-button>
+        <el-button class="pan-btn green-btn message-btn" @click="uploadFile">上传文件</el-button>
       </div>
       <el-collapse accordion class="groupCollapse">
         <el-collapse-item v-for="o in 10" :key="o">
@@ -39,19 +39,25 @@
       :dialog-table-visible="dialogShow"
       @close="close"
     />
+    <upload-file
+      :dialog-table-visible="uploadDialogShow"
+      @close="close"
+    />
   </div>
 </template>
 
 <script>
 import notice from './components/notice'
-
+import uploadFile from './components/uploadFile'
 export default {
   components: {
-    notice
+    notice,
+    uploadFile
   },
   data() {
     return {
-      dialogShow: false
+      dialogShow: false,
+      uploadDialogShow: false
     }
   },
   methods: {
@@ -59,8 +65,12 @@ export default {
       console.log('adwqq')
       this.dialogShow = true
     },
+    uploadFile() {
+      this.uploadDialogShow = true
+    },
     close() {
       this.dialogShow = false
+      this.uploadDialogShow = false
     },
     checkGroup() {
       console.log('wwww')

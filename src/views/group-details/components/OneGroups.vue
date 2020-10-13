@@ -20,25 +20,29 @@
               <el-divider />
               <span style="font-size:18px;color:rgb(100,217,214)">指导老师：王宇英</span>
               <el-divider style="margin-bootom:30px" />
-              <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
-              <el-collapse style="margin-top:10px">
-                <el-collapse-item title="组长：谭维国" name="1">
-                  <div>学号：1800301322</div>
-                  <div>任务：负责整个队伍走向，把握项目进度，同时负责后端设计</div>
-                </el-collapse-item>
-                <el-collapse-item title="组员：刘镇猛" name="2">
-                  <div>学号：1800301322</div>
-                  <div>任务：主要负责前端设计</div>
-                </el-collapse-item>
-                <el-collapse-item title="组员：邓天生" name="3">
-                  <div>学号：1800301322</div>
-                  <div>任务：主要负责前端设计</div>
-                </el-collapse-item>
-                <el-collapse-item title="组员：聂城星" name="4">
-                  <div>学号：1800301322</div>
-                  <div>任务：负责后端设计</div>
-                </el-collapse-item>
-              </el-collapse>
+              <span style="font-size:18px;color:rgb(100,217,214)">目前所处阶段：详细设计</span>
+              <el-divider style="margin-bootom:30px" />
+              <div>
+                <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
+                <el-collapse style="margin-top:10px;">
+                  <el-collapse-item title="组长：谭维国" name="1">
+                    <div>学号：1800301322</div>
+                    <div>任务：负责整个队伍走向，把握项目进度，同时负责后端设计</div>
+                  </el-collapse-item>
+                  <el-collapse-item title="组员：刘镇猛" name="2">
+                    <div>学号：1800301322</div>
+                    <div>任务：主要负责前端设计</div>
+                  </el-collapse-item>
+                  <el-collapse-item title="组员：邓天生" name="3">
+                    <div>学号：1800301322</div>
+                    <div>任务：主要负责前端设计</div>
+                  </el-collapse-item>
+                  <el-collapse-item title="组员：聂城星" name="4">
+                    <div>学号：1800301322</div>
+                    <div>任务：负责后端设计</div>
+                  </el-collapse-item>
+                </el-collapse>
+              </div>
             </div>
           </el-card>
         </div>

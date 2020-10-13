@@ -170,6 +170,19 @@ export const constantRoutes = [
         meta: { title: '小组管理', icon: 'el-icon-s-help', noCache: true }
       }
     ]
+  },
+  {
+    path: '/natification',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/natification/index'),
+        name: 'Natification',
+        meta: { title: '通知管理', icon: 'el-icon-s-help', noCache: true }
+      }
+    ]
   }
 ]
 
