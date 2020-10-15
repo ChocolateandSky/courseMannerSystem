@@ -3,7 +3,7 @@
     <el-container>
       <!-- 头部内容 -->
       <el-header>
-        <el-button type="success" icon="el-icon-plus" style="float: left" @click.prevent="addCourse()">新增</el-button>
+        <el-button type="success" icon="el-icon-plus" style="float: left" @click.prevent="addCourse">新增</el-button>
         <div class="searchBox">
           <el-input
             v-model="searchInfo"
@@ -18,7 +18,7 @@
       <el-main>
         <el-table
           ref="multipleTable"
-          :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+          :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
           style="width: 100%"
           :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
           height="371.2"
@@ -26,7 +26,7 @@
           <el-table-column label="序号" type="index" :index="indexMethod" width="50" align="center" />
           <el-table-column label="课程名称" width="120" prop="courseName" align="center" />
           <el-table-column label="课程编号" width="120" prop="courseNumber" align="center" />
-          <el-table-column label="课程容量" width="120" prop="" align="center" />
+          <el-table-column label="课程容量" width="120" prop="sum" align="center" />
           <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
@@ -39,10 +39,10 @@
               <span style="margin-left: 10px">{{ scope.row.endDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="管理员" width="150" prop="adminName" align="center" />
+          <el-table-column label="管理员" width="150" prop="admin" align="center" />
           <el-table-column label="操作" width="auto" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" @click="showEditDialog">编辑</el-button>
+              <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
               <el-button type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
             </template>
           </el-table-column>
@@ -105,8 +105,8 @@
         <el-form-item label="课程名称:" prop="className">
           <el-input v-model="editForm.className" :style="{width: '80%'}" />
         </el-form-item>
-        <el-form-item label="管理员:" prop="adminName">
-          <el-input v-model="editForm.adminName" :style="{width: '80%'}" />
+        <el-form-item label="管理员:" prop="admin">
+          <el-input v-model="editForm.admin" :style="{width: '80%'}" />
         </el-form-item>
         <el-form-item label="课程容量" prop="stuTotal">
           <el-input-number v-model="editForm.stuTotal" controls-position="right" :min="1" />
@@ -128,8 +128,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogClosed">取 消</el-button>
-        <el-button type="primary" @click="editDialogClosed">确 定</el-button>
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -144,18 +144,18 @@ export default {
   },
   data() {
     return {
-      currentPage: 1, // 当前页数
-      pageSize: 5, // 页面大小
-      tableData: [
-        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-01', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
-        { beginDate: '2016-05-03', endDate: '2016-05-01', adminName: '小明', desc: '' }
-      ],
+      currentPage: 1,
+      pageSize: 5,
       searchInfo: '', // 搜索关键字
+      tableData: [
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小红', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小王', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
+        { courseName: '软件工程', sum: 100, beginDate: '2016-05-03', endDate: '2016-05-01', admin: '小明', desc: '' }
+      ],
       // 添加课程设计对话框内容
       options: [
         {
@@ -219,27 +219,30 @@ export default {
       this.currentPage = currentPage
     },
     // 展示编辑用户的对话框
-    async showEditDialog(id) {
+    async showEditDialog(index) {
       // console.log(id)
       // const { data: res } = await this.$http.get('users/' + id)
       // if (res.meta.status !== 200) {
       //   return this.$message.error('查询用户信息失败！')
       // }
       // this.editForm = res.data
+      this.editForm.courseName = this.tableData[index].courseName
+      this.editForm.admin = this.tableData[index].admin
+      this.editForm.sum = this.tableData[index].sum
       this.editDialogVisible = true
     },
-    // 监听修改用户对话框的关闭
+    // 监听对话框的关闭
     editDialogClosed() {
       this.editDialogVisible = false
       this.$refs.editFormRef.resetFields()
     },
     addCourse() {
       const course = {
-        pracName: '软件工程课程设计',
-        stuAmountMax: 50,
-        beginTime: '2020-6-27',
-        endTime: '2020-10-31',
-        managerId: '3001'
+        'pracName': '软件工程课程设计',
+        'stuAmountMax': 50,
+        'beginTime': '2020-6-27',
+        'endTime': '2020-10-31',
+        'managerId': '3001'
       }
       createCourse(course).then(res => {
         console.log(res.data)
