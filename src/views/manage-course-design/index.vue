@@ -3,10 +3,10 @@
     <el-container>
       <!-- 头部内容 -->
       <el-header>
-        <el-button type="success" icon="el-icon-plus" style="float: left" @click="dialogFormVisible=true">新增</el-button>
+        <el-button type="success" icon="el-icon-plus" style="float: left" @click.prevent="addCourse()">新增</el-button>
         <div class="searchBox">
           <el-input
-            v-model="input"
+            v-model="searchInfo"
             placeholder="请输入内容"
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px'} "
@@ -60,18 +60,22 @@
         />
       </el-footer>
     </el-container>
-    <!-- 添加课程设计的对话框 -->
-    <el-dialog title="新建课程设计" :visible.sync="dialogFormVisible" width="40%">
-      <el-form :model="formData" label-width="80px">
+    <!-- 添加课程设计的对话框内容 -->
+    <el-dialog
+      title="新建课程设计"
+      :visible.sync="addDialogVisible"
+      width="50%"
+    >
+      <el-form :model="addForm" label-width="80px">
         <el-form-item label="课程名称:">
-          <el-input v-model="formData.name" :style="{width: '80%'}" />
+          <el-input v-model="addForm.name" :style="{width: '80%'}" />
         </el-form-item>
         <el-form-item label="课程容量">
-          <el-input-number v-model="formData.stuTotal" controls-position="right" :min="1" @change="$" />
+          <el-input-number v-model="addForm.sum" controls-position="right" :min="1" />
         </el-form-item>
         <el-form-item label="时间">
           <el-date-picker
-            v-model="formData.date"
+            v-model="addForm.date"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -82,22 +86,22 @@
           <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
         </el-form-item>
         <el-form-item label="简介:">
-          <el-input v-model="formData.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
+          <el-input v-model="addForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 修改课程设计的对话框 -->
+    <!-- 修改课程设计的对话框内容 -->
     <el-dialog
       title="修改用户"
       :visible.sync="editDialogVisible"
-      width="40%"
+      width="50%"
       @close="editDialogClosed"
     >
-      <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="80px">
+      <el-form ref="editFormRef" :model="editForm" label-width="80px">
         <el-form-item label="课程名称:" prop="className">
           <el-input v-model="editForm.className" :style="{width: '80%'}" />
         </el-form-item>
@@ -105,7 +109,7 @@
           <el-input v-model="editForm.adminName" :style="{width: '80%'}" />
         </el-form-item>
         <el-form-item label="课程容量" prop="stuTotal">
-          <el-input-number v-model="editForm.stuTotal" controls-position="right" :min="1" @change="$" />
+          <el-input-number v-model="editForm.stuTotal" controls-position="right" :min="1" />
         </el-form-item>
         <el-form-item label="时间" prop="date">
           <el-date-picker
@@ -133,6 +137,7 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
+import { createCourse } from '@/api/course'
 export default {
   components: {
     // HeaderContainer
@@ -150,9 +155,8 @@ export default {
         { beginDate: '2016-05-02', endDate: '2016-05-01', adminName: '小明', desc: '' },
         { beginDate: '2016-05-03', endDate: '2016-05-01', adminName: '小明', desc: '' }
       ],
-      input: '', // 搜索关键字
+      searchInfo: '', // 搜索关键字
       // 添加课程设计对话框内容
-      dialogFormVisible: false,
       options: [
         {
           value: 1,
@@ -169,15 +173,14 @@ export default {
             }
           ]
         }],
-      formData: {
-        name: '',
-        stuTotal: 0,
-        date: ''
-      },
+      // 添加课程设计对话框内容
+      // 控制添加课程设计对话框的显示与隐藏，默认为隐藏
+      addDialogVisible: false,
+      addForm: {},
       // 修改课程设计对话框内容
-      // 控制修改用户对话框的显示与隐藏，默认为隐藏
+      // 控制修改课程设计对话框的显示与隐藏，默认为隐藏
       editDialogVisible: false,
-      // 查询到的用户信息对象
+      // 查询到的修改课程设计对象
       editForm: {}
     }
   },
@@ -229,6 +232,21 @@ export default {
     editDialogClosed() {
       this.editDialogVisible = false
       this.$refs.editFormRef.resetFields()
+    },
+    addCourse() {
+      const course = {
+        id: '8',
+        pracName: '软件工程课程设计',
+        stuAmountMax: 50,
+        beginTime: '2020-6-27',
+        endTime: '2020-10-31',
+        managerId: '3001'
+      }
+      createCourse(course).then(res => {
+        console.log(res)
+      }).catch(res => {
+        console.log('error')
+      })
     }
   }
 }
