@@ -59,7 +59,7 @@ export default {
           email: '',
           avatar: '',
           role: '',
-          introduction: '氨基酸的哈可接受的就看书打卡机水电卡技术的卡号是档卡户水电卡大石街道哈克斯的哈考试的花开时接电话卡号地块按计划打卡机是会看到是看得见阿哈萨克的就好肯说的开始的看到空间'
+          introduction: ''
         }
       }
     }
@@ -73,6 +73,10 @@ export default {
       index: 0,
       readonly: true
     }
+  },
+  mounted() {
+    this.introductions[0] = (this.user.introduction === '') ? '这家伙很懒，什么都没有留下' : this.user.introduction
+    this.introductions[1] = this.introductions[0]
   },
   methods: {
     updateItd() {

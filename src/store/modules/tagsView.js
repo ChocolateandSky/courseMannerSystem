@@ -125,6 +125,7 @@ const actions = {
   },
 
   delAllViews({ dispatch, state }, view) {
+    console.log('rrrrrrrrr')
     return new Promise(resolve => {
       dispatch('delAllVisitedViews', view)
       dispatch('delAllCachedViews', view)

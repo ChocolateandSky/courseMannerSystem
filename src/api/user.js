@@ -16,10 +16,11 @@ export function getInfo(token) {
   })
 }
 
-export function logout() {
+export function logout(token) {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/test/loginOutServlet',
+    method: 'post',
+    params: { token }
   })
 }
 
@@ -29,3 +30,12 @@ export function updatePassword() {
     method: 'post'
   })
 }
+
+export function sendMail(data) {
+  return request({
+    url: '/test/mailForEveryStudentServlet',
+    method: 'post',
+    data
+  })
+}
+
