@@ -235,7 +235,6 @@ export default {
     },
     addCourse() {
       const course = {
-        id: '8',
         pracName: '软件工程课程设计',
         stuAmountMax: 50,
         beginTime: '2020-6-27',
@@ -243,7 +242,7 @@ export default {
         managerId: '3001'
       }
       createCourse(course).then(res => {
-        console.log(res)
+        console.log(res.data)
       }).catch(res => {
         console.log('error')
       })
