@@ -2,29 +2,29 @@
   <div class="acount">
     <el-row>
       <el-col :span="11" style="margin-right: 40px">
-        <el-form label-width="100px" style="flex:1" :model="ruleForm">
-          <el-form-item label="教师编号:">
-            <el-input v-model.trim="user.teacherId" />
+        <el-form label-width="100px" style="flex:1" :model="user">
+          <el-form-item label="教师编号:" prop="id">
+            <el-input v-model.trim="user.id" :disabled="true" />
           </el-form-item>
-          <el-form-item label="姓名:">
+          <el-form-item label="姓名:" prop="name">
             <el-input v-model.trim="user.name" />
           </el-form-item>
-          <el-form-item label="性别:">
-            <el-radio-group v-model="user.gender">
+          <el-form-item label="性别:" prop="gender">
+            <el-radio-group v-model="user.gender" :disabled="true">
               <el-radio label="男" />
               <el-radio label="女" />
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="电话:">
+          <el-form-item label="电话:" prop="phone">
             <el-input v-model.trim="user.phone" />
           </el-form-item>
-          <el-form-item label="Email:">
+          <el-form-item label="Email:" prop="email">
             <el-input v-model.trim="user.email" />
           </el-form-item>
-          <el-form-item label="管理年级:">
+          <el-form-item label="管理年级:" prop="grade">
             <el-input v-model.trim="user.grade" />
           </el-form-item>
-          <el-form-item label="所属专业:">
+          <el-form-item label="所属专业:" prop="major">
             <el-select v-model.trim="user.major" filterable placeholder="请选择">
               <el-option
                 v-for="item in majorList"
@@ -35,7 +35,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitInfo">更改基本信息</el-button>
+            <el-button type="primary" @click="updateTeacherIfo">更改基本信息</el-button>
             <el-button type="primary" @click="submitPsw">更改密码</el-button>
           </el-form-item>
         </el-form>
@@ -53,15 +53,35 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+import { updateTeacherIfo } from '@/api/teacher'
 export default {
   props: {
     user: {
+      require: true,
       type: Object,
       default: () => {
         return {
+          id: '',
           name: '',
-          email: ''
+          email: '',
+          gender: '男',
+          phone: '',
+          major: '',
+          grade: ''
         }
+      }
+    },
+    isTeacher: {
+      type: Boolean,
+      default: () => {
+        return false
+      }
+    },
+    isStudent: {
+      type: Boolean,
+      default: () => {
+        return false
       }
     }
   },
@@ -92,15 +112,19 @@ export default {
     }
   },
   methods: {
-    submitInfo() {
-      this.$message({
-        message: '成功修改基本信息',
-        type: 'success',
-        duration: 5 * 1000
-      })
-    },
     submitPsw() {
       console.log('修改密码')
+    },
+    updateTeacherIfo() {
+      console.log(this.ruleForm)
+      // updateTeacherIfo(this.ruleForm).then(res => {
+      //   console.log(res)
+      //   this.$message({
+      //     message: '成功修改基本信息',
+      //     type: 'success',
+      //     duration: 5 * 1000
+      //   })
+      // })
     }
   }
 }

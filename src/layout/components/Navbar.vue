@@ -66,7 +66,8 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/`)
     },
     changeAdmin() {
       this.$confirm('你确定要将管理员权限转给他(她)吗？', '提示', {

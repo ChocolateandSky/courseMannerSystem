@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
-    <div v-if="user">
+    <div v-if="userIfo">
       <el-row :gutter="20">
 
         <el-col :span="6" :xs="24">
-          <user-card :user="user" />
+          <user-card :user="userIfo" />
         </el-col>
 
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="个人信息" name="account">
-                <account :user="user" />
+                <account :user="userIfo" :is-teacher="isTeacher" :is-student="isStudent" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -32,32 +32,43 @@ export default {
   components: { UserCard, Account },
   data() {
     return {
-      user: {},
-      activeTab: 'account'
+      userIfo: {},
+      activeTab: 'account',
+      isTeacher: false,
+      isStudent: false
     }
   },
   computed: {
     ...mapGetters([
-      'name',
       'avatar',
-      'roles'
+      'roles',
+      'user'
     ])
   },
   created() {
     this.getUser()
   },
+  mounted() {
+    console.log(this.userIfo)
+  },
   methods: {
     getUser() {
-      this.user = {
-        teacherId: '1800301322',
-        name: this.name,
-        role: this.roles.join(' | '),
-        email: 'admin@test.com',
-        gender: '男',
-        phone: '13737979984',
-        major: '软件工程',
-        grade: '2018',
-        avatar: this.avatar
+      if (this.roles.includes('teacher')) {
+        this.isTeacher = true
+        this.userIfo = {
+          id: this.user.id,
+          name: this.user.name,
+          role: this.roles.join(' | '),
+          email: this.user.email,
+          gender: this.user.gender,
+          phone: this.user.phone,
+          major: this.user.major,
+          grade: this.user.gender,
+          introduction: this.user.introduction,
+          avatar: this.avatar
+        }
+      } else {
+        this.userIfo = this.user
       }
     }
   }
