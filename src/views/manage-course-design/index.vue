@@ -245,7 +245,7 @@ export default {
         'managerId': '3001'
       }
       createCourse(course).then(res => {
-        console.log(res.data)
+        console.log('success')
       }).catch(res => {
         console.log('error')
       })
