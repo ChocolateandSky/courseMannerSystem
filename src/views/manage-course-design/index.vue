@@ -238,16 +238,16 @@ export default {
     },
     addCourse() {
       const course = {
-        'pracName': '软件工程课程设计',
-        'stuAmountMax': 50,
-        'beginTime': '2020-6-27',
-        'endTime': '2020-10-31',
-        'managerId': '3001'
+        pracName: '软件工程课程设计',
+        stuAmountMax: 50,
+        beginTime: '2020-6-27',
+        endTime: '2020-10-31',
+        managerId: '3001'
       }
       createCourse(course).then(res => {
         console.log('success')
-      }).catch(res => {
-        console.log('error')
+      }).catch(err => {
+        console.log(err)
       })
     }
   }
