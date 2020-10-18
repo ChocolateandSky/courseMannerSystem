@@ -83,7 +83,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="指导老师:" prop="value">
+        <el-form-item v-if="addDialogVisible" label="指导老师:" prop="value">
           <el-cascader v-model="addForm.value" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
         <el-form-item label="简介:" prop="desc">
