@@ -3,7 +3,7 @@
     <el-container>
       <!-- 头部内容 -->
       <el-header>
-        <el-button type="success" icon="el-icon-plus" style="float: left" @click.prevent="addCourse">新增</el-button>
+        <el-button type="success" icon="el-icon-plus" style="float: left" @click="showAddDialog">新增</el-button>
         <div class="searchBox">
           <el-input
             v-model="searchInfo"
@@ -65,15 +65,16 @@
       title="新建课程设计"
       :visible.sync="addDialogVisible"
       width="50%"
+      @close="addDialogClosed"
     >
-      <el-form :model="addForm" label-width="80px">
-        <el-form-item label="课程名称:">
-          <el-input v-model="addForm.name" :style="{width: '80%'}" />
+      <el-form ref="addFormRef" :model="addForm" label-width="80px">
+        <el-form-item label="课程名称:" prop="courseName">
+          <el-input v-model="addForm.courseName" :style="{width: '80%'}" />
         </el-form-item>
-        <el-form-item label="课程容量">
+        <el-form-item label="课程容量" prop="sum">
           <el-input-number v-model="addForm.sum" controls-position="right" :min="1" />
         </el-form-item>
-        <el-form-item label="时间">
+        <el-form-item label="时间" prop="date">
           <el-date-picker
             v-model="addForm.date"
             type="daterange"
@@ -82,16 +83,16 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="指导老师:">
-          <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
+        <el-form-item label="指导老师:" prop="value">
+          <el-cascader v-model="addForm.value" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
-        <el-form-item label="简介:">
+        <el-form-item label="简介:" prop="desc">
           <el-input v-model="addForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button @click="addDialogClosed">取 消</el-button>
+        <el-button type="primary" @click="addCourse">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 修改课程设计的对话框内容 -->
@@ -102,14 +103,14 @@
       @close="editDialogClosed"
     >
       <el-form ref="editFormRef" :model="editForm" label-width="80px">
-        <el-form-item label="课程名称:" prop="className">
+        <el-form-item label="课程名称:" prop="courseName">
           <el-input v-model="editForm.className" :style="{width: '80%'}" />
         </el-form-item>
         <el-form-item label="管理员:" prop="admin">
           <el-input v-model="editForm.admin" :style="{width: '80%'}" />
         </el-form-item>
-        <el-form-item label="课程容量" prop="stuTotal">
-          <el-input-number v-model="editForm.stuTotal" controls-position="right" :min="1" />
+        <el-form-item label="课程容量" prop="sum">
+          <el-input-number v-model="editForm.sum" controls-position="right" :min="1" />
         </el-form-item>
         <el-form-item label="时间" prop="date">
           <el-date-picker
@@ -137,15 +138,15 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
-import { createCourse } from '@/api/course'
+import { getTeacherInfo } from '@/api/course'
 export default {
   components: {
     // HeaderContainer
   },
   data() {
     return {
-      currentPage: 1,
-      pageSize: 5,
+      currentPage: 1, // 当前页码，默认为第 1 页
+      pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
       tableData: [
         { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
@@ -156,27 +157,31 @@ export default {
         { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
         { courseName: '软件工程', sum: 100, beginDate: '2016-05-03', endDate: '2016-05-01', admin: '小明', desc: '' }
       ],
+      defaultDate: {
+        multiple: true,
+        value: 'id',
+        label: 'name'
+      },
       // 添加课程设计对话框内容
-      options: [
-        {
-          value: 1,
-          label: '计算机与信息安全学院',
-          children: [
-            {
-              value: 2,
-              label: '软件工程专业',
-              children: [{ value: 3, label: '小明' }, { value: 4, label: '小红' }]
-            }, {
-              value: 5,
-              label: '计算机科学专业',
-              children: [{ value: 6, label: '小明' }, { value: 7, label: '小红' }]
-            }
-          ]
-        }],
+      options: [{
+        value: '计算机与信息安全学院',
+        name: '计算机与信息安全学院',
+        children: [{
+          value: '软件工程',
+          name: '软件工程',
+          children: []
+        }]
+      }],
       // 添加课程设计对话框内容
       // 控制添加课程设计对话框的显示与隐藏，默认为隐藏
       addDialogVisible: false,
-      addForm: {},
+      addForm: {
+        courseName: '',
+        sum: '',
+        date: '',
+        value: [],
+        desc: ''
+      },
       // 修改课程设计对话框内容
       // 控制修改课程设计对话框的显示与隐藏，默认为隐藏
       editDialogVisible: false,
@@ -236,19 +241,33 @@ export default {
       this.editDialogVisible = false
       this.$refs.editFormRef.resetFields()
     },
-    addCourse() {
-      const course = {
-        'pracName': '软件工程课程设计',
-        'stuAmountMax': 50,
-        'beginTime': '2020-6-27',
-        'endTime': '2020-10-31',
-        'managerId': '3001'
-      }
-      createCourse(course).then(res => {
-        console.log('success')
-      }).catch(res => {
-        console.log('error')
+    async showAddDialog() {
+      this.$data.addDialogVisible = true
+      getTeacherInfo('软件工程').then(res => {
+        this.options[0].children[0].children = res.data
       })
+    },
+    addDialogClosed() {
+      this.addDialogVisible = false
+      this.$refs.addFormRef.resetFields()
+    },
+    addCourse() {
+      // const course = {
+      //   'pracName': '软件工程课程设计',
+      //   'stuAmountMax': 50,
+      //   'beginTime': '2020-6-27',
+      //   'endTime': '2020-10-31',
+      //   'managerId': '3001',
+      //   'teacherId': ['1800301330', '1800301311']
+      // }
+      // createCourse(course).then(res => {
+      //   console.log('success')
+      // }).catch(res => {
+      //   console.log('error')
+      // })
+      for (let i = 0; i < this.addForm.value.length; i++) {
+        console.log(this.addForm.value[i][2])
+      }
     }
   }
 }
