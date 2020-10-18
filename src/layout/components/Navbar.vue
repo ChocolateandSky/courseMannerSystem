@@ -34,16 +34,21 @@
               <el-button slot="reference" style="color:rgb(96,98,102)" type="text">转让管理员</el-button>
             </el-popover>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <div @click="changePsw">修改密码</div>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <update-password :dialog-visible="showDialog" @dialogVisible="showDialog = $event" />
   </div>
 </template>
 
 <script>
+import UpdatePassword from '@/components/UpdatePassword/index'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -51,7 +56,13 @@ import Hamburger from '@/components/Hamburger'
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    UpdatePassword
+  },
+  data() {
+    return {
+      showDialog: false
+    }
   },
   computed: {
     ...mapGetters([
@@ -85,6 +96,9 @@ export default {
           message: '更改失败'
         })
       })
+    },
+    changePsw() {
+      this.showDialog = true
     }
   }
 }

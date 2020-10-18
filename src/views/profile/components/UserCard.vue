@@ -6,7 +6,7 @@
 
     <div class="user-profile">
       <div class="box-center">
-        <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
+        <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           {{ user.role }}
         </pan-thumb>
       </div>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { updateTeacherIfo } from '@/api/user'
 import PanThumb from '@/components/PanThumb'
 import '../css/index.css'
 export default {
@@ -66,12 +67,10 @@ export default {
   },
   data() {
     return {
-      introductions: [
-        '111111',
-        '111111'
-      ],
+      introductions: [],
       index: 0,
-      readonly: true
+      readonly: true,
+      avatar: this.$store.getters.avatar
     }
   },
   mounted() {
@@ -83,15 +82,37 @@ export default {
       this.readonly = false
       this.index = 1
     },
-    submin() {
-      this.readonly = true
-      this.introductions[0] = this.introductions[1]
-      this.index = 0
+    async submin() {
+      this.$confirm('是否确认修改个人介绍?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.updateTeacherIfo()
+        this.$message({
+          type: 'success',
+          message: '更改成功!'
+        })
+        this.$emit('refresh', this.user)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消更改'
+        })
+      })
     },
     cancle() {
       this.readonly = true
       this.introductions[1] = this.introductions[0]
       this.index = 0
+    },
+    updateTeacherIfo() {
+      updateTeacherIfo(this.user)
+        .then(res => {
+          this.readonly = true
+          this.introductions[0] = this.introductions[1]
+          this.index = 0
+        })
     }
   }
 }

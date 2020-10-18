@@ -24,10 +24,14 @@ export function logout(token) {
   })
 }
 
-export function updatePassword() {
+export function updatePassword(data) {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/test/changePasswordServlet',
+    method: 'post',
+    params: {
+      id: data.id,
+      newPassword: data.newPassword
+    }
   })
 }
 
@@ -35,7 +39,16 @@ export function sendMail(data) {
   return request({
     url: '/test/mailForEveryStudentServlet',
     method: 'post',
+    params: {
+      id: data.id,
+      notice: data.notice
+    }
+  })
+}
+export function updateTeacherIfo(data) {
+  return request({
+    url: '/test/updateTeacherInfoServlet',
+    method: 'put',
     data
   })
 }
-

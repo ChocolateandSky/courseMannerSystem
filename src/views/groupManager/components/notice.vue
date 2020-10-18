@@ -12,12 +12,14 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button type="primary" @click="sendMail">确 定</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+import { sendMail } from '@/api/user'
 export default {
   props: {
     dialogTableVisible: {
@@ -52,6 +54,16 @@ export default {
     close() {
       this.$emit('close')
       this.$refs.dataForm.clearValidate()
+    },
+    sendMail() {
+      const data = {
+        id: this.$store.getters.user.id,
+        notice: this.form.textarea
+      }
+      sendMail(data)
+        .then(res => {
+          console.log(res)
+        })
     }
   }
 }

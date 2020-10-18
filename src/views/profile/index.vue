@@ -4,14 +4,14 @@
       <el-row :gutter="20">
 
         <el-col :span="6" :xs="24">
-          <user-card :user="userIfo" />
+          <user-card :user="userIfo" @refresh="userIfo = $event" />
         </el-col>
 
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="个人信息" name="account">
-                <account :user="userIfo" :is-teacher="isTeacher" :is-student="isStudent" />
+                <account :user="userIfo" :is-teacher="isTeacher" :is-student="isStudent" @refresh="userIfo = $event" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -33,9 +33,11 @@ export default {
   data() {
     return {
       userIfo: {},
+      tempUserIfo: {},
       activeTab: 'account',
       isTeacher: false,
-      isStudent: false
+      isStudent: false,
+      college: this.$store.getters.user.college
     }
   },
   computed: {
@@ -44,6 +46,15 @@ export default {
       'roles',
       'user'
     ])
+  },
+  watch: {
+    tempUserIfo(newName) {
+      // const info = newName
+      // info.college = this.college
+      this.userIfo.college = this.college
+      console.log(this.userIfo)
+      location.reload()
+    }
   },
   created() {
     this.getUser()
@@ -63,9 +74,8 @@ export default {
           gender: this.user.gender,
           phone: this.user.phone,
           major: this.user.major,
-          grade: this.user.gender,
-          introduction: this.user.introduction,
-          avatar: this.avatar
+          grade: this.user.grade,
+          introduction: this.user.introduction
         }
       } else {
         this.userIfo = this.user
