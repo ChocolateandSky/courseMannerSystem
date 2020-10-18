@@ -7,7 +7,7 @@
             <el-input v-model.trim="user.id" :disabled="true" />
           </el-form-item>
           <el-form-item label="姓名:" prop="name">
-            <el-input v-model.trim="user.name" />
+            <el-input v-model.trim="user.name" :disabled="true" />
           </el-form-item>
           <el-form-item label="性别:" prop="gender">
             <el-radio-group v-model="user.gender" :disabled="true">
@@ -16,13 +16,13 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="电话:" prop="phone">
-            <el-input v-model.trim="user.phone" />
+            <el-input v-model.number="user.phone" />
           </el-form-item>
           <el-form-item label="Email:" prop="email">
             <el-input v-model.trim="user.email" />
           </el-form-item>
           <el-form-item label="管理年级:" prop="grade">
-            <el-input v-model.trim="user.grade" />
+            <el-input v-model.number="user.grade" />
           </el-form-item>
           <el-form-item label="所属专业:" prop="major">
             <el-select v-model.trim="user.major" filterable placeholder="请选择">
@@ -49,13 +49,18 @@
         </el-card>
       </el-col>
     </el-row>
+    <update-password :dialog-visible="showDialog" @dialogVisible="showDialog = $event" />
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { updateTeacherIfo } from '@/api/teacher'
+import { updateTeacherIfo } from '@/api/user'
+import UpdatePassword from '@/components/UpdatePassword/index'
 export default {
+  components: {
+    UpdatePassword
+  },
   props: {
     user: {
       require: true,
@@ -68,7 +73,8 @@ export default {
           gender: '男',
           phone: '',
           major: '',
-          grade: ''
+          grade: '',
+          introduction: ''
         }
       }
     },
@@ -103,7 +109,7 @@ export default {
         value: '信息安全',
         label: '信息安全'
       }],
-      ruleForm: {}
+      showDialog: false
     }
   },
   computed: {
@@ -113,18 +119,39 @@ export default {
   },
   methods: {
     submitPsw() {
-      console.log('修改密码')
+      this.showDialog = true
     },
     updateTeacherIfo() {
-      console.log(this.ruleForm)
-      // updateTeacherIfo(this.ruleForm).then(res => {
-      //   console.log(res)
-      //   this.$message({
-      //     message: '成功修改基本信息',
-      //     type: 'success',
-      //     duration: 5 * 1000
-      //   })
-      // })
+      // eslint-disable-next-line no-unused-vars
+      // const ruleForm = {
+      //   id: this.user.id,
+      //   // name: this.user.name,
+      //   email: this.user.email,
+      //   // gender: this.user.gender,
+      //   phone: this.user.phone,
+      //   major: this.user.major,
+      //   grade: this.user.grade,
+      //   introduction: this.user.introduction
+      // }
+      this.$confirm('是否确认修改基本信息吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateTeacherIfo(this.user).then(res => {
+          this.$message({
+            type: 'success',
+            message: '更改成功!',
+            duration: 5 * 1000
+          })
+          this.$emit('refresh', this.user)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消更改'
+        })
+      })
     }
   }
 }

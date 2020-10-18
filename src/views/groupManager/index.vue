@@ -9,7 +9,7 @@
         <el-collapse-item v-for="o in 10" :key="o">
           <template slot="title">
             课程设计管理系统--谭维国
-            <el-button type="text" size="mini" class="groupDetail" @click="checkGroup">查看小组详情</el-button>
+            <el-button type="text" size="mini" class="groupDetail" @click.native="checkGroup">查看小组详情</el-button>
           </template>
           <el-collapse accordion style="margin-left:50px">
             <el-collapse-item>
@@ -73,7 +73,9 @@ export default {
       this.uploadDialogShow = false
     },
     checkGroup() {
-      console.log('wwww')
+      this.$router.push({
+        name: 'GroupDetails'
+      })
     }
   }
 }
