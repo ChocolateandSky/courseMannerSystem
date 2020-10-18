@@ -83,8 +83,8 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item v-if="addDialogVisible" label="指导老师:" prop="value">
-          <el-cascader v-model="addForm.value" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
+        <el-form-item v-if="addDialogVisible" label="指导老师:" prop="optionValue">
+          <el-cascader v-model="addForm.optionValue" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
         <el-form-item label="简介:" prop="desc">
           <el-input v-model="addForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
@@ -162,7 +162,6 @@ export default {
         value: 'id',
         label: 'name'
       },
-      // 添加课程设计对话框内容
       options: [{
         value: '计算机与信息安全学院',
         name: '计算机与信息安全学院',
@@ -175,10 +174,12 @@ export default {
       // 添加课程设计对话框内容
       // 控制添加课程设计对话框的显示与隐藏，默认为隐藏
       addDialogVisible: false,
+      // 查询到的添加课程设计对象
       addForm: {
         courseName: '',
         sum: '',
         date: '',
+        optionValue: [],
         value: [],
         desc: ''
       },
@@ -223,6 +224,7 @@ export default {
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage
     },
+    // 编辑课程设计
     // 展示编辑用户的对话框
     async showEditDialog(index) {
       // console.log(id)
@@ -236,38 +238,31 @@ export default {
       this.editForm.sum = this.tableData[index].sum
       this.editDialogVisible = true
     },
-    // 监听对话框的关闭
+    // 监听编辑对话框的关闭
     editDialogClosed() {
       this.editDialogVisible = false
       this.$refs.editFormRef.resetFields()
     },
+    // 新建课程设计
+    // 展示新建课程设计的对话框
     async showAddDialog() {
       this.$data.addDialogVisible = true
       getTeacherInfo('软件工程').then(res => {
         this.options[0].children[0].children = res.data
       })
     },
+    // 监听新建课程设计对话框的关闭
     addDialogClosed() {
       this.addDialogVisible = false
       this.$refs.addFormRef.resetFields()
     },
     addCourse() {
-      // const course = {
-      //   'pracName': '软件工程课程设计',
-      //   'stuAmountMax': 50,
-      //   'beginTime': '2020-6-27',
-      //   'endTime': '2020-10-31',
-      //   'managerId': '3001',
-      //   'teacherId': ['1800301330', '1800301311']
-      // }
-      // createCourse(course).then(res => {
-      //   console.log('success')
-      // }).catch(res => {
-      //   console.log('error')
-      // })
-      for (let i = 0; i < this.addForm.value.length; i++) {
-        console.log(this.addForm.value[i][2])
+      this.addForm.value = []
+      for (const i in this.addForm.optionValue) {
+        this.addForm.value.push(this.addForm.optionValue[i][2])
       }
+      console.log(this.addForm)
+      this.addDialogClosed
     }
   }
 }
