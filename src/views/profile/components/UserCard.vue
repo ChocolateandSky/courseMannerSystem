@@ -12,7 +12,7 @@
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">指导老师</div>
+        <div class="user-role text-center text-muted">{{ user.role }}</div>
         <!-- <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div> -->
       </div>
     </div>
@@ -73,12 +73,13 @@ export default {
       avatar: this.$store.getters.avatar
     }
   },
-  mounted() {
+  created() {
     this.introductions[0] = (this.user.introduction === '') ? '这家伙很懒，什么都没有留下' : this.user.introduction
     this.introductions[1] = this.introductions[0]
   },
   methods: {
     updateItd() {
+      console.log(this.introductions[this.index])
       this.readonly = false
       this.index = 1
     },
