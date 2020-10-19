@@ -18,28 +18,27 @@
       <el-main>
         <el-table
           ref="multipleTable"
-          :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
+          :data="tableData.slice((currentPage-1) * pageSize, currentPage * pageSize)"
           style="width: 100%"
           :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
-          height="371.2"
         >
           <el-table-column label="序号" type="index" :index="indexMethod" width="50" align="center" />
-          <el-table-column label="课程名称" width="120" prop="courseName" align="center" />
+          <el-table-column label="课程名称" width="120" prop="practName" align="center" />
           <el-table-column label="课程编号" width="120" prop="courseNumber" align="center" />
-          <el-table-column label="课程容量" width="120" prop="sum" align="center" />
+          <el-table-column label="课程容量" width="120" prop="stuAmountMax" align="center" />
           <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
-              <span style="margin-left: 10px">{{ scope.row.beginDate }}</span>
+              <span style="margin-left: 10px">{{ scope.row.beginTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="结束日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
-              <span style="margin-left: 10px">{{ scope.row.endDate }}</span>
+              <span style="margin-left: 10px">{{ scope.row.endTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="管理员" width="150" prop="admin" align="center" />
+          <el-table-column label="管理员" width="150" prop="managerName" align="center" />
           <el-table-column label="操作" width="auto" align="center">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
@@ -78,7 +77,7 @@
           <el-date-picker
             v-model="addForm.date"
             format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-M-dd"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -140,7 +139,7 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
-import { getTeacherInfo, createCourse } from '@/api/course'
+import { getTeacherInfo, createCourse, getCoursesInfo } from '@/api/course'
 export default {
   components: {
     // HeaderContainer
@@ -150,15 +149,7 @@ export default {
       currentPage: 1, // 当前页码，默认为第 1 页
       pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
-      tableData: [
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小红', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小王', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-03', endDate: '2016-05-01', admin: '小明', desc: '' }
-      ],
+      tableData: [],
       defaultDate: {
         multiple: true,
         value: 'id',
@@ -183,7 +174,7 @@ export default {
       // 查询到的添加课程设计对象
       addForm: {
         courseName: '',
-        sum: '',
+        sum: 0,
         date: [],
         optionValue: [],
         value: [],
@@ -196,7 +187,18 @@ export default {
       editForm: {}
     }
   },
+  mounted() {
+    this.getData('1800301333')
+  },
   methods: {
+    getData(id) {
+      getCoursesInfo(id).then(res => {
+        console.log(res.data)
+        this.tableData = res.data
+      }).catch(res => {
+        console.log('error')
+      })
+    },
     // 获取当前列的序号
     indexMethod(index) {
       return (this.currentPage - 1) * this.pageSize + index + 1
@@ -271,14 +273,17 @@ export default {
         this.addForm.value.push(this.addForm.optionValue[i][2])
       }
       const temp = {
-        'pracName': this.addForm.courseName,
+        'practName': this.addForm.courseName,
         'stuAmountMax': this.addForm.sum,
         'beginTime': this.addForm.date[0],
         'endTime': this.addForm.date[1],
         'managerId': '1800301333',
-        'teacherId': this.addForm.value
+        'teacherId': this.addForm.value,
+        'introduction': this.addForm.desc
       }
       createCourse(temp).then(res => {
+        console.log(temp)
+        this.getData(temp.managerId)
         this.$message({
           message: '添加成功',
           type: 'success'
@@ -286,7 +291,7 @@ export default {
       }).catch(res => {
         this.$message({
           message: '添加失败',
-          type: ''
+          type: 'warning'
         })
       })
       this.addDialogClosed()

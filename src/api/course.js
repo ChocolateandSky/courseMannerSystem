@@ -18,3 +18,13 @@ export function getTeacherInfo(id) {
     }
   })
 }
+
+export function getCoursesInfo(id) {
+  return request({
+    url: '/test/getPracticumInfoServlet',
+    method: 'get',
+    params: {
+      teacherId: id
+    }
+  })
+}
