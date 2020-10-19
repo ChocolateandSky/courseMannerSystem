@@ -49,7 +49,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <update-password :dialog-visible="showDialog" @dialogVisible="showDialog = $event" />
+    <update-password :dialog-visible="showDialog" :userid="id" @dialogVisible="showDialog = $event" />
   </div>
 </template>
 
@@ -109,13 +109,17 @@ export default {
         value: '信息安全',
         label: '信息安全'
       }],
-      showDialog: false
+      showDialog: false,
+      id: ''
     }
   },
   computed: {
     imgUrl() {
       return '@/assets/profile.png'
     }
+  },
+  created() {
+    this.id = this.user.id
   },
   methods: {
     submitPsw() {

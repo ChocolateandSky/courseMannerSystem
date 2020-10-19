@@ -9,11 +9,11 @@
       :show-close="false"
     >
       <el-form ref="form" :model="form" label-width="112px" :rules="rules">
-        <el-form-item label="旧密码:" prop="oldpsw">
-          <el-input v-model="oldpsw" placeholder="请输入旧密码" />
+        <el-form-item label="旧密码:" prop="password">
+          <el-input v-model="form.password" placeholder="请输入旧密码" />
         </el-form-item>
-        <el-form-item label="新密码:" prop="newpsw">
-          <el-input v-model="form.newpsw" placeholder="请输入新密码" show-password />
+        <el-form-item label="新密码:" prop="newPassword">
+          <el-input v-model="form.newPassword" placeholder="请输入新密码" show-password />
         </el-form-item>
         <el-form-item label="再次确认密码:" prop="dopsw">
           <el-input v-model="dopsw" placeholder="请再次确认密码" show-password />
@@ -28,9 +28,12 @@
 </template>
 
 <script>
+import { updatePassword } from '@/api/user'
+
 export default {
   props: {
     userid: {
+      require: true,
       type: String,
       default: () => {
         return ''
@@ -46,23 +49,23 @@ export default {
   },
   data() {
     var validatedopsw = (rule, value, callback) => {
-      if (value !== this.form.newpsw) {
-        callback(new Error('两次密码输入不匹配'))
+      if (value === '') {
+        callback(new Error('不能为空'))
       } else {
         callback()
       }
     }
     return {
       form: {
-        newpsw: '',
+        newPassword: '',
+        password: '',
         id: this.userid
       },
-      oldpsw: '',
       dopsw: '',
       rules: {
         dopsw: [{ required: true, validator: validatedopsw, trigger: 'blur' }],
-        oldpsw: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
-        newpsw: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
       }
     }
   },
@@ -77,7 +80,15 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.$message.success('更改成功')
+          if (this.form.newPassword !== this.dopsw) {
+            this.$message.error('两次确认密码不一致')
+            return false
+          }
+          console.log(this.form)
+          updatePassword(this.form)
+            .then(res => {
+              this.$message.success('更改成功')
+            })
         } else {
           this.$message.error('更改失败')
           return false

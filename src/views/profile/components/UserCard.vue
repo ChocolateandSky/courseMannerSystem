@@ -79,22 +79,20 @@ export default {
   },
   methods: {
     updateItd() {
-      console.log(this.introductions[this.index])
       this.readonly = false
       this.index = 1
     },
-    async submin() {
+    submin() {
+      this.readonly = true
+      this.introductions[0] = this.introductions[1]
+      this.index = 0
+      this.user.introduction = this.introductions[1]
       this.$confirm('是否确认修改个人介绍?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.updateTeacherIfo()
-        this.$message({
-          type: 'success',
-          message: '更改成功!'
-        })
-        this.$emit('refresh', this.user)
+      }).then(async() => {
+        await this.updateTeacherIfo()
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -104,15 +102,18 @@ export default {
     },
     cancle() {
       this.readonly = true
-      this.introductions[1] = this.introductions[0]
+      this.introductions[1] = this.user.introduction
       this.index = 0
     },
     updateTeacherIfo() {
       updateTeacherIfo(this.user)
         .then(res => {
-          this.readonly = true
-          this.introductions[0] = this.introductions[1]
-          this.index = 0
+          this.$message({
+            type: 'success',
+            message: '更改成功!'
+          })
+          // console.log(this.user)
+          this.$emit('refresh', this.user)
         })
     }
   }

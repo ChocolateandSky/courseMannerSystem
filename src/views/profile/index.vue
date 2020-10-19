@@ -4,14 +4,14 @@
       <el-row :gutter="20">
 
         <el-col :span="6" :xs="24">
-          <user-card :user="userIfo" @refresh="userIfo = $event" />
+          <user-card :user="userIfo" @refresh="tempUserIfo = $event" />
         </el-col>
 
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="个人信息" name="account">
-                <account :user="userIfo" :is-teacher="isTeacher" :is-student="isStudent" @refresh="userIfo = $event" />
+                <account :user="userIfo" :is-teacher="isTeacher" :is-student="isStudent" @refresh="tempUserIfo = $event" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -51,8 +51,10 @@ export default {
     tempUserIfo(newName) {
       // const info = newName
       // info.college = this.college
-      this.userIfo.college = this.college
-      console.log(this.userIfo)
+      this.tempUserIfo.college = this.college
+      // console.log(this.tempUserIfo)
+      this.$store.dispatch('user/setUser', this.tempUserIfo)
+      console.log(this.$store.getters.user)
       location.reload()
     }
   },

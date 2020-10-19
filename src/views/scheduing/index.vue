@@ -124,18 +124,22 @@
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="250" fixed="right">
                     <template slot-scope="{row, $index}">
-                      <el-link v-if="!row.edit" style="margin:0 10px" type="primary" size="mini" @click="changeInput(row)">
+                      <el-button v-if="!row.edit" style="margin:0 10px" type="primary" size="mini" @click="changeInput(row)">编辑</el-button>
+                      <!-- <el-link v-if="!row.edit" style="margin:0 10px" type="primary" size="mini" @click="changeInput(row)">
                         编辑
-                      </el-link>
-                      <el-link v-else style="margin:0 10px" type="primary" size="mini" @click="saveInput(row)">
+                      </el-link> -->
+                      <!-- <el-link v-else style="margin:0 10px" type="primary" size="mini" @click="saveInput(row)">
                         保存
-                      </el-link>
-                      <el-link v-if="row.edit" type="primary" size="mini" @click="cancleEdit(row,$index)">
+                      </el-link> -->
+                      <el-button v-else style="margin:0 10px" type="success" size="mini" @click="saveInput(row)">保存</el-button>
+                      <!-- <el-link v-if="row.edit" type="primary" size="mini" @click="cancleEdit(row,$index)">
                         取消
-                      </el-link>
-                      <el-link v-else type="primary" size="mini" @click="deleteRow($index)">
+                      </el-link> -->
+                      <el-button v-if="row.edit" type="warning" size="mini" @click="cancleEdit(row,$index)">取消</el-button>
+                      <!-- <el-link v-else type="primary" size="mini" @click="deleteRow($index)">
                         删除
-                      </el-link>
+                      </el-link> -->
+                      <el-button v-else type="danger" size="mini" @click="deleteRow($index)">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>

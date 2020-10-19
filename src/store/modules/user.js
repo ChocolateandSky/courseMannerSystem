@@ -124,6 +124,9 @@ const actions = {
       resolve()
     })
   },
+  setUser({ commit }, user) {
+    commit('SET_USER', user)
+  },
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {

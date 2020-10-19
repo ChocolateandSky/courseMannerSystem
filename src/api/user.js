@@ -30,7 +30,8 @@ export function updatePassword(data) {
     method: 'post',
     params: {
       id: data.id,
-      newPassword: data.newPassword
+      newPassword: data.newPassword,
+      password: data.password
     }
   })
 }
