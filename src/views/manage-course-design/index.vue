@@ -77,6 +77,8 @@
         <el-form-item label="时间" prop="date">
           <el-date-picker
             v-model="addForm.date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -138,7 +140,7 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
-import { getTeacherInfo } from '@/api/course'
+import { getTeacherInfo, createCourse } from '@/api/course'
 export default {
   components: {
     // HeaderContainer
@@ -169,6 +171,10 @@ export default {
           value: '软件工程',
           name: '软件工程',
           children: []
+        }, {
+          value: '计算机科学与技术',
+          name: '计算机科学与技术',
+          children: []
         }]
       }],
       // 添加课程设计对话框内容
@@ -178,7 +184,7 @@ export default {
       addForm: {
         courseName: '',
         sum: '',
-        date: '',
+        date: [],
         optionValue: [],
         value: [],
         desc: ''
@@ -213,8 +219,8 @@ export default {
         this.tableData.splice(index, 1)
       }).catch(() => {
         this.$message({
-          type: 'info',
-          message: '已取消删除'
+          message: '已取消删除',
+          type: 'warning'
         })
       })
     },
@@ -250,6 +256,9 @@ export default {
       getTeacherInfo('软件工程').then(res => {
         this.options[0].children[0].children = res.data
       })
+      getTeacherInfo('计算机科学与技术').then(res => {
+        this.options[0].children[1].children = res.data
+      })
     },
     // 监听新建课程设计对话框的关闭
     addDialogClosed() {
@@ -261,8 +270,26 @@ export default {
       for (const i in this.addForm.optionValue) {
         this.addForm.value.push(this.addForm.optionValue[i][2])
       }
-      console.log(this.addForm)
-      this.addDialogClosed
+      const temp = {
+        'pracName': this.addForm.courseName,
+        'stuAmountMax': this.addForm.sum,
+        'beginTime': this.addForm.date[0],
+        'endTime': this.addForm.date[1],
+        'managerId': '1800301333',
+        'teacherId': this.addForm.value
+      }
+      createCourse(temp).then(res => {
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+      }).catch(res => {
+        this.$message({
+          message: '添加失败',
+          type: ''
+        })
+      })
+      this.addDialogClosed()
     }
   }
 }
