@@ -139,13 +139,12 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
+import { mapGetters } from 'vuex'
 import { getTeacherInfo, createCourse, getCoursesInfo } from '@/api/course'
 export default {
-  components: {
-    // HeaderContainer
-  },
   data() {
     return {
+      userId: '', // 用户id
       currentPage: 1, // 当前页码，默认为第 1 页
       pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
@@ -187,10 +186,19 @@ export default {
       editForm: {}
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.getUser()
+  },
   mounted() {
-    this.getData('1800301333')
+    this.getData(this.userId)
   },
   methods: {
+    getUser() {
+      this.userId = this.user.id
+    },
     getData(id) {
       getCoursesInfo(id).then(res => {
         console.log(res.data)
@@ -277,7 +285,7 @@ export default {
         'stuAmountMax': this.addForm.sum,
         'beginTime': this.addForm.date[0],
         'endTime': this.addForm.date[1],
-        'managerId': '1800301333',
+        'managerId': this.userId,
         'teacherId': this.addForm.value,
         'introduction': this.addForm.desc
       }
