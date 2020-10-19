@@ -18,28 +18,27 @@
       <el-main>
         <el-table
           ref="multipleTable"
-          :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
+          :data="tableData.slice((currentPage-1) * pageSize, currentPage * pageSize)"
           style="width: 100%"
           :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
-          height="371.2"
         >
           <el-table-column label="序号" type="index" :index="indexMethod" width="50" align="center" />
-          <el-table-column label="课程名称" width="120" prop="courseName" align="center" />
+          <el-table-column label="课程名称" width="120" prop="practName" align="center" />
           <el-table-column label="课程编号" width="120" prop="courseNumber" align="center" />
-          <el-table-column label="课程容量" width="120" prop="sum" align="center" />
+          <el-table-column label="课程容量" width="120" prop="stuAmountMax" align="center" />
           <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
-              <span style="margin-left: 10px">{{ scope.row.beginDate }}</span>
+              <span style="margin-left: 10px">{{ scope.row.beginTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="结束日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
-              <span style="margin-left: 10px">{{ scope.row.endDate }}</span>
+              <span style="margin-left: 10px">{{ scope.row.endTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="管理员" width="150" prop="admin" align="center" />
+          <el-table-column label="管理员" width="150" prop="managerName" align="center" />
           <el-table-column label="操作" width="auto" align="center">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
@@ -77,14 +76,16 @@
         <el-form-item label="时间" prop="date">
           <el-date-picker
             v-model="addForm.date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-M-dd"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="指导老师:" prop="value">
-          <el-cascader v-model="addForm.value" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
+        <el-form-item v-if="addDialogVisible" label="指导老师:" prop="optionValue">
+          <el-cascader v-model="addForm.optionValue" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
         <el-form-item label="简介:" prop="desc">
           <el-input v-model="addForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
@@ -138,31 +139,21 @@
 
 <script>
 // import HeaderContainer from './components/HeaderContainer'
-import { getTeacherInfo } from '@/api/course'
+import { mapGetters } from 'vuex'
+import { getTeacherInfo, createCourse, getCoursesInfo } from '@/api/course'
 export default {
-  components: {
-    // HeaderContainer
-  },
   data() {
     return {
+      userId: '', // 用户id
       currentPage: 1, // 当前页码，默认为第 1 页
       pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
-      tableData: [
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小红', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小王', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-01', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-02', endDate: '2016-05-01', admin: '小明', desc: '' },
-        { courseName: '软件工程', sum: 100, beginDate: '2016-05-03', endDate: '2016-05-01', admin: '小明', desc: '' }
-      ],
+      tableData: [],
       defaultDate: {
         multiple: true,
         value: 'id',
         label: 'name'
       },
-      // 添加课程设计对话框内容
       options: [{
         value: '计算机与信息安全学院',
         name: '计算机与信息安全学院',
@@ -170,15 +161,21 @@ export default {
           value: '软件工程',
           name: '软件工程',
           children: []
+        }, {
+          value: '计算机科学与技术',
+          name: '计算机科学与技术',
+          children: []
         }]
       }],
       // 添加课程设计对话框内容
       // 控制添加课程设计对话框的显示与隐藏，默认为隐藏
       addDialogVisible: false,
+      // 查询到的添加课程设计对象
       addForm: {
         courseName: '',
-        sum: '',
-        date: '',
+        sum: 0,
+        date: [],
+        optionValue: [],
         value: [],
         desc: ''
       },
@@ -189,7 +186,27 @@ export default {
       editForm: {}
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.getUser()
+  },
+  mounted() {
+    this.getData(this.userId)
+  },
   methods: {
+    getUser() {
+      this.userId = this.user.id
+    },
+    getData(id) {
+      getCoursesInfo(id).then(res => {
+        console.log(res.data)
+        this.tableData = res.data
+      }).catch(res => {
+        console.log('error')
+      })
+    },
     // 获取当前列的序号
     indexMethod(index) {
       return (this.currentPage - 1) * this.pageSize + index + 1
@@ -212,8 +229,8 @@ export default {
         this.tableData.splice(index, 1)
       }).catch(() => {
         this.$message({
-          type: 'info',
-          message: '已取消删除'
+          message: '已取消删除',
+          type: 'warning'
         })
       })
     },
@@ -223,6 +240,7 @@ export default {
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage
     },
+    // 编辑课程设计
     // 展示编辑用户的对话框
     async showEditDialog(index) {
       // console.log(id)
@@ -236,38 +254,55 @@ export default {
       this.editForm.sum = this.tableData[index].sum
       this.editDialogVisible = true
     },
-    // 监听对话框的关闭
+    // 监听编辑对话框的关闭
     editDialogClosed() {
       this.editDialogVisible = false
       this.$refs.editFormRef.resetFields()
     },
+    // 新建课程设计
+    // 展示新建课程设计的对话框
     async showAddDialog() {
       this.$data.addDialogVisible = true
       getTeacherInfo('软件工程').then(res => {
         this.options[0].children[0].children = res.data
       })
+      getTeacherInfo('计算机科学与技术').then(res => {
+        this.options[0].children[1].children = res.data
+      })
     },
+    // 监听新建课程设计对话框的关闭
     addDialogClosed() {
       this.addDialogVisible = false
       this.$refs.addFormRef.resetFields()
     },
     addCourse() {
-      // const course = {
-      //   'pracName': '软件工程课程设计',
-      //   'stuAmountMax': 50,
-      //   'beginTime': '2020-6-27',
-      //   'endTime': '2020-10-31',
-      //   'managerId': '3001',
-      //   'teacherId': ['1800301330', '1800301311']
-      // }
-      // createCourse(course).then(res => {
-      //   console.log('success')
-      // }).catch(res => {
-      //   console.log('error')
-      // })
-      for (let i = 0; i < this.addForm.value.length; i++) {
-        console.log(this.addForm.value[i][2])
+      this.addForm.value = []
+      for (const i in this.addForm.optionValue) {
+        this.addForm.value.push(this.addForm.optionValue[i][2])
       }
+      const temp = {
+        'practName': this.addForm.courseName,
+        'stuAmountMax': this.addForm.sum,
+        'beginTime': this.addForm.date[0],
+        'endTime': this.addForm.date[1],
+        'managerId': this.userId,
+        'teacherId': this.addForm.value,
+        'introduction': this.addForm.desc
+      }
+      createCourse(temp).then(res => {
+        console.log(temp)
+        this.getData(temp.managerId)
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+      }).catch(res => {
+        this.$message({
+          message: '添加失败',
+          type: 'warning'
+        })
+      })
+      this.addDialogClosed()
     }
   }
 }
