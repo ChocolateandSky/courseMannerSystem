@@ -87,13 +87,19 @@ export default {
           console.log(this.form)
           updatePassword(this.form)
             .then(res => {
-              this.$message.success('更改成功')
+              this.$message.success('更改成功,请重新登录')
+              this.logout()
             })
         } else {
           this.$message.error('更改失败')
           return false
         }
       })
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/`)
     },
     clear() {
       this.form = {

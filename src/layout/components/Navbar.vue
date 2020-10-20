@@ -43,7 +43,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <update-password :dialog-visible="showDialog" @dialogVisible="showDialog = $event" />
+    <update-password :dialog-visible="showDialog" :userid="id" @dialogVisible="showDialog = $event" />
   </div>
 </template>
 
@@ -62,7 +62,8 @@ export default {
   },
   data() {
     return {
-      showDialog: false
+      showDialog: false,
+      id: this.$store.getters.user.id
     }
   },
   computed: {

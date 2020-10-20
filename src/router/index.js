@@ -167,7 +167,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/groupManager/index'),
         name: 'groupManager',
-        meta: { title: '小组管理', icon: 'el-icon-s-help', noCache: true }
+        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true }
       }
     ]
   },

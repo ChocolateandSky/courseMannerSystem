@@ -2,16 +2,37 @@
   <div id="container">
     <div class="filter-container">
       <div class="header">
+        <div class="searchBox">
+          <el-input
+            v-model="searchInfo"
+            placeholder="请输入学生姓名"
+            prefix-icon="el-icon-search"
+            :style="{width: '250px', 'margin': '0px 10px'} "
+          />
+          <el-select v-model="value1" multiple placeholder="可筛选指导老师">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-button icon="el-icon-search" circle />
+        </div>
         <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">发布公告</el-button>
         <el-button class="pan-btn green-btn message-btn" @click="uploadFile">上传文件</el-button>
       </div>
       <el-collapse accordion class="groupCollapse">
         <el-collapse-item v-for="o in 10" :key="o">
           <template slot="title">
-            课程设计管理系统--谭维国
-            <el-button type="text" size="mini" class="groupDetail" @click.native="checkGroup">查看小组详情</el-button>
+            1800301333谭维国
+            <el-button type="text" size="mini" class="groupDetail" @click.native="checkGroup">查看所属小组详情</el-button>
           </template>
-          <el-collapse accordion style="margin-left:50px">
+          <div>学号：1800301333</div>
+          <div>专业：软件工程</div>
+          <div>指导老师：王宇英</div>
+          <div>小组题目：课程设计管理</div>
+          <!-- <el-collapse accordion style="margin-left:50px">
             <el-collapse-item>
               <template slot="title">
                 组长：谭维国
@@ -31,7 +52,7 @@
               <div>1800301316</div>
               <div>任务：前端设计</div>
             </el-collapse-item>
-          </el-collapse>
+          </el-collapse> -->
         </el-collapse-item>
       </el-collapse>
     </div>
