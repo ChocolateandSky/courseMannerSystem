@@ -145,6 +145,7 @@ export default {
   data() {
     return {
       userId: '', // 用户id
+      userName: '', // 用户名
       currentPage: 1, // 当前页码，默认为第 1 页
       pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
@@ -193,15 +194,17 @@ export default {
     this.getUser()
   },
   mounted() {
-    this.getData(this.userId)
+    this.getTableData(this.userId)
   },
   methods: {
+    // 获取用户信息
     getUser() {
       this.userId = this.user.id
+      this.userName = this.user.name
     },
-    getData(id) {
+    // 获取表格内容
+    getTableData(id) {
       getCoursesInfo(id).then(res => {
-        console.log(res.data)
         this.tableData = res.data
       }).catch(res => {
         console.log('error')
@@ -212,11 +215,12 @@ export default {
       return (this.currentPage - 1) * this.pageSize + index + 1
     },
     // 删除选中的列
-    deleteRow(index, rows) {
+    deleteRow(index) {
       // this.$message({
       //   message: '删除成功',
       //   type: 'success'
       // })
+      console.log(this.tableData[index].id)
       this.$confirm('此操作将永久删除该课程设计, 是否继续?', '提示', {
         confirmButtonText: '确 定',
         cancelButtonText: '取 消',
@@ -275,6 +279,7 @@ export default {
       this.addDialogVisible = false
       this.$refs.addFormRef.resetFields()
     },
+    // 添加课程设计
     addCourse() {
       this.addForm.value = []
       for (const i in this.addForm.optionValue) {
@@ -286,12 +291,12 @@ export default {
         'beginTime': this.addForm.date[0],
         'endTime': this.addForm.date[1],
         'managerId': this.userId,
+        'managerName': this.userName,
         'teacherId': this.addForm.value,
         'introduction': this.addForm.desc
       }
       createCourse(temp).then(res => {
-        console.log(temp)
-        this.getData(temp.managerId)
+        this.tableData.push(temp)
         this.$message({
           message: '添加成功',
           type: 'success'
