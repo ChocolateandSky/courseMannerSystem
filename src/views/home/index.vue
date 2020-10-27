@@ -25,7 +25,7 @@
       <el-divider />
       <div class="main-content">
         <el-row>
-          <el-col v-for="(item,index) in 8" :key="index" :span="6">
+          <el-col v-for="(item,index) in fromData.length" :key="index" :span="6">
             <el-card v-waves style="margin-bottom:20px" :body-style="{ padding: '0px'}">
               <div slot="header" class="clearfix">
                 <span>项目名称：课程管理系统</span>

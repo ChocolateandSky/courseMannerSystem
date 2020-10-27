@@ -66,19 +66,20 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   children: [
-  //     {
-  //       path: 'dashboard',
-  //       component: () => import('@/views/dashboard/index'),
-  //       name: 'Dashboard',
-  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/home',
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home/index'),
+        name: 'home',
+        meta: { title: '首页', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+
   {
     path: '/profile',
     component: Layout,
@@ -105,6 +106,19 @@ export const constantRoutes = [
         meta: { title: '通知管理', icon: 'el-icon-s-help', noCache: true }
       }
     ]
+  },
+  {
+    path: '/stuCourse',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/stu-course/index'),
+        name: 'StuCourse',
+        meta: { title: '学生', icon: 'el-icon-s-help', noCache: true }
+      }
+    ]
   }
 ]
 
@@ -114,21 +128,6 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   // 404 page must be placed at the end !!!
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/home',
-    meta: { roles: ['admin', 'teacher', 'student'] },
-    children: [
-      {
-        path: 'home',
-        component: () => import('@/views/home/index'),
-        name: 'home',
-        meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['admin', 'teacher', 'student'] }
-      }
-    ]
-  },
-
   {
     path: '/scheduing',
     component: Layout,
