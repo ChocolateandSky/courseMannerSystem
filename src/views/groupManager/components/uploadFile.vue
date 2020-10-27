@@ -76,7 +76,7 @@ export default {
       },
       set(val) {
         if (!val) {
-          this.close()
+          this.closeDialog()
         }
       }
     }

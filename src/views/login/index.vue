@@ -95,6 +95,7 @@ export default {
         const query = route.query
         if (query) {
           this.redirect = query.redirect
+          console.log(this.redirect)
           this.otherQuery = this.getOtherQuery(query)
         }
       },

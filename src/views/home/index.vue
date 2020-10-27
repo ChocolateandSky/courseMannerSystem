@@ -3,31 +3,53 @@
     <div
       class="filter-container"
     >
-      <el-row v-for="(rowNum) in lineNum/2" :key="rowNum">
-        <el-col v-for="(item,index) in 4" :key="index" :span="6">
-          <el-card v-waves :body-style="{ padding: '0px' }">
-            <div slot="header" class="clearfix">
-              <span>项目名称：课程管理系统</span>
-            </div>
-            <div style="padding: 20px;">
-              <p>指导老师：王宇英</p>
-              <p>小组名称：课程管理系统小队</p>
-              <p>组长名字：谭维国</p>
-              <p>小组人数：4</p>
-            </div>
-            <div class="card-foot">
-              <el-row>
-                <el-col :span="12">
-                  <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
-                </el-col>
-                <el-col :span="12">
-                  <el-link icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
+      <div class="searchBox">
+        <el-select v-model="practicum" style="margin-right:15px" multiple placeholder="可筛选课程设计">
+          <el-option
+            v-for="item in practicumList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+        <el-select v-if="role===2" v-model="teacherName" multiple placeholder="可筛选指导老师">
+          <el-option
+            v-for="item in teacherList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+        <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle />
+      </div>
+      <el-divider />
+      <div class="main-content">
+        <el-row>
+          <el-col v-for="(item,index) in 8" :key="index" :span="6">
+            <el-card v-waves style="margin-bottom:20px" :body-style="{ padding: '0px'}">
+              <div slot="header" class="clearfix">
+                <span>项目名称：课程管理系统</span>
+              </div>
+              <div style="padding: 20px;">
+                <p>指导老师：王宇英</p>
+                <p>小组名称：课程管理系统小队</p>
+                <p>组长名字：谭维国</p>
+                <p>小组人数：4</p>
+              </div>
+              <div class="card-foot">
+                <el-row>
+                  <el-col :span="12">
+                    <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-link icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
     </div>
     <fill-person-info
       :dialog-form-visible="dialogFormVisible"
@@ -39,6 +61,7 @@
 <script>
 import fillPersonInfo from './components/fillPersonInfo'
 import waves from '@/directive/waves/index.js' // 水波纹指令
+import { getGroupList } from '@/api/group'
 export default {
   components: {
     fillPersonInfo
@@ -50,17 +73,34 @@ export default {
     return {
       dialogFormVisible: false,
       autoHeight: '200px',
-      lineNum: 4
+      // lineNum: 0,
+      practicum: '',
+      teacherName: '',
+      practicumList: [],
+      teacherList: [],
+      fromData: [],
+      role: 0
     }
   },
   mounted() {
     this.judgeFirstLogin()
+    this.judgeRole()
+    this.getGroupList(this.$store.getters.user.id)
     this.getAutoHeight()
     window.onresize = () => {
       this.getAutoHeight()
     }
   },
   methods: {
+    judgeRole() {
+      if (this.$store.getters.roles.includes('admin')) {
+        this.role = 2
+      } else if (this.$store.getters.roles.includes('teacher')) {
+        this.role = 1
+      } else {
+        this.role = 0
+      }
+    },
     judgeFirstLogin() {
       console.log(this.$store.getters.loginCount)
       if (this.$store.getters.loginCount !== 1) {
@@ -93,6 +133,18 @@ export default {
         console.error('catch err')
         this.$message.error('删除失败')
       })
+    },
+    getGroupList(id) {
+      getGroupList(id)
+        .then(res => {
+          this.fromData = res.data
+          //  this.lineNum = res.data.length
+          // if (res.data.length <= 4) {
+          //   this.lineNum = 1
+          // } else {
+          //   this.lineNum = res.data.length
+          // }
+        })
     }
   }
 }

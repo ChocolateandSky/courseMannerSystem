@@ -66,19 +66,6 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/home',
-    children: [
-      {
-        path: 'home',
-        component: () => import('@/views/home/index'),
-        name: 'home',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
-      }
-    ]
-  },
   // {
   //   path: '/',
   //   component: Layout,
@@ -107,71 +94,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/scheduing',
-    component: Layout,
-    hidden: false,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/scheduing/index'),
-        name: 'scheduing',
-        meta: { title: '计划安排进度', icon: 'clipboard', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/statistics',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/statistics/index'),
-        name: 'statistics',
-        meta: { title: '汇报统计', icon: 'clipboard', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/manage-course-design',
-    component: Layout,
-    hidden: false,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/manage-course-design/index'),
-        name: 'manage-course-design',
-        meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/groupDetails',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/group-details/index'),
-        name: 'GroupDetails',
-        meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/groupManager',
-    component: Layout,
-    hidden: false,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/groupManager/index'),
-        name: 'groupManager',
-        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true }
-      }
-    ]
-  },
-  {
     path: '/natification',
     component: Layout,
     hidden: true,
@@ -192,6 +114,90 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   // 404 page must be placed at the end !!!
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/home',
+    meta: { roles: ['admin', 'teacher', 'student'] },
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home/index'),
+        name: 'home',
+        meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['admin', 'teacher', 'student'] }
+      }
+    ]
+  },
+
+  {
+    path: '/scheduing',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['admin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/scheduing/index'),
+        name: 'scheduing',
+        meta: { title: '计划安排进度', icon: 'clipboard', noCache: true, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/statistics',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/statistics/index'),
+        name: 'statistics',
+        meta: { title: '汇报统计', icon: 'clipboard', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/manage-course-design',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['admin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/manage-course-design/index'),
+        name: 'manage-course-design',
+        meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/groupDetails',
+    component: Layout,
+    hidden: true,
+    meta: { roles: ['teacher', 'admin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/group-details/index'),
+        name: 'GroupDetails',
+        meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+      }
+    ]
+  },
+  {
+    path: '/groupManager',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['teacher', 'admin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/groupManager/index'),
+        name: 'groupManager',
+        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

@@ -4,23 +4,25 @@
       <div class="header">
         <div class="searchBox">
           <el-input
-            v-model="searchInfo"
+            v-model="studentName"
             placeholder="请输入学生姓名"
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
-          <el-select v-model="value1" multiple placeholder="可筛选指导老师">
+          <el-select v-model="teacherName" multiple placeholder="可筛选指导老师">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in teacherList"
+              :key="item"
+              :label="item"
+              :value="item"
             />
           </el-select>
-          <el-button icon="el-icon-search" circle />
+          <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle />
         </div>
-        <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">发布公告</el-button>
-        <el-button class="pan-btn green-btn message-btn" @click="uploadFile">上传文件</el-button>
+        <div style="margin-left:42%">
+          <el-button class="pan-btn green-btn message-btn" style="margin-right:25px" @click="handlePostMessage">发布公告</el-button>
+          <el-button class="pan-btn green-btn message-btn" @click="uploadFile">上传文件</el-button>
+        </div>
       </div>
       <el-collapse accordion class="groupCollapse">
         <el-collapse-item v-for="o in 10" :key="o">
@@ -78,7 +80,10 @@ export default {
   data() {
     return {
       dialogShow: false,
-      uploadDialogShow: false
+      uploadDialogShow: false,
+      studentName: '',
+      teacherName: '',
+      teacherList: []
     }
   },
   methods: {

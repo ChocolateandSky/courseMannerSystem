@@ -47,11 +47,15 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit, dispatch }, roles) {
+    console.log(roles)
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(resolve => {
       let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
+      if (roles.length >= 1) {
+        // accessedRoutes = asyncRoutes || []
+        dispatch('settings/changeSetting', { key: 'activeRole', value: roles }, { root: true })
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }

@@ -65,7 +65,6 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        console.log(data)
         // eslint-disable-next-line no-unused-vars
         data.avatar = `https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif`
         const { roles, realName, avatar, introduction } = data
@@ -74,12 +73,14 @@ const actions = {
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
+        data.role = role
         // eslint-disable-next-line no-const-assign
         commit('SET_USER', data)
         commit('SET_ROLES', role)
         commit('SET_NAME', realName)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
+        console.log(data)
         resolve(data)
       }).catch(error => {
         reject(error)
