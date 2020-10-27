@@ -68,7 +68,7 @@
     >
       <el-form ref="addFormRef" :model="addForm" label-width="80px">
         <el-form-item label="课程名称:" prop="courseName">
-          <el-input v-model="addForm.courseName" :style="{width: '80%'}" />
+          <el-input v-model="addForm.courseName" placeholder="请输入内容" :style="{width: '80%'}" />
         </el-form-item>
         <el-form-item label="课程容量" prop="sum">
           <el-input-number v-model="addForm.sum" controls-position="right" :min="1" />
@@ -88,7 +88,7 @@
           <el-cascader v-model="addForm.optionValue" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
         <el-form-item label="简介:" prop="desc">
-          <el-input v-model="addForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
+          <el-input v-model="addForm.desc" placeholder="请输入内容" type="textarea" maxlength="150" show-word-limit resize="none" :style="{width: '80%'}" rows="7" />
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -142,6 +142,7 @@
 import { mapGetters } from 'vuex'
 import { getTeacherInfo, createCourse, getCoursesInfo } from '@/api/course'
 export default {
+  name: 'ManageCourseDesign',
   data() {
     return {
       userId: '', // 用户id

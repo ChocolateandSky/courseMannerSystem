@@ -180,7 +180,33 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/natification/index'),
         name: 'Natification',
-        meta: { title: '通知管理', icon: 'el-icon-s-help', noCache: true }
+        meta: { title: '学生选课', icon: 'el-icon-s-help', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/stuCourse',
+    component: Layout,
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/stu-course/index'),
+        name: 'stuCourse',
+        meta: { title: '所有课程', icon: 'el-icon-house', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/courseDetails',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/course-details/index'),
+        name: 'courseDetails',
+        meta: { title: '课程详情', icon: 'el-icon-s-help', noCache: true }
       }
     ]
   }
