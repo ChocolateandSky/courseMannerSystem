@@ -9,20 +9,20 @@
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
-          <el-select v-model="teacherName" placeholder="可筛选指导老师">
+          <el-select v-model="teacherName" clearable placeholder="可筛选指导老师">
             <el-option
               v-for="item in teacherList"
-              :key="item"
-              :label="item"
-              :value="item"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
             />
           </el-select>
-          <el-select v-model="practName" style="margin-left:15px" placeholder="可筛选课设">
+          <el-select v-model="practName" style="margin-left:15px" clearable placeholder="可筛选课设">
             <el-option
               v-for="item in practList"
-              :key="item"
-              :label="item"
-              :value="item"
+              :key="item.id"
+              :label="item.practName"
+              :value="item.practName"
             />
           </el-select>
           <!-- <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle /> -->
@@ -34,7 +34,7 @@
           <el-collapse-item v-for="(item,index) in dataList" :key="index">
             <template slot="title">
               <div style="font-size: 15px;"> {{ item.managerId }}{{ item.stuName }}</div>
-              <div style="font-size: 15px;">--{{ item.practName }}</div>
+              <div style="font-size: 15px;">——{{ item.practName }}</div>
               <el-button type="text" size="mini" class="groupDetail" style="font-size: 15px;" @click.native="checkGroup(item)">查看所属小组详情</el-button>
             </template>
             <div style="font-size: 13px;margin-left:18px">专业：软件工程</div>
@@ -53,7 +53,7 @@
 
 <script>
 import notice from './components/notice'
-import { getAllStudentList } from '@/api/user'
+import { getAllStudentList, getTeacherList, getAllPracticum } from '@/api/user'
 
 export default {
   components: {
@@ -67,6 +67,7 @@ export default {
       teacherName: '',
       teacherList: [],
       dataList: [],
+      tempDataList: [],
       teacherId: this.$store.getters.user.id,
       roles: this.$store.getters.roles,
       loading: false,
@@ -74,9 +75,40 @@ export default {
       practList: []
     }
   },
+  watch: {
+    teacherName(newValue, oldValue) {
+      this.loading = true
+      if (newValue === '') {
+        this.dataList = [...this.tempDataList]
+      } else {
+        this.dataList = []
+        this.tempDataList.forEach(el => {
+          if (el.teacherName === newValue) {
+            this.dataList.push(el)
+          }
+        })
+      }
+      this.loading = false
+    },
+    practName(newValue, oldValue) {
+      this.loading = true
+      if (newValue === '') {
+        this.dataList = [...this.tempDataList]
+      } else {
+        this.dataList = []
+        this.tempDataList.forEach(el => {
+          if (el.practName === newValue) {
+            this.dataList.push(el)
+          }
+        })
+      }
+      this.loading = false
+    }
+  },
   mounted() {
     this.loading = true
     this.getAllStudentList()
+    this.getBaseInfo()
     this.loading = false
   },
   methods: {
@@ -101,8 +133,17 @@ export default {
       getAllStudentList(this.teacherId, this.roles)
         .then(res => {
           this.dataList = res.data
+          this.tempDataList = res.data
           console.log(this.dataList)
         })
+    },
+    getBaseInfo() {
+      getTeacherList().then(res => {
+        this.teacherList = res.data
+      })
+      getAllPracticum().then(res => {
+        this.practList = res.data
+      })
     }
   }
 }
