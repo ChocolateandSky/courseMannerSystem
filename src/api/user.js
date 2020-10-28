@@ -53,3 +53,28 @@ export function updateTeacherIfo(data) {
     data
   })
 }
+
+export function getTeacherList() {
+  return request({
+    url: '/test/getALLInstructorInfoServlet',
+    method: 'get'
+  })
+}
+
+export function getAllPracticum() {
+  return request({
+    url: '/test/getAllPracticumInfoServlet',
+    method: 'get'
+  })
+}
+
+export function getAllStudentList(teacherId, roles) {
+  return request({
+    url: '/test/getStudent_PracticumInfoServlet',
+    method: 'get',
+    params: {
+      teacherId,
+      roles
+    }
+  })
+}

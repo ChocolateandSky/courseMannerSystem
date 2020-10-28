@@ -1,48 +1,50 @@
 <template>
   <div class="app-container">
     <div
+      v-loading.fullscreen.lock="loading"
       class="filter-container"
     >
       <div class="searchBox">
-        <el-select v-model="practicum" style="margin-right:15px" multiple placeholder="可筛选课程设计">
+        <el-select v-model="practicum" style="margin-right:15px" clearable placeholder="可筛选课程设计">
           <el-option
             v-for="item in practicumList"
-            :key="item"
-            :label="item"
-            :value="item"
+            :key="item.id"
+            :label="item.practName"
+            :value="item.practName"
           />
         </el-select>
-        <el-select v-if="role===2" v-model="teacherName" multiple placeholder="可筛选指导老师">
+        <el-select v-if="role===2" v-model="teacherName" clearable placeholder="可筛选指导老师">
           <el-option
             v-for="item in teacherList"
-            :key="item"
-            :label="item"
-            :value="item"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name"
           />
         </el-select>
-        <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle />
+        <!-- <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle /> -->
       </div>
       <el-divider />
       <div class="main-content">
         <el-row>
-          <el-col v-for="(item,index) in fromData.length" :key="index" :span="6">
+          <el-col v-for="(item,index) in fromData" :key="index" :span="6">
             <el-card v-waves style="margin-bottom:20px" :body-style="{ padding: '0px'}">
               <div slot="header" class="clearfix">
-                <span>项目名称：课程管理系统</span>
+                <span style="margin-right:5px">{{ item.subName }}</span>
+                <span style="color:rgb(66,185,131)">({{ item.practName }})</span>
               </div>
               <div style="padding: 20px;">
-                <p>指导老师：王宇英</p>
-                <p>小组名称：课程管理系统小队</p>
-                <p>组长名字：谭维国</p>
-                <p>小组人数：4</p>
+                <p style="color:rgb(66,185,131)">指导老师：{{ item.teacherName }}</p>
+                <p>小组名称：{{ item.name }}</p>
+                <p>组长名字：{{ item.leaderName }}</p>
+                <p>小组人数：{{ item.stuNumber }}</p>
               </div>
               <div class="card-foot">
                 <el-row>
                   <el-col :span="12">
-                    <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails">详情编辑</el-link>
+                    <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails(item.id)">详情编辑</el-link>
                   </el-col>
                   <el-col :span="12">
-                    <el-link icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
+                    <el-link v-if="role!==0" icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
                   </el-col>
                 </el-row>
               </div>
@@ -62,6 +64,7 @@
 import fillPersonInfo from './components/fillPersonInfo'
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { getGroupList } from '@/api/group'
+import { getTeacherList, getAllPracticum } from '@/api/user'
 export default {
   components: {
     fillPersonInfo
@@ -79,14 +82,49 @@ export default {
       practicumList: [],
       teacherList: [],
       fromData: [],
-      role: 0
+      tempFromData: [],
+      role: 0,
+      loading: false
+    }
+  },
+  watch: {
+    teacherName(newValue, oldValue) {
+      this.loading = true
+      if (newValue === '') {
+        this.fromData = [...this.tempFromData]
+      } else {
+        this.fromData = []
+        this.tempFromData.forEach(el => {
+          if (el.teacherName === newValue) {
+            this.fromData.push(el)
+          }
+        })
+      }
+      this.loading = false
+    },
+    practicum(newValue, oldValue) {
+      this.loading = true
+      if (newValue === '') {
+        this.fromData = [...this.tempFromData]
+      } else {
+        this.fromData = []
+        this.tempFromData.forEach(el => {
+          if (el.practName === newValue) {
+            this.fromData.push(el)
+          }
+        })
+      }
+      this.loading = false
     }
   },
   mounted() {
+    this.loading = true
     this.judgeFirstLogin()
     this.judgeRole()
     this.getGroupList(this.$store.getters.user.id)
+    this.getBaseIfo()
     this.getAutoHeight()
+    this.loading = false
     window.onresize = () => {
       this.getAutoHeight()
     }
@@ -115,9 +153,12 @@ export default {
         this.autoHeight = window.innerHeight - (100) + 'px'
       })
     },
-    groupDetails() {
+    groupDetails(id) {
       this.$router.push({
-        name: 'GroupDetails'
+        name: 'GroupDetails',
+        query: {
+          teamId: id
+        }
       })
     },
     DeteleGroup($event) {
@@ -138,13 +179,16 @@ export default {
       getGroupList(id)
         .then(res => {
           this.fromData = res.data
-          //  this.lineNum = res.data.length
-          // if (res.data.length <= 4) {
-          //   this.lineNum = 1
-          // } else {
-          //   this.lineNum = res.data.length
-          // }
+          this.tempFromData = res.data
         })
+    },
+    getBaseIfo() {
+      getTeacherList().then(res => {
+        this.teacherList = res.data
+      })
+      getAllPracticum().then(res => {
+        this.practicumList = res.data
+      })
     }
   }
 }

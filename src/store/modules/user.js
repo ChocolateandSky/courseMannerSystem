@@ -10,10 +10,14 @@ const state = {
   introduction: '',
   roles: [],
   user: {},
+  roleNum: 0,
   loginCount: 1
 }
 
 const mutations = {
+  SET_ROLENUM: (state, roleNum) => {
+    state.roleNum = roleNum
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
@@ -73,6 +77,13 @@ const actions = {
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
+        if (roles === 'student') {
+          commit('SET_ROLENUM', 0)
+        } else if (roles === 'teacher') {
+          commit('SET_ROLENUM', 1)
+        } else {
+          commit('SET_ROLENUM', 2)
+        }
         data.role = role
         // eslint-disable-next-line no-const-assign
         commit('SET_USER', data)
@@ -122,6 +133,7 @@ const actions = {
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
       dispatch('tagsView/delAllViews', null, { root: true })
       await dispatch('settings/changeSetting', { key: 'activeRole', value: [] }, { root: true })
+      console.log('sss')
       resolve()
     })
   },

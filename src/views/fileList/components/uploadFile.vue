@@ -1,7 +1,7 @@
 <template>
-  <el-dialog title="发送公告" :visible.sync="visible" width="560px">
+  <el-dialog title="上传附件" :visible.sync="visible" width="560px">
     <el-form ref="dataForm" :model="form">
-      <el-form-item label="公告：" :label-width="formLabelWidth">
+      <el-form-item v-if="roleNum !==0" label="公告：" :label-width="formLabelWidth">
         <el-input
           v-model="form.textarea"
           type="textarea"
@@ -22,12 +22,13 @@
           <div slot="tip" class="el-upload__tip" style="margin-top:0">只能上传jpg/png文件，且不超过500kb(按ctrl+鼠标点击可多选文件)</div>
         </el-upload>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="roleNum !==0">
         <el-switch
           v-model="endTimeSwitch"
           active-color="#13ce66"
           inactive-color="#ff4949"
           inactive-text="是否设置截止时间："
+          style="margin-left:13%"
         />
       </el-form-item>
       <el-form-item v-show="endTimeSwitch" ref="endTimeItem" label="截止时间：" :label-width="formLabelWidth">
@@ -39,6 +40,16 @@
             style="width:100%"
           />
         </div>
+      </el-form-item>
+      <el-form-item>
+        <el-switch
+          v-if="roleNum !==0"
+          v-model="noticeStudent"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          inactive-text="是否同时通知学生："
+          style="margin-left:13%"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -66,7 +77,9 @@ export default {
       },
       formLabelWidth: '120px',
       endTimeSwitch: false,
-      endTime: ''
+      endTime: '',
+      noticeStudent: false,
+      roleNum: this.$store.getters.roleNum
     }
   },
   computed: {

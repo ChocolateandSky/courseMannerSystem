@@ -8,9 +8,9 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-      <right-panel v-if="showSettings">
+      <!-- <right-panel v-if="showSettings">
         <settings />
-      </right-panel>
+      </right-panel> -->
     </div>
     <div class="rs-footer">
       <div class="footer-content" :class="footerClass">
@@ -32,7 +32,9 @@ export default {
   components: {
     AppMain,
     Navbar,
+    // eslint-disable-next-line vue/no-unused-components
     RightPanel,
+    // eslint-disable-next-line vue/no-unused-components
     Settings,
     Sidebar,
     TagsView

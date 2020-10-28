@@ -7,12 +7,12 @@
     <div class="user-profile">
       <div class="box-center">
         <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-          {{ user.role }}
+          {{ role }}
         </pan-thumb>
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">{{ user.role }}</div>
+        <div class="user-role text-center text-muted">{{ role }}</div>
         <!-- <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div> -->
       </div>
     </div>
@@ -70,12 +70,14 @@ export default {
       introductions: [],
       index: 0,
       readonly: true,
-      avatar: this.$store.getters.avatar
+      avatar: this.$store.getters.avatar,
+      role: ''
     }
   },
   created() {
     this.introductions[0] = (this.user.introduction === '') ? '这家伙很懒，什么都没有留下' : this.user.introduction
     this.introductions[1] = this.introductions[0]
+    this.role = this.user.role.toString()
   },
   methods: {
     updateItd() {

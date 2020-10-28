@@ -35,17 +35,17 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
-  },
+  // {
+  //   path: '/redirect',
+  //   component: Layout,
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '/redirect/:path(.*)',
+  //       component: () => import('@/views/redirect/index')
+  //     }
+  //   ]
+  // },
   {
     path: '/login',
     component: () => import('@/views/login/index'),
@@ -65,21 +65,58 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
-  },
+  }
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/home',
+  //   meta: { roles: ['student', 'teacher', 'admin'] },
+  //   children: [
+  //     {
+  //       path: 'home',
+  //       component: () => import('@/views/home/index'),
+  //       name: 'home',
+  //       meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['student', 'teacher', 'admin'] }
+  //     }
+  //   ]
+  // },
+]
+
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+  // 404 page must be placed at the end !!!
   {
     path: '/',
     component: Layout,
     redirect: '/home',
+    meta: { roles: ['student', 'teacher', 'admin'] },
     children: [
       {
         path: 'home',
         component: () => import('@/views/home/index'),
         name: 'home',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['student', 'teacher', 'admin'] }
       }
     ]
   },
-
+  // 管理员端
+  {
+    path: '/scheduing',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['admin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/scheduing/index'),
+        name: 'scheduing',
+        meta: { title: '计划安排进度', icon: 'clipboard', noCache: true, roles: ['admin'] }
+      }
+    ]
+  },
   {
     path: '/profile',
     component: Layout,
@@ -108,37 +145,15 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/stuCourse',
+    path: '/fileList',
     component: Layout,
     hidden: false,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/stu-course/index'),
-        name: 'StuCourse',
-        meta: { title: '学生', icon: 'el-icon-s-help', noCache: true }
-      }
-    ]
-  }
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes = [
-  // 404 page must be placed at the end !!!
-  {
-    path: '/scheduing',
-    component: Layout,
-    hidden: false,
-    meta: { roles: ['admin'] },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/scheduing/index'),
-        name: 'scheduing',
-        meta: { title: '计划安排进度', icon: 'clipboard', noCache: true, roles: ['admin'] }
+        component: () => import('@/views/fileList/index'),
+        name: 'FileList',
+        meta: { title: '文件列表', icon: 'el-icon-s-help', noCache: true }
       }
     ]
   },
@@ -184,16 +199,31 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/groupManager',
+    path: '/studentManager',
     component: Layout,
     hidden: false,
     meta: { roles: ['teacher', 'admin'] },
     children: [
       {
         path: 'index',
-        component: () => import('@/views/groupManager/index'),
-        name: 'groupManager',
+        component: () => import('@/views/studentManager/index'),
+        name: 'StudentManager',
         meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+      }
+    ]
+  },
+  // 学生端
+  {
+    path: '/stuCourse',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['student'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/stu-course/index'),
+        name: 'StuCourse',
+        meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
       }
     ]
   },
