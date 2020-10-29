@@ -16,15 +16,15 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="总人数:" prop="totalMan">
-                  <el-input v-model="ruleForm.totalMan" clearable />
+                <el-form-item label="总人数:" prop="stuAmountMax">
+                  <el-input v-model="ruleForm.stuAmountMax" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="学院（系、部):" prop="college">
-                  <el-select v-model="ruleForm.college" filterable placeholder="请选择学院">
+                <el-form-item label="学院（系、部):" prop="collegeName">
+                  <el-select v-model="ruleForm.collegeName" filterable placeholder="请选择学院">
                     <el-option
                       v-for="item in collegeList"
                       :key="item.index"
@@ -35,8 +35,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="课程代码、名称:" prop="course">
-                  <el-select v-model="ruleForm.course" filterable placeholder="请选择课程代码">
+                <el-form-item label="课程代码、名称:" prop="practName">
+                  <el-select v-model="ruleForm.practName" filterable placeholder="请选择课程代码">
                     <el-option
                       v-for="item in courseId"
                       :key="item.index"
@@ -49,26 +49,26 @@
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="课程序号:" prop="courseOrder">
-                  <el-input v-model="ruleForm.courseOrder" clearable />
+                <el-form-item label="课程序号:" prop="practNum">
+                  <el-input v-model="ruleForm.practNum" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="面向年级、专业:" prop="gradeAndMajor">
-                  <el-input v-model="ruleForm.gradeAndMajor" clearable />
+                <el-form-item label="面向年级、专业:" prop="major">
+                  <el-input v-model="ruleForm.major" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="学时:" prop="period">
-                  <el-input v-model="ruleForm.period" clearable />
+                <el-form-item label="学时:" prop="time">
+                  <el-input v-model="ruleForm.time" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="实施时间:" prop="time">
+                <el-form-item label="实施时间:" prop="periods">
                   <el-date-picker
-                    v-model="ruleForm.time"
+                    v-model="ruleForm.periods"
                     style="width:65%"
                     type="daterange"
                     range-separator="至"
@@ -80,13 +80,13 @@
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="指导老师:" prop="teacher">
-                  <el-input v-model="ruleForm.teacher" clearable />
+                <el-form-item label="指导老师:" prop="teacherName">
+                  <el-input v-model="ruleForm.teacherName" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="设计场所:" prop="site">
-                  <el-input v-model="ruleForm.site" clearable />
+                <el-form-item label="设计场所:" prop="address">
+                  <el-input v-model="ruleForm.address" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -99,7 +99,7 @@
               <el-col :span="24">
                 <el-table
                   ref="workTable"
-                  :data="ruleForm.newList"
+                  :data="newList"
                   highlight-current-row
                   max-height="300px"
                   style="width: 100%"
@@ -109,9 +109,9 @@
                   <el-table-column label="具体工作内容" align="center">
                     <template slot-scope="{row}">
                       <template v-if="row.edit">
-                        <el-input v-model="row.workContent" resize="none" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
+                        <el-input v-model="row.subject" resize="none" autosize type="textarea" clearable placeholder="请输入内容(可换行)" />
                       </template>
-                      <span v-else>{{ row.workContent }}</span>
+                      <span v-else>{{ row.subject }}</span>
                     </template>
                   </el-table-column>
                   <el-table-column label="时间(周次，星期几，第几大节) 安排/地点" align="center">
@@ -125,20 +125,8 @@
                   <el-table-column label="操作" align="center" width="250" fixed="right">
                     <template slot-scope="{row, $index}">
                       <el-button v-if="!row.edit" style="margin:0 10px" type="primary" size="mini" @click="changeInput(row)">编辑</el-button>
-                      <!-- <el-link v-if="!row.edit" style="margin:0 10px" type="primary" size="mini" @click="changeInput(row)">
-                        编辑
-                      </el-link> -->
-                      <!-- <el-link v-else style="margin:0 10px" type="primary" size="mini" @click="saveInput(row)">
-                        保存
-                      </el-link> -->
                       <el-button v-else style="margin:0 10px" type="success" size="mini" @click="saveInput(row)">保存</el-button>
-                      <!-- <el-link v-if="row.edit" type="primary" size="mini" @click="cancleEdit(row,$index)">
-                        取消
-                      </el-link> -->
                       <el-button v-if="row.edit" type="warning" size="mini" @click="cancleEdit(row,$index)">取消</el-button>
-                      <!-- <el-link v-else type="primary" size="mini" @click="deleteRow($index)">
-                        删除
-                      </el-link> -->
                       <el-button v-else type="danger" size="mini" @click="deleteRow($index)">删除</el-button>
                     </template>
                   </el-table-column>
@@ -147,13 +135,13 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="填表人:" prop="fillFormName">
-                  <el-input v-model="ruleForm.fillFormName" style="width:70%" size="small" clearable />
+                <el-form-item label="填表人:" prop="preparer">
+                  <el-input v-model="ruleForm.preparer" style="width:70%" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="教研室主任:" prop="chairman">
-                  <el-input v-model="ruleForm.chairman" style="width:70%" size="small" clearable />
+                <el-form-item label="教研室主任:" prop="director">
+                  <el-input v-model="ruleForm.director" style="width:70%" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -183,66 +171,77 @@
 </template>
 
 <script>
-import docxtemplater from 'docxtemplater'
-import PizZip from 'pizzip'
-import JSZipUtils from 'jszip-utils'
-import { saveAs } from 'file-saver'
-
+import axios from 'axios'
+// eslint-disable-next-line no-unused-vars
+import { exportScheduleWord } from '@/api/file'
 export default {
   data() {
     return {
       autoHeight: '200px',
       collegeList: ['软件工程', '计算机科学与技术'],
       courseId: ['软件工程课程设计AT1000', '嵌入式课程设计AT1001'],
-      wokerTable: { workeContent: '', details: '', edit: true },
+      wokerTable: { subject: '', details: '', edit: true, index: 1 },
       ruleForm: {
         title: '',
-        college: '',
-        course: '',
-        courseOrder: '',
-        gradeAndMajor: '',
-        totalMan: 0,
+        collegeName: '',
+        practName: '',
+        practNum: '',
+        major: '',
+        stuAmountMax: '',
+        time: '',
+        periods: [],
         period: '',
-        time: [],
-        teacher: '',
-        site: '',
-        fillFormName: '',
-        chairman: '',
-        date: '',
-        newList: [
-          { workContent: '',
-            details: '',
-            edit: true,
-            index: 1
-          }
-        ]
+        teacherName: '',
+        address: '',
+        subject1: '',
+        details1: '',
+        subject2: '',
+        details2: '',
+        subject3: '',
+        details3: '',
+        subject4: '',
+        details4: '',
+        subject5: '',
+        details5: '',
+        subject6: '',
+        details6: '',
+        preparer: '',
+        director: '',
+        date: ''
       },
+      newList: [
+        { subject: '',
+          details: '',
+          edit: true,
+          index: 1
+        }
+      ],
       rules: {
         title: [
-          { message: '请填写标题', trigger: 'blur' }
+          { required: true, message: '请填写标题', trigger: 'blur' }
         ],
-        college: [
+        collegeName: [
           { message: '请选择学院', trigger: 'blur' }
         ],
-        course: [
-          { message: '请填写课程代码', trigger: 'blur' }
+        practName: [
+          { message: '请填写课程名称,代码', trigger: 'blur' }
         ],
-        courseOrder: [
+        practNum: [
           { message: '请填写课程序号', trigger: 'blur' }
         ],
-        period: [
+        time: [
           { message: '请填写学时', trigger: 'blur' }
         ],
-        time: [
+        periods: [
           { type: 'array', message: '请填写实施时间', trigger: 'blur' }
         ],
-        teacher: [
+        teacherName: [
           { message: '请填写指导老师', trigger: 'blur' }
         ],
-        site: [
+        address: [
           { message: '请填写设计场地', trigger: 'blur' }
         ],
-        gradeAndMajor: [
+        major: [
           { message: '请填写所面向的年级专业', trigger: 'blur' }
         ]
       }
@@ -257,67 +256,80 @@ export default {
   },
   methods: {
     exportWord(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async(valid) => {
         if (valid) {
-          // eslint-disable-next-line no-unused-vars
-          const that = this
-          // 读取并获得模板文件的二进制内容
-          JSZipUtils.getBinaryContent('scheduleForm.doc', function(error, content) {
-            // model.docx是模板。我们在导出的时候，会根据此模板来导出对应的数据
-            // 抛出异常
-            if (error) {
-              throw error
-            }
-
-            // 创建一个PizZip实例，内容为模板的内容
-            var zip = new PizZip(content)
-            // 创建并加载docxtemplater实例对象
-            // eslint-disable-next-line new-cap
-            var doc = new docxtemplater().loadZip(zip)
-            // 设置模板变量的值
-            const docxData = {
-              title: this.ruleForm.title,
-              college: this.ruleForm.college,
-              course: this.ruleForm.course,
-              courseOrder: this.ruleForm.courseOrder,
-              gradeAndMajor: this.ruleForm.gradeAndMajor,
-              totalMan: this.ruleForm.totalMan,
-              period: this.ruleForm.period,
-              time: this.ruleForm.time,
-              teacher: this.ruleForm.teacher,
-              site: this.ruleForm.site,
-              workTable: this.ruleForm.newList,
-              fillFormName: this.ruleForm.fillFormName
-            }
-            doc.setData({
-              ...docxData
-            })
-
-            try {
-            // 用模板变量的值替换所有模板变量
-              doc.render()
-            } catch (error) {
-            // 抛出异常
-              const e = {
-                message: error.message,
-                name: error.name,
-                stack: error.stack,
-                properties: error.properties
-              }
-              console.log(JSON.stringify({ error: e }))
-              throw error
-            }
-
-            // 生成一个代表docxtemplater对象的zip文件（不是一个真实的文件，而是在内存中的表示）
-            const out = doc.getZip().generate({
-              type: 'blob',
-              mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            })
-            // 将目标文件对象保存为目标类型的文件，并命名
-            saveAs(out, '计划安排表格.docx')
-          })
+          this.fixRuleForm()
+          this.exportScheduleWord()
         }
       })
+    },
+    exportScheduleWord() {
+      console.log(this.ruleForm)
+      const data = this.ruleForm
+      axios.get('/test/exportWordServlet', {
+        params: {
+          title: data.title,
+          collegeName: data.collegeName,
+          practName: data.practName,
+          practNum: data.practNum,
+          major: data.major,
+          stuAmountMax: data.stuAmountMax,
+          time: data.time,
+          period: data.period,
+          teacherName: data.teacherName,
+          address: data.address,
+          subject1: data.subject1,
+          details1: data.details1,
+          subject2: data.subject2,
+          details2: data.details2,
+          subject3: data.subject3,
+          details3: data.details3,
+          subject4: data.subject4,
+          details4: data.details4,
+          subject5: data.subject5,
+          details5: data.details5,
+          subject6: data.subject6,
+          details6: data.details6,
+          preparer: data.preparer,
+          director: data.director,
+          date: data.date
+        }
+      }).then(res => {
+        console.log(res)
+      })
+      // exportScheduleWord(this.ruleForm)
+      //   .then(res => {
+      //     console.log(res)
+      //   })
+    },
+    fixRuleForm() {
+      const tableList = [...this.newList]
+      for (let index = tableList.length; index < 6; index++) {
+        tableList.push(this.wokerTable)
+      }
+      this.ruleForm.subject1 = tableList[0].subject
+      this.ruleForm.details1 = tableList[0].details
+      this.ruleForm.subject2 = tableList[1].subject
+      this.ruleForm.details2 = tableList[1].details
+      this.ruleForm.subject3 = tableList[2].subject
+      this.ruleForm.details3 = tableList[2].details
+      this.ruleForm.subject4 = tableList[3].subject
+      this.ruleForm.details4 = tableList[3].details
+      this.ruleForm.subject5 = tableList[4].subject
+      this.ruleForm.details5 = tableList[4].details
+      this.ruleForm.subject6 = tableList[5].subject
+      this.ruleForm.details6 = tableList[5].details
+      const period = []
+      // 实施时间字符串转化
+      this.ruleForm.periods.forEach(el => {
+        var date = new Date(el)
+        period.push(date.getFullYear() + `-` + (date.getMonth() + 1) + `-` + date.getDate())
+      })
+      this.ruleForm.period = period[0] + ' 至 ' + period[1]
+      // 填表时间字符串转化
+      var date = new Date(this.ruleForm.date)
+      const tempDate = date.getFullYear() + `-` + (date.getMonth() + 1) + `-` + date.getDate()
+      this.ruleForm.date = tempDate
     },
     saveInput(row, index) {
       row.edit = !row.edit
@@ -328,7 +340,7 @@ export default {
     },
     addRow() {
       const item = { ...this.wokerTable }
-      this.ruleForm.newList.push(item)
+      this.newList.push(item)
     },
     changeInput(row) {
       row.edit = !row.edit
@@ -337,7 +349,7 @@ export default {
       row.edit = !row.edit
     },
     deleteRow(index) {
-      this.ruleForm.newList.splice(index, 1)
+      this.newList.splice(index, 1)
     },
     getAutoHeight() {
       this.$nextTick(() => {

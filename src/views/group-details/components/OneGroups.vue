@@ -1,5 +1,5 @@
 <template>
-  <div class="components-container">
+  <div v-loading="loading" class="components-container">
     <split-pane split="vertical" @resize="resize">
       <template slot="paneL">
         <div class="left-container">
@@ -11,35 +11,23 @@
               <span style="font-size:18px;color:rgb(100,217,214)">项目简单介绍:</span>
               <el-divider />
               <p style="padding:0 10px;  line-height:25px;">
-                啥数据货到付款时候都快粉红色的开发和收快递费hi玩儿会uh风格我
-                还不赶紧和第三个福建省高房价的方便球完全地方和计划为过去五二分管委会visdufhiwhe9qheowh
-                加快速度不分开吧缉毒风暴武二哥氨基酸不放假韩阿世界杯的骄傲和备份时间按时发把交话费报价函
-                案件是否能卡比我快减法安会计师的板卡积分比去网吧卡视角的把控减肥把控技术部分卡视角发布按时
-                阿萨德你去安慰计划表求的供求外国一覆盖发神经开始登记卡汇顶科技啊阿斯加德哈开奖号打卡机卡时间和
+                {{ teamData.introduction }}
               </p>
               <el-divider />
-              <span style="font-size:18px;color:rgb(100,217,214)">指导老师：王宇英</span>
+              <span style="font-size:18px;color:rgb(100,217,214)">指导老师：{{ teamData.teacherName }}</span>
               <el-divider style="margin-bootom:30px" />
-              <span style="font-size:18px;color:rgb(100,217,214)">目前所处阶段：详细设计</span>
+              <span style="font-size:18px;color:rgb(100,217,214)">目前所处阶段：{{ teamData.phase }}</span>
               <el-divider style="margin-bootom:30px" />
               <div>
                 <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
-                <el-collapse style="margin-top:10px;">
-                  <el-collapse-item title="组长：谭维国" name="1">
-                    <div>学号：1800301322</div>
-                    <div>任务：负责整个队伍走向，把握项目进度，同时负责后端设计</div>
-                  </el-collapse-item>
-                  <el-collapse-item title="组员：刘镇猛" name="2">
-                    <div>学号：1800301322</div>
-                    <div>任务：主要负责前端设计</div>
-                  </el-collapse-item>
-                  <el-collapse-item title="组员：邓天生" name="3">
-                    <div>学号：1800301322</div>
-                    <div>任务：主要负责前端设计</div>
-                  </el-collapse-item>
-                  <el-collapse-item title="组员：聂城星" name="4">
-                    <div>学号：1800301322</div>
-                    <div>任务：负责后端设计</div>
+                <el-collapse v-for="(item,index) in member" :key="index" style="margin-top:10px;">
+                  <el-collapse-item>
+                    <div slot="title">
+                      <span v-if="item.leader===1" style="color:rgb(28,120,194)">组长：{{ item.stuName }}</span>
+                      <span v-else>组员：{{ item.stuName }}</span>
+                    </div>
+                    <div>学号：{{ item.stuId }}</div>
+                    <div>任务：{{ item.work }}</div>
                   </el-collapse-item>
                 </el-collapse>
               </div>
@@ -92,11 +80,15 @@
                 </div>
                 <div class="text item">
                   <el-input
+                    v-model="emailContent"
                     type="textarea"
                     :rows="12"
+                    :disabled="!roleNum"
+                    clearable
                     placeholder="请输入内容"
+                    class="emailInput"
                   />
-                  <el-button class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
+                  <el-button :disabled="!roleNum" class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
                 </div>
               </el-card>
             </div>
@@ -109,15 +101,27 @@
 
 <script>
 import splitPane from 'vue-splitpane'
-
+import { getGroupDetail, getMemberList } from '@/api/group'
 export default {
   name: 'OneGroups',
   components: { splitPane },
   data() {
     return {
       fileActiveName: 'first',
-      fileList: []
+      fileList: [],
+      teamData: {},
+      teamId: this.$route.query.teamId,
+      member: [],
+      leaderId: '',
+      roleNum: this.$store.getters.roleNum,
+      loading: false,
+      emailContent: ''
     }
+  },
+  mounted() {
+    this.loading = true
+    this.getGroupDetail(this.teamId)
+    this.getMemberList(this.teamId)
   },
   methods: {
     resize() {
@@ -159,12 +163,36 @@ export default {
       }).catch(() => {
         console.error('catch err')
       })
+    },
+    getGroupDetail(id) {
+      getGroupDetail(id).then(res => {
+        this.teamData = res.data
+      })
+    },
+    getMemberList(id) {
+      getMemberList(id).then(res => {
+        this.member = res.data
+        console.log(this.member)
+        this.member.forEach(el => {
+          if (el.leader === 1) {
+            this.leaderId = el.stuId
+            console.log(this.leaderId)
+            this.loading = false
+            return
+          }
+        })
+        this.loading = false
+      })
     }
   }
 }
 </script>
 
 <style  lang="scss">
+
+.emailInput{
+  border: solid 1px rgb(255,187,0);
+}
 .text {
     font-size: 14px;
   }

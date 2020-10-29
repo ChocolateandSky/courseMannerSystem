@@ -8,21 +8,13 @@ export function getGroupDetailByTeacher(data) {
   })
 }
 
-export function getGroupDetailByGroupId(data) {
+export function getMemberList(id) {
   return request({
     url: '/test/getGroupMemberServlet',
     method: 'get',
-    params: { groupId: data.groupId }
+    params: { groupId: id }
   })
 }
-
-// export function getGroupList(data) {
-//   return request({
-//     url: '/test/getGroupInfoBypractIdServlet',
-//     method: 'get',
-//     params: { practId: data.practId }
-//   })
-// }
 
 export function getStudnetList(data) {
   return request({
@@ -39,3 +31,12 @@ export function getGroupList(id) {
     params: { teacherId: id }
   })
 }
+
+export function getGroupDetail(id) {
+  return request({
+    url: '/test/getGroupInfoBygroupIdServlet',
+    method: 'get',
+    params: { groupId: id }
+  })
+}
+

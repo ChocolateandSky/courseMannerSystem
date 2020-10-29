@@ -3,13 +3,14 @@
     <div
       class="filter-container "
     >
-      <one-groups class="one-groups" :style="{height:autoHeight}" />
+      <one-groups :team-data="teamData" class="one-groups" :style="{height:autoHeight}" />
     </div>
   </div>
 </template>
 
 <script>
 import OneGroups from './components/OneGroups'
+import { getGroupDetail } from '@/api/group'
 
 export default {
   name: 'GroupDetails',
@@ -18,8 +19,13 @@ export default {
   },
   data() {
     return {
-      autoHeight: '200px'
+      autoHeight: '200px',
+      teamId: this.$route.query.teamId,
+      teamData: null
     }
+  },
+  created() {
+    this.getGroupDetail(this.teamId)
   },
   mounted() {
     this.getAutoHeight()
@@ -31,6 +37,11 @@ export default {
     getAutoHeight() {
       this.$nextTick(() => {
         this.autoHeight = window.innerHeight + 100 + 'px'
+      })
+    },
+    getGroupDetail(id) {
+      getGroupDetail(id).then(res => {
+        this.teamData = res.data
       })
     }
   }
