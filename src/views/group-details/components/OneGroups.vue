@@ -1,5 +1,5 @@
 <template>
-  <div class="components-container">
+  <div v-loading="loading" class="components-container">
     <split-pane split="vertical" @resize="resize">
       <template slot="paneL">
         <div class="left-container">
@@ -80,10 +80,13 @@
                 </div>
                 <div class="text item">
                   <el-input
+                    v-model="emailContent"
                     type="textarea"
                     :rows="12"
                     :disabled="!roleNum"
+                    clearable
                     placeholder="请输入内容"
+                    class="emailInput"
                   />
                   <el-button :disabled="!roleNum" class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
                 </div>
@@ -110,10 +113,13 @@ export default {
       teamId: this.$route.query.teamId,
       member: [],
       leaderId: '',
-      roleNum: this.$store.getters.roleNum
+      roleNum: this.$store.getters.roleNum,
+      loading: false,
+      emailContent: ''
     }
   },
   mounted() {
+    this.loading = true
     this.getGroupDetail(this.teamId)
     this.getMemberList(this.teamId)
   },
@@ -171,9 +177,11 @@ export default {
           if (el.leader === 1) {
             this.leaderId = el.stuId
             console.log(this.leaderId)
+            this.loading = false
             return
           }
         })
+        this.loading = false
       })
     }
   }
@@ -181,6 +189,10 @@ export default {
 </script>
 
 <style  lang="scss">
+
+.emailInput{
+  border: solid 1px rgb(255,187,0);
+}
 .text {
     font-size: 14px;
   }

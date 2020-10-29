@@ -39,3 +39,4 @@ export function getGroupDetail(id) {
     params: { groupId: id }
   })
 }
+

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div
-      v-loading.fullscreen.lock="loading"
+      v-loading="loading"
       class="filter-container"
     >
       <div class="searchBox">
@@ -124,7 +124,6 @@ export default {
     this.getGroupList(this.$store.getters.user.id)
     this.getBaseIfo()
     this.getAutoHeight()
-    this.loading = false
     window.onresize = () => {
       this.getAutoHeight()
     }
@@ -182,13 +181,14 @@ export default {
           this.tempFromData = res.data
         })
     },
-    getBaseIfo() {
-      getTeacherList().then(res => {
+    async getBaseIfo() {
+      await getTeacherList().then(res => {
         this.teacherList = res.data
       })
-      getAllPracticum().then(res => {
+      await getAllPracticum().then(res => {
         this.practicumList = res.data
       })
+      this.loading = false
     }
   }
 }

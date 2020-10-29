@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <div v-if="userIfo">
       <el-row :gutter="20">
 
@@ -37,7 +37,8 @@ export default {
       activeTab: 'account',
       isTeacher: false,
       isStudent: false,
-      college: this.$store.getters.user.college
+      college: this.$store.getters.user.college,
+      loading: false
     }
   },
   computed: {
@@ -59,7 +60,9 @@ export default {
     }
   },
   created() {
+    this.loading = true
     this.getUser()
+    this.loading = false
   },
   mounted() {
     console.log(this.userIfo)

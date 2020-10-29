@@ -171,6 +171,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 // eslint-disable-next-line no-unused-vars
 import { exportScheduleWord } from '@/api/file'
 export default {
@@ -220,28 +221,28 @@ export default {
           { required: true, message: '请填写标题', trigger: 'blur' }
         ],
         collegeName: [
-          { required: true, message: '请选择学院', trigger: 'blur' }
+          { message: '请选择学院', trigger: 'blur' }
         ],
         practName: [
-          { required: true, message: '请填写课程名称,代码', trigger: 'blur' }
+          { message: '请填写课程名称,代码', trigger: 'blur' }
         ],
         practNum: [
-          { required: true, message: '请填写课程序号', trigger: 'blur' }
+          { message: '请填写课程序号', trigger: 'blur' }
         ],
         time: [
-          { required: true, message: '请填写学时', trigger: 'blur' }
+          { message: '请填写学时', trigger: 'blur' }
         ],
         periods: [
-          { required: true, type: 'array', message: '请填写实施时间', trigger: 'blur' }
+          { type: 'array', message: '请填写实施时间', trigger: 'blur' }
         ],
         teacherName: [
-          { required: true, message: '请填写指导老师', trigger: 'blur' }
+          { message: '请填写指导老师', trigger: 'blur' }
         ],
         address: [
-          { required: true, message: '请填写设计场地', trigger: 'blur' }
+          { message: '请填写设计场地', trigger: 'blur' }
         ],
         major: [
-          { required: true, message: '请填写所面向的年级专业', trigger: 'blur' }
+          { message: '请填写所面向的年级专业', trigger: 'blur' }
         ]
       }
     }
@@ -264,10 +265,42 @@ export default {
     },
     exportScheduleWord() {
       console.log(this.ruleForm)
-      exportScheduleWord(this.ruleForm)
-        .then(res => {
-          console.log(res)
-        })
+      const data = this.ruleForm
+      axios.get('/test/exportWordServlet', {
+        params: {
+          title: data.title,
+          collegeName: data.collegeName,
+          practName: data.practName,
+          practNum: data.practNum,
+          major: data.major,
+          stuAmountMax: data.stuAmountMax,
+          time: data.time,
+          period: data.period,
+          teacherName: data.teacherName,
+          address: data.address,
+          subject1: data.subject1,
+          details1: data.details1,
+          subject2: data.subject2,
+          details2: data.details2,
+          subject3: data.subject3,
+          details3: data.details3,
+          subject4: data.subject4,
+          details4: data.details4,
+          subject5: data.subject5,
+          details5: data.details5,
+          subject6: data.subject6,
+          details6: data.details6,
+          preparer: data.preparer,
+          director: data.director,
+          date: data.date
+        }
+      }).then(res => {
+        console.log(res)
+      })
+      // exportScheduleWord(this.ruleForm)
+      //   .then(res => {
+      //     console.log(res)
+      //   })
     },
     fixRuleForm() {
       const tableList = [...this.newList]

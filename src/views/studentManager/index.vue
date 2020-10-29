@@ -5,10 +5,12 @@
         <div class="searchBox">
           <el-input
             v-model="studentName"
+            clearable
             placeholder="请输入学生姓名"
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
+          <el-button style="margin-right:30px" icon="el-icon-search" circle @click="seacherName" />
           <el-select v-model="teacherName" clearable placeholder="可筛选指导老师">
             <el-option
               v-for="item in teacherList"
@@ -25,7 +27,6 @@
               :value="item.practName"
             />
           </el-select>
-          <!-- <el-button style="margin-left:10px;margin-right:10px" icon="el-icon-search" circle /> -->
         </div>
         <el-button class="pan-btn green-btn message-btn" style="margin-left:20px" @click="handlePostMessage">发布公告</el-button>
       </div>
@@ -33,7 +34,7 @@
         <el-collapse accordion class="groupCollapse">
           <el-collapse-item v-for="(item,index) in dataList" :key="index">
             <template slot="title">
-              <div style="font-size: 15px;"> {{ item.managerId }}{{ item.stuName }}</div>
+              <div style="font-size: 15px;"> {{ item.stuId }}{{ item.stuName }}</div>
               <div style="font-size: 15px;">——{{ item.practName }}</div>
               <el-button type="text" size="mini" class="groupDetail" style="font-size: 15px;" @click.native="checkGroup(item)">查看所属小组详情</el-button>
             </template>
@@ -109,7 +110,6 @@ export default {
     this.loading = true
     this.getAllStudentList()
     this.getBaseInfo()
-    this.loading = false
   },
   methods: {
     handlePostMessage() {
@@ -137,13 +137,28 @@ export default {
           console.log(this.dataList)
         })
     },
-    getBaseInfo() {
-      getTeacherList().then(res => {
+    async  getBaseInfo() {
+      await getTeacherList().then(res => {
         this.teacherList = res.data
       })
-      getAllPracticum().then(res => {
+      await getAllPracticum().then(res => {
         this.practList = res.data
       })
+      this.loading = false
+    },
+    seacherName() {
+      this.loading = true
+      if (this.studentName === '') {
+        this.dataList = [...this.tempDataList]
+      } else {
+        this.dataList = []
+        this.tempDataList.forEach(el => {
+          if (el.stuName.includes(this.studentName)) {
+            this.dataList.push(el)
+          }
+        })
+      }
+      this.loading = false
     }
   }
 }
