@@ -11,15 +11,40 @@
       </el-header>
       <el-main>
         <el-table :data="filterTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" style="width: 100%">
-          <el-table-column type="index" label="序号" width="50" align="center">
+          <el-table-column type="index" width="50" align="center">
             <template slot-scope="scope">
               <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="courseName" label="课程名" width="180" align="center" />
-          <el-table-column label="操作" align="center" width="180">
+          <el-table-column prop="courseName" label="课程设计名称" width="auto" align="center" />
+          <el-table-column prop="courseNumber" label="课程设计编号" width="auto" align="center" />
+          <el-table-column prop="num1" label="学生容量" width="150" align="center" />
+          <el-table-column prop="num2" label="当前人数" width="150" align="center" />
+          <el-table-column label="开始日期" width="200" align="center">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.buttonVisible" size="medium" type="primary" @click="handleAddCourses(scope.$index, scope.row.buttonVisible)">选课</el-button>
+              <i class="el-icon-time" />
+              <span style="margin-left: 10px">{{ scope.row.beginDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="结束日期" width="200" align="center">
+            <template slot-scope="scope">
+              <i class="el-icon-time" />
+              <span style="margin-left: 10px">{{ scope.row.endDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="admin" label="管理员" width="120" align="center" />
+          <el-table-column label="操作" align="center" width="180" fixed="right">
+            <template slot-scope="scope">
+              <el-popconfirm
+                v-if="scope.row.buttonVisible"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                title="是否要加入该课程设计？"
+                @onConfirm="handleAddCourses(scope.$index, scope.row)"
+                @onCancel="$message({type: 'info', message: '已取消'})"
+              >
+                <el-button slot="reference" size="medium" type="primary">选课</el-button>
+              </el-popconfirm>
               <el-button v-else size="medium" type="info" icon="el-icon-view" @click="handleReadInfo(scope.$index, scope.row)">查看</el-button>
             </template>
           </el-table-column>
@@ -83,9 +108,14 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
     },
-    handleAddCourses(index, buttonVisible) {
+    handleAddCourses(index, row) {
       // console.log(index)
-      this.tableData[(this.currentPage - 1) * this.pageSize + index].buttonVisible = !buttonVisible
+      // this.tableData[(this.currentPage - 1) * this.pageSize + index].buttonVisible = !buttonVisible
+      row.buttonVisible = !row.buttonVisible
+      this.$message({
+        type: 'success',
+        message: '加入成功'
+      })
     },
     handleReadInfo(index, row) {
       console.log(index, row)
