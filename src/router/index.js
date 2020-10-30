@@ -185,6 +185,18 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/courseDetails',
+    component: Layout,
+    hidden: true,
+    meta: { roles: ['teacher', 'admin'] },
+    children: [{
+      path: 'index',
+      name: 'courseDetails',
+      component: () => import('@/views/course-details/index'),
+      meta: { title: '课程设计详细', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+    }]
+  },
+  {
     path: '/groupDetails',
     component: Layout,
     hidden: true,
@@ -223,6 +235,20 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/stu-course/index'),
         name: 'StuCourse',
+        meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+      }
+    ]
+  },
+  {
+    path: '/courseDetails',
+    component: Layout,
+    hidden: true,
+    meta: { roles: ['student'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/course-details'),
+        name: 'courseDetails',
         meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
       }
     ]

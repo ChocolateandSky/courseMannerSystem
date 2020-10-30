@@ -20,12 +20,11 @@
           ref="multipleTable"
           :data="tableData.slice((currentPage-1) * pageSize, currentPage * pageSize)"
           style="width: 100%"
-          :header-cell-style="{background:'#DCDFE6',color:'#303133'}"
         >
-          <el-table-column label="序号" type="index" :index="indexMethod" width="50" align="center" />
-          <el-table-column label="课程名称" width="120" prop="practName" align="center" />
-          <el-table-column label="课程编号" width="120" prop="courseNumber" align="center" />
-          <el-table-column label="课程容量" width="120" prop="stuAmountMax" align="center" />
+          <el-table-column type="index" :index="indexMethod" width="50" align="center" />
+          <el-table-column label="课程设计名称" width="auto" prop="practName" align="center" />
+          <el-table-column label="课程设计编号" width="auto" prop="courseNumber" align="center" />
+          <el-table-column label="学生容量" width="120" prop="stuAmountMax" align="center" />
           <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">
               <i class="el-icon-time" />
@@ -39,10 +38,10 @@
             </template>
           </el-table-column>
           <el-table-column label="管理员" width="150" prop="managerName" align="center" />
-          <el-table-column label="操作" width="auto" align="center">
+          <el-table-column label="操作" width="250" align="center" fixed="right">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
-              <el-button type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
+              <el-button size="medium" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
+              <el-button size="medium" type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -50,10 +49,12 @@
       <!-- 底部内容 -->
       <el-footer>
         <el-pagination
+          background
           layout="prev, pager, next"
           :total="tableData.length"
           :current-page="currentPage"
           :page-size="pageSize"
+          :hide-on-single-page="tableData.length <= pageSize ? true : false"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
@@ -63,14 +64,14 @@
     <el-dialog
       title="新建课程设计"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :model="addForm" label-width="80px">
-        <el-form-item label="课程名称:" prop="courseName">
-          <el-input v-model="addForm.courseName" placeholder="请输入内容" :style="{width: '80%'}" />
+      <el-form ref="addFormRef" :model="addForm" label-position="right" label-width="80px">
+        <el-form-item label="课设名称" prop="courseName">
+          <el-input v-model="addForm.courseName" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="课程容量" prop="sum">
+        <el-form-item label="学生容量" prop="sum">
           <el-input-number v-model="addForm.sum" controls-position="right" :min="1" />
         </el-form-item>
         <el-form-item label="时间" prop="date">
@@ -84,15 +85,15 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item v-if="addDialogVisible" label="指导老师:" prop="optionValue">
-          <el-cascader v-model="addForm.optionValue" :style="{width:'80%'}" :options="options" :props="defaultDate" collapse-tags />
+        <el-form-item v-if="addDialogVisible" label="指导老师" prop="optionValue">
+          <el-cascader v-model="addForm.optionValue" :style="{width:'100%'}" :options="options" :props="defaultDate" collapse-tags />
         </el-form-item>
-        <el-form-item label="简介:" prop="desc">
-          <el-input v-model="addForm.desc" placeholder="请输入内容" type="textarea" maxlength="150" show-word-limit resize="none" :style="{width: '80%'}" rows="7" />
+        <el-form-item label="简介" prop="desc">
+          <el-input v-model="addForm.desc" placeholder="请输入内容" type="textarea" maxlength="150" show-word-limit resize="none" rows="6" />
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="addDialogClosed">取 消</el-button>
+        <el-button @click="addDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addCourse">确 定</el-button>
       </div>
     </el-dialog>
@@ -100,17 +101,17 @@
     <el-dialog
       title="修改用户"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
-      <el-form ref="editFormRef" :model="editForm" label-width="80px">
-        <el-form-item label="课程名称:" prop="courseName">
-          <el-input v-model="editForm.className" :style="{width: '80%'}" />
+      <el-form ref="editFormRef" :model="editForm" label-position="right" label-width="80px">
+        <el-form-item label="课设名称" prop="courseName">
+          <el-input v-model="editForm.className" />
         </el-form-item>
-        <el-form-item label="管理员:" prop="admin">
-          <el-input v-model="editForm.admin" :style="{width: '80%'}" />
+        <el-form-item label="管理员" prop="admin">
+          <el-input v-model="editForm.admin" />
         </el-form-item>
-        <el-form-item label="课程容量" prop="sum">
+        <el-form-item label="学生容量" prop="sum">
           <el-input-number v-model="editForm.sum" controls-position="right" :min="1" />
         </el-form-item>
         <el-form-item label="时间" prop="date">
@@ -122,11 +123,11 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="指导老师:" prop="tearchers">
+        <el-form-item label="指导老师" prop="tearchers">
           <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
         </el-form-item>
-        <el-form-item label="简介:" prop="desc">
-          <el-input v-model="editForm.desc" type="textarea" resize="none" :style="{width: '80%'}" rows="7" />
+        <el-form-item label="简介" prop="desc">
+          <el-input v-model="editForm.desc" type="textarea" resize="none" rows="6" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -148,7 +149,7 @@ export default {
       userId: '', // 用户id
       userName: '', // 用户名
       currentPage: 1, // 当前页码，默认为第 1 页
-      pageSize: 5, // 每页的大小
+      pageSize: 6, // 每页的大小
       searchInfo: '', // 搜索关键字
       tableData: [],
       defaultDate: {
@@ -277,8 +278,10 @@ export default {
     },
     // 监听新建课程设计对话框的关闭
     addDialogClosed() {
-      this.addDialogVisible = false
-      this.$refs.addFormRef.resetFields()
+      // this.addDialogVisible = false
+      this.$nextTick(() => {
+        this.$refs.addFormRef.resetFields()
+      })
     },
     // 添加课程设计
     addCourse() {
@@ -309,20 +312,25 @@ export default {
         })
       })
       this.addDialogClosed()
+      this.addDialogVisible = false
     }
   }
 }
 </script>
 
 <style scoped>
-.app-container .el-container {
-  background-color: #FFFFFF;
-  padding: 20px 20px 10px 20px;
-}
+  /* .el-header {
+    height: 15vh;
+  } */
 
-.app-container .el-container .el-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .el-main {
+    height: 63vh;
+  }
+
+  .el-footer {
+    height: 17vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
