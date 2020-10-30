@@ -239,6 +239,20 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/courseDetails',
+    component: Layout,
+    hidden: true,
+    meta: { roles: ['student'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/course-details'),
+        name: 'courseDetails',
+        meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
