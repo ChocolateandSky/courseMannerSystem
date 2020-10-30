@@ -10,7 +10,6 @@
 
 <script>
 import OneGroups from './components/OneGroups'
-import { getGroupDetail } from '@/api/group'
 
 export default {
   name: 'GroupDetails',
@@ -19,9 +18,7 @@ export default {
   },
   data() {
     return {
-      autoHeight: '200px',
-      teamId: this.$route.query.teamId,
-      teamData: null
+      autoHeight: '200px'
     }
   },
   created() {
@@ -37,11 +34,6 @@ export default {
     getAutoHeight() {
       this.$nextTick(() => {
         this.autoHeight = window.innerHeight + 100 + 'px'
-      })
-    },
-    getGroupDetail(id) {
-      getGroupDetail(id).then(res => {
-        this.teamData = res.data
       })
     }
   }
