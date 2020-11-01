@@ -43,6 +43,9 @@
             <el-form-item label="小组名称" prop="name">
               <el-input v-model="form.name" />
             </el-form-item>
+            <el-form-item label="课题" prop="subject">
+              <el-input v-model="form.subject" />
+            </el-form-item>
             <el-form-item label="小组人数" prop="num">
               <el-input-number v-model="form.num" controls-position="right" :min="1" :max="5" />
             </el-form-item>
@@ -76,6 +79,7 @@
           <el-table :data="tableData" style="width: 100%" max-height="230">
             <el-table-column type="index" width="50" align="center" />
             <el-table-column prop="name" label="小组名称" width="auto" align="center" />
+            <el-table-column prop="subject" label="课题" width="auto" align="center" />
             <el-table-column prop="leader" label="组长" width="180" align="center" />
             <el-table-column prop="teacher" label="指导老师" width="180" align="center" />
             <el-table-column prop="num" label="小组容量" width="180" align="center" />
@@ -109,13 +113,13 @@ export default {
       activeName1: 'first',
       activeName2: '0',
       tableData: [
-        { name: '课程1', buttonVisible: true },
-        { name: '课程2', buttonVisible: true },
-        { name: '课程3', buttonVisible: true },
-        { name: '课程4', buttonVisible: true },
-        { name: '课程5', buttonVisible: true },
-        { name: '课程6', buttonVisible: true },
-        { name: '课程7', buttonVisible: true }
+        { name: '小组1', buttonVisible: true },
+        { name: '小组2', buttonVisible: true },
+        { name: '小组3', buttonVisible: true },
+        { name: '小组4', buttonVisible: true },
+        { name: '小组5', buttonVisible: true },
+        { name: '小组6', buttonVisible: true },
+        { name: '小组7', buttonVisible: true }
       ],
       dialogFormVisible: false,
       options: [{
@@ -127,6 +131,7 @@ export default {
       }],
       form: {
         teamName: '',
+        subject: '',
         num: 1,
         teacher: '',
         desc: ''
