@@ -28,3 +28,32 @@ export function getCoursesInfo(id) {
     }
   })
 }
+
+export function getStuChosenCourseInfo(id) {
+  return request({
+    url: '/test/getSelectedPracticumInfoByStudentServlet',
+    method: 'get',
+    params: {
+      stuId: id
+    }
+  })
+}
+
+export function getStuNotChosenCourseInfo(id) {
+  return request({
+    url: '/test/getUnselectedPracticumInfoByStudentServlet',
+    method: 'get',
+    params: {
+      stuId: id
+    }
+  })
+}
+
+export function studentAddCourse(data) {
+  return request({
+    url: '/test/selectPracticumByStudentServlet',
+    headers: { 'Content-Type': 'text/plain' },
+    method: 'put',
+    data
+  })
+}

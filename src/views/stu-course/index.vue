@@ -33,7 +33,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="admin" label="管理员" width="120" align="center" />
-          <el-table-column label="操作" align="center" width="180" fixed="right">
+          <el-table-column label="操作" align="center" width="230" fixed="right">
             <template slot-scope="scope">
               <el-popconfirm
                 v-if="scope.row.buttonVisible"
@@ -45,7 +45,10 @@
               >
                 <el-button slot="reference" size="medium" type="primary">选课</el-button>
               </el-popconfirm>
-              <el-button v-else size="medium" type="info" icon="el-icon-view" @click="handleReadInfo(scope.$index, scope.row)">查看</el-button>
+              <div v-else>
+                <el-button size="medium" type="success" icon="el-icon-view" @click="handleReadInfo(scope.$index, scope.row)">查看</el-button>
+                <el-button size="medium" type="danger" @click="handleReadInfo(scope.$index, scope.row)">退出<i class="el-icon-close el-icon--right" /></el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -67,33 +70,74 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getStuChosenCourseInfo, getStuNotChosenCourseInfo, studentAddCourse } from '@/api/course'
 export default {
   data() {
     return {
       currentPage: 1,
       pageSize: 6,
       filterTableData: [],
-      tableData: [
-        { courseName: '课程1', buttonVisible: true },
-        { courseName: '课程2', buttonVisible: true },
-        { courseName: '课程3', buttonVisible: true },
-        { courseName: '课程4', buttonVisible: true },
-        { courseName: '课程5', buttonVisible: true },
-        { courseName: '课程6', buttonVisible: true },
-        { courseName: '课程7', buttonVisible: true }
-      ],
+      tableData: [],
       select: '',
       options: [
         { value: 'all', label: '全部' },
         { value: '0', label: '未选' },
         { value: '1', label: '已选' }
-      ]
+      ],
+      userId: '',
+      userName: '',
+      major: ''
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.getUser()
+  },
   mounted() {
+    this.getTableDate(this.userId)
     this.filterData()
   },
   methods: {
+    getUser() {
+      this.userId = this.user.id
+      this.userName = this.user.name
+      this.major = this.user.major
+    },
+    getTableDate(id) {
+      getStuChosenCourseInfo(id).then(res => {
+        for (const i in res.data) {
+          this.tableData.push({
+            courseName: res.data[i].practName,
+            courseNumber: res.data[i].id,
+            num1: res.data[i].stuAmountMax,
+            num2: res.data[i].stuNum,
+            beginDate: res.data[i].beginTime,
+            endDate: res.data[i].endTime,
+            admin: res.data[i].managerName,
+            teacherId: res.data[i].managerId,
+            buttonVisible: false
+          })
+        }
+      })
+      getStuNotChosenCourseInfo(id).then(res => {
+        for (const i in res.data) {
+          this.tableData.push({
+            courseName: res.data[i].practName,
+            courseNumber: res.data[i].id,
+            num1: res.data[i].stuAmountMax,
+            num2: res.data[i].stuNum,
+            beginDate: res.data[i].beginTime,
+            endDate: res.data[i].endTime,
+            admin: res.data[i].managerName,
+            teacherId: res.data[i].managerId,
+            buttonVisible: true
+          })
+        }
+      })
+    },
     filterData(value) {
       this.currentPage = 1
       switch (value) {
@@ -111,10 +155,26 @@ export default {
     handleAddCourses(index, row) {
       // console.log(index)
       // this.tableData[(this.currentPage - 1) * this.pageSize + index].buttonVisible = !buttonVisible
-      row.buttonVisible = !row.buttonVisible
-      this.$message({
-        type: 'success',
-        message: '加入成功'
+      studentAddCourse({
+        'major': this.major,
+        'practId': row.courseNumber,
+        'practName': row.courseName,
+        'stuId': this.userId,
+        'stuName': this.userName,
+        'teacherId': row.teacherId,
+        'teacherName': row.admin
+      }).then(res => {
+        row.buttonVisible = !row.buttonVisible
+        row.num2++
+        this.$message({
+          type: 'success',
+          message: '加入成功'
+        })
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '加入失败'
+        })
       })
     },
     handleReadInfo(index, row) {
