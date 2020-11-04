@@ -47,7 +47,7 @@
               </el-popconfirm>
               <div v-else>
                 <el-button size="medium" type="success" icon="el-icon-view" @click="handleReadInfo(scope.$index, scope.row)">查看</el-button>
-                <el-button size="medium" type="danger" @click="handleReadInfo(scope.$index, scope.row)">退出<i class="el-icon-close el-icon--right" /></el-button>
+                <el-button size="medium" type="danger" @click="handleExitCourse(scope.$index, scope.row)">退出<i class="el-icon-close el-icon--right" /></el-button>
               </div>
             </template>
           </el-table-column>
@@ -76,7 +76,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      pageSize: 6,
+      pageSize: 5,
       filterTableData: [],
       tableData: [],
       select: '',
@@ -138,9 +138,9 @@ export default {
         }
       })
     },
-    filterData(value) {
+    filterData(val) {
       this.currentPage = 1
-      switch (value) {
+      switch (val) {
         case '0': this.filterTableData = this.tableData.filter(item => item.buttonVisible === true); break
         case '1': this.filterTableData = this.tableData.filter(item => item.buttonVisible === false); break
         default: this.filterTableData = this.tableData; break
@@ -166,6 +166,7 @@ export default {
       }).then(res => {
         row.buttonVisible = !row.buttonVisible
         row.num2++
+        this.filterData(this.select)
         this.$message({
           type: 'success',
           message: '加入成功'
@@ -178,13 +179,17 @@ export default {
       })
     },
     handleReadInfo(index, row) {
-      console.log(index, row)
+      // console.log(index, row)
       this.$router.push({
         name: 'courseDetails',
         query: {
           courseId: row.courseNumber
         }
       })
+    },
+    handleExitCourse(index, row) {
+      console.log(index, row)
+      // row.buttonVisible = !row.buttonVisible
     }
   }
 }

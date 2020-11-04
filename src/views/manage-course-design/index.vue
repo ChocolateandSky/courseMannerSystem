@@ -23,7 +23,7 @@
         >
           <el-table-column type="index" :index="indexMethod" width="50" align="center" />
           <el-table-column label="课程设计名称" width="auto" prop="practName" align="center" />
-          <el-table-column label="课程设计编号" width="auto" prop="courseNumber" align="center" />
+          <el-table-column label="课程设计编号" width="auto" prop="id" align="center" />
           <el-table-column label="学生容量" width="120" prop="stuAmountMax" align="center" />
           <el-table-column label="开始日期" width="170" align="center">
             <template slot-scope="scope">

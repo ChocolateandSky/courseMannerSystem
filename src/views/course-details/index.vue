@@ -84,7 +84,7 @@
             <el-table-column prop="teacher" label="指导老师" width="180" align="center" />
             <el-table-column prop="num" label="小组容量" width="180" align="center" />
             <el-table-column prop="num2" label="当前人数" width="180" align="center" />
-            <el-table-column label="操作" align="center" width="180" fixed="right">
+            <el-table-column label="操作" align="center" width="230" fixed="right">
               <template slot-scope="scope">
                 <el-popconfirm
                   v-if="scope.row.buttonVisible"
@@ -96,7 +96,10 @@
                 >
                   <el-button slot="reference" size="medium" type="primary">加入</el-button>
                 </el-popconfirm>
-                <el-button v-else size="medium" type="info" icon="el-icon-view">查看</el-button>
+                <div v-else>
+                  <el-button size="medium" type="info" icon="el-icon-view">查看</el-button>
+                  <el-button size="medium" type="danger">退出<i class="el-icon-close el-icon--right" /></el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
