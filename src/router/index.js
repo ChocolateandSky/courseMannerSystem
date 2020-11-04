@@ -249,7 +249,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/course-details'),
         name: 'courseDetails',
-        meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+        meta: { title: '课程设计详细', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
       }
     ]
   },

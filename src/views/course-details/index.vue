@@ -135,7 +135,8 @@ export default {
         num: 1,
         teacher: '',
         desc: ''
-      }
+      },
+      courseId: this.$route.query.courseId
     }
   },
   methods: {

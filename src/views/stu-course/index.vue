@@ -180,7 +180,10 @@ export default {
     handleReadInfo(index, row) {
       console.log(index, row)
       this.$router.push({
-        name: 'courseDetails'
+        name: 'courseDetails',
+        query: {
+          courseId: row.courseNumber
+        }
       })
     }
   }
