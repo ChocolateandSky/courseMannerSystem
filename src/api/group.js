@@ -48,3 +48,14 @@ export function setStudentWork(data) {
   })
 }
 
+export function setPhase(data) {
+  return request({
+    url: '/test/setPhaseInGroupServlet',
+    method: 'post',
+    params: {
+      groupId: data.groupId,
+      phase: data.phase
+    }
+  })
+}
+

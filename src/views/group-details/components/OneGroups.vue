@@ -16,7 +16,17 @@
               <el-divider />
               <span style="font-size:18px;color:rgb(100,217,214)">指导老师：{{ teamData.teacherName }}</span>
               <el-divider style="margin-bootom:30px" />
-              <span style="font-size:18px;color:rgb(100,217,214)">目前所处阶段：{{ teamData.phase }}</span>
+              <div style="font-size:18px;color:rgb(100,217,214)">
+                <span>目前所处阶段:</span>
+                <el-input
+                  v-model="teamData.phase"
+                  :class="{active:!readonly}"
+                  :readonly="readonly"
+                  style="width:200px;border:none"
+                />
+                <el-link v-if="readonly" type="primary" @click="changeReadonly">设置目前阶段</el-link>
+                <el-link v-else type="primary" @click="setPhase">确定</el-link>
+              </div>
               <el-divider style="margin-bootom:30px" />
               <div>
                 <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
@@ -108,7 +118,7 @@
 
 <script>
 import splitPane from 'vue-splitpane'
-import { getGroupDetail, getMemberList, setStudentWork } from '@/api/group'
+import { getGroupDetail, getMemberList, setStudentWork, setPhase } from '@/api/group'
 import { sendMailToGroup } from '@/api/user'
 export default {
   name: 'OneGroups',
@@ -120,6 +130,7 @@ export default {
       teamData: {},
       teamId: this.$route.query.teamId,
       member: [],
+      readonly: true,
       memberWork: {
         groupId: this.$route.query.teamId,
         stuIdAndWork: []
@@ -234,13 +245,27 @@ export default {
           console.log(err)
           this.$message.error('设置失败')
         })
+    },
+    setPhase() {
+      setPhase().then(res => {
+        console.log(res)
+        this.readonly = true
+      })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    changeReadonly() {
+      this.readonly = false
     }
   }
 }
 </script>
 
 <style  lang="scss">
-
+.active{
+  border: solid 1px;
+}
 .emailInput{
   border: solid 1px rgb(255,187,0);
 }

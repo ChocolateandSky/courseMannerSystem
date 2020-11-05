@@ -214,13 +214,13 @@ export const asyncRoutes = [
     path: '/studentManager',
     component: Layout,
     hidden: false,
-    meta: { roles: ['teacher', 'admin', 'student'] },
+    meta: { roles: ['teacher', 'admin'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/studentManager/index'),
         name: 'StudentManager',
-        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin', 'student'] }
+        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
       }
     ]
   },
