@@ -121,21 +121,21 @@ export default {
             buttonVisible: false
           })
         }
-      })
-      getStuNotChosenCourseInfo(id).then(res => {
-        for (const i in res.data) {
-          this.tableData.push({
-            courseName: res.data[i].practName,
-            courseNumber: res.data[i].id,
-            num1: res.data[i].stuAmountMax,
-            num2: res.data[i].stuNum,
-            beginDate: res.data[i].beginTime,
-            endDate: res.data[i].endTime,
-            admin: res.data[i].managerName,
-            teacherId: res.data[i].managerId,
-            buttonVisible: true
-          })
-        }
+        getStuNotChosenCourseInfo(id).then(res => {
+          for (const i in res.data) {
+            this.tableData.push({
+              courseName: res.data[i].practName,
+              courseNumber: res.data[i].id,
+              num1: res.data[i].stuAmountMax,
+              num2: res.data[i].stuNum,
+              beginDate: res.data[i].beginTime,
+              endDate: res.data[i].endTime,
+              admin: res.data[i].managerName,
+              teacherId: res.data[i].managerId,
+              buttonVisible: true
+            })
+          }
+        })
       })
     },
     filterData(val) {
