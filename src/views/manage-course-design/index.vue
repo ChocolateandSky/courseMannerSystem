@@ -40,8 +40,8 @@
           <el-table-column label="管理员" width="150" prop="managerName" align="center" />
           <el-table-column label="操作" width="250" align="center" fixed="right">
             <template slot-scope="scope">
-              <el-button size="medium" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index)">编辑</el-button>
-              <el-button size="medium" type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index,tableData)">删除</el-button>
+              <el-button size="medium" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="medium" type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -106,10 +106,7 @@
     >
       <el-form ref="editFormRef" :model="editForm" label-position="right" label-width="80px">
         <el-form-item label="课设名称" prop="courseName">
-          <el-input v-model="editForm.className" />
-        </el-form-item>
-        <el-form-item label="管理员" prop="admin">
-          <el-input v-model="editForm.admin" />
+          <el-input v-model="editForm.courseName" />
         </el-form-item>
         <el-form-item label="学生容量" prop="sum">
           <el-input-number v-model="editForm.sum" controls-position="right" :min="1" />
@@ -117,14 +114,13 @@
         <el-form-item label="时间" prop="date">
           <el-date-picker
             v-model="editForm.date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-M-dd"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-        </el-form-item>
-        <el-form-item label="指导老师" prop="tearchers">
-          <el-cascader :style="{width:'80%'}" :options="options" :props="{multiple:true }" collapse-tags />
         </el-form-item>
         <el-form-item label="简介" prop="desc">
           <el-input v-model="editForm.desc" type="textarea" resize="none" rows="6" />
@@ -132,7 +128,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handleCourseInfoChange()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -141,7 +137,7 @@
 <script>
 // import HeaderContainer from './components/HeaderContainer'
 import { mapGetters } from 'vuex'
-import { getTeacherInfo, createCourse, getCoursesInfo } from '@/api/course'
+import { getTeacherInfo, createCourse, getCoursesInfo, changeCourseInfo, deleteCourse } from '@/api/course'
 export default {
   name: 'ManageCourseDesign',
   data() {
@@ -186,7 +182,13 @@ export default {
       // 控制修改课程设计对话框的显示与隐藏，默认为隐藏
       editDialogVisible: false,
       // 查询到的修改课程设计对象
-      editForm: {}
+      editForm: {
+        courseName: '',
+        practId: '',
+        sum: 0,
+        date: [],
+        desc: ''
+      }
     }
   },
   computed: {
@@ -217,22 +219,24 @@ export default {
       return (this.currentPage - 1) * this.pageSize + index + 1
     },
     // 删除选中的列
-    deleteRow(index) {
+    deleteRow(index, row) {
       // this.$message({
       //   message: '删除成功',
       //   type: 'success'
       // })
-      console.log(this.tableData[index].id)
+      // console.log(this.tableData[index].id)
       this.$confirm('此操作将永久删除该课程设计, 是否继续?', '提示', {
         confirmButtonText: '确 定',
         cancelButtonText: '取 消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          message: '删除成功',
-          type: 'success'
+        deleteCourse(row.id).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.tableData.splice(index, 1)
         })
-        this.tableData.splice(index, 1)
       }).catch(() => {
         this.$message({
           message: '已取消删除',
@@ -248,17 +252,30 @@ export default {
     },
     // 编辑课程设计
     // 展示编辑用户的对话框
-    async showEditDialog(index) {
-      // console.log(id)
-      // const { data: res } = await this.$http.get('users/' + id)
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error('查询用户信息失败！')
-      // }
-      // this.editForm = res.data
-      this.editForm.courseName = this.tableData[index].courseName
-      this.editForm.admin = this.tableData[index].admin
-      this.editForm.sum = this.tableData[index].sum
+    showEditDialog(index, row) {
+      this.editForm.courseName = row.practName
+      this.editForm.practId = row.id
+      this.editForm.sum = row.stuAmountMax
+      this.editForm.date = [row.beginTime, row.endTime]
+      this.editForm.desc = row.introduction
       this.editDialogVisible = true
+    },
+    handleCourseInfoChange() {
+      changeCourseInfo({
+        practName: this.editForm.courseName,
+        practId: this.editForm.practId,
+        stuAmountMax: this.editForm.sum,
+        beginTime: this.editForm.date[0],
+        endTime: this.editForm.date[1],
+        introduction: this.editForm.desc
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        this.editDialogVisible = false
+        this.getTableData(this.userId)
+      })
     },
     // 监听编辑对话框的关闭
     editDialogClosed() {
