@@ -40,3 +40,22 @@ export function getGroupDetail(id) {
   })
 }
 
+export function setStudentWork(data) {
+  return request({
+    url: '/test/setStudentWorkInGroupServlet',
+    method: 'post',
+    data
+  })
+}
+
+export function setPhase(data) {
+  return request({
+    url: '/test/setPhaseInGroupServlet',
+    method: 'post',
+    params: {
+      groupId: data.groupId,
+      phase: data.phase
+    }
+  })
+}
+

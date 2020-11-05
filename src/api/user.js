@@ -78,3 +78,15 @@ export function getAllStudentList(teacherId, roles) {
     }
   })
 }
+
+export function sendMailToGroup({ stuId, teacherId, notice }) {
+  return request({
+    url: '/test/mailForSingleServlet',
+    method: 'post',
+    params: {
+      stuId,
+      teacherId,
+      notice
+    }
+  })
+}
