@@ -38,10 +38,10 @@
     <el-row type="flex" justify="center">
       <el-col :span="22">
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible = true">新建小组</el-button>
-        <el-dialog title="小组信息" :visible.sync="dialogFormVisible" width="40%" @close="handleDialogClose()">
+        <el-dialog title="小组信息" :visible.sync="dialogFormVisible" width="40%" @open.once="handleDialogOpen()" @close="handleDialogClose()">
           <el-form ref="form" :model="form" label-position="right" label-width="80px">
-            <el-form-item label="小组名称" prop="name">
-              <el-input v-model="form.name" />
+            <el-form-item label="小组名称" prop="teamName">
+              <el-input v-model="form.teamName" />
             </el-form-item>
             <el-form-item label="课题" prop="subject">
               <el-input v-model="form.subject" />
@@ -68,7 +68,7 @@
           </el-form>
           <div slot="footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="handleCreateNewGroup()">确 定</el-button>
           </div>
         </el-dialog>
       </el-col>
@@ -94,11 +94,11 @@
                   @onConfirm="handleEnterTeam(scope.$index, scope.row)"
                   @onCancel="$message({type: 'info', message: '已取消'})"
                 >
-                  <el-button slot="reference" size="medium" type="primary">加入</el-button>
+                  <el-button slot="reference" size="medium" type="primary" :disabled="disable">加入</el-button>
                 </el-popconfirm>
                 <div v-else>
                   <el-button size="medium" type="info" icon="el-icon-view">查看</el-button>
-                  <el-button size="medium" type="danger">退出<i class="el-icon-close el-icon--right" /></el-button>
+                  <el-button size="medium" type="danger" @click="handleExitGroup(scope.$index, scope.row)">退出<i class="el-icon-close el-icon--right" /></el-button>
                 </div>
               </template>
             </el-table-column>
@@ -110,28 +110,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getStuChosenGroupInfo, getStuNotChosenGroupInfo, getTeachersInfo, createNewStuGroup, stuEnterGroup, stuExitGroup } from '@/api/stu-group'
 export default {
   data() {
     return {
+      disable: false,
       activeName1: 'first',
       activeName2: '0',
-      tableData: [
-        { name: '小组1', buttonVisible: true },
-        { name: '小组2', buttonVisible: true },
-        { name: '小组3', buttonVisible: true },
-        { name: '小组4', buttonVisible: true },
-        { name: '小组5', buttonVisible: true },
-        { name: '小组6', buttonVisible: true },
-        { name: '小组7', buttonVisible: true }
-      ],
+      tableData: [],
       dialogFormVisible: false,
-      options: [{
-        value: '小明',
-        label: '小明'
-      }, {
-        value: '小红',
-        label: '小红'
-      }],
+      options: [],
       form: {
         teamName: '',
         subject: '',
@@ -139,16 +128,144 @@ export default {
         teacher: '',
         desc: ''
       },
-      courseId: this.$route.query.courseId
+      courseId: '',
+      stuId: '',
+      stuName: ''
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.getUser()
+  },
+  mounted() {
+    this.getTableData(this.stuId, this.courseId)
+  },
   methods: {
+    getUser() {
+      this.stuId = this.user.id
+      this.stuName = this.user.name
+      this.courseId = this.$route.query.courseId
+    },
+    getTableData(stuId, practId) {
+      // console.log(stuId, practId)
+      const data = { stuId, practId }
+      getStuChosenGroupInfo(data).then(res => {
+        if (res.data.length === 1) {
+          this.disable = true
+        }
+        console.log(res.data)
+        for (const i in res.data) {
+          this.tableData.push({
+            id: res.data[i].id,
+            name: res.data[i].name,
+            subject: res.data[i].subName,
+            leader: res.data[i].leaderName,
+            teacher: res.data[i].teacherName,
+            num: res.data[i].stuAmountMax,
+            num2: res.data[i].stuNumber,
+            buttonVisible: false
+          })
+        }
+      })
+      getStuNotChosenGroupInfo(data).then(res => {
+        for (const i in res.data) {
+          this.tableData.push({
+            id: res.data[i].id,
+            name: res.data[i].name,
+            subject: res.data[i].subName,
+            leader: res.data[i].leaderName,
+            teacher: res.data[i].teacherName,
+            num: res.data[i].stuAmountMax,
+            num2: res.data[i].stuNumber,
+            buttonVisible: true
+          })
+        }
+      })
+    },
     handleEnterTeam(index, row) {
-      console.log(index, row)
-      row.buttonVisible = !row.buttonVisible
-      this.$message({
-        type: 'success',
-        message: '加入成功'
+      stuEnterGroup({
+        groupId: row.id,
+        stuId: this.stuId,
+        stuName: this.stuName
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '加入成功'
+        })
+        row.num2++
+        this.disable = true
+        row.buttonVisible = !row.buttonVisible
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '加入失败'
+        })
+      })
+    },
+    handleCreateNewGroup() {
+      // console.log(this.options[this.form.teacher])
+      createNewStuGroup({
+        introduction: this.form.desc,
+        leaderId: this.stuId,
+        leaderName: this.stuName,
+        managerId: this.$route.query.teacherId,
+        managerName: this.$route.query.teacherName,
+        name: this.form.teamName,
+        practId: this.courseId,
+        practName: this.$route.query.courseName,
+        stuAmountMax: this.form.num,
+        subName: this.form.subject,
+        teacherId: this.options[this.form.teacher].teacherId,
+        teacherName: this.options[this.form.teacher].label
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '创建成功'
+        })
+        this.dialogFormVisible = false
+        this.getTableData(this.stuId, this.courseId)
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '创建失败'
+        })
+        this.dialogFormVisible = false
+      })
+    },
+    handleExitGroup(index, row) {
+      stuExitGroup({
+        stuId: this.stuId,
+        groupId: row.id
+      }).then(res => {
+        row.buttonVisible = !row.buttonVisible
+        row.num2--
+        this.disable = false
+        this.$message({
+          type: 'success',
+          message: '退出成功'
+        })
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '退出失败'
+        })
+      })
+      console.log({
+        stuId: this.stuId,
+        groupId: row.id
+      })
+    },
+    handleDialogOpen() {
+      getTeachersInfo(this.courseId).then(res => {
+        for (const i in res.data) {
+          this.options.push({
+            label: res.data[i].name,
+            value: i,
+            teacherId: res.data[i].id
+          })
+        }
       })
     },
     handleDialogClose() {

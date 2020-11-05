@@ -71,7 +71,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getStuChosenCourseInfo, getStuNotChosenCourseInfo, studentAddCourse } from '@/api/course'
+import { getStuChosenCourseInfo, getStuNotChosenCourseInfo, studentAddCourse, studentExitCourse } from '@/api/course'
 export default {
   data() {
     return {
@@ -183,13 +183,33 @@ export default {
       this.$router.push({
         name: 'courseDetails',
         query: {
-          courseId: row.courseNumber
+          courseId: row.courseNumber,
+          courseName: row.courseName,
+          teacherName: row.admin,
+          teacherId: row.teacherId
         }
       })
     },
     handleExitCourse(index, row) {
-      console.log(index, row)
+      // console.log(index, row)
       // row.buttonVisible = !row.buttonVisible
+      studentExitCourse({
+        stuId: this.userId,
+        practId: row.courseNumber
+      }).then(res => {
+        row.buttonVisible = !row.buttonVisible
+        row.num2--
+        this.filterData(this.select)
+        this.$message({
+          type: 'success',
+          message: '退出成功'
+        })
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '退出失败'
+        })
+      })
     }
   }
 }

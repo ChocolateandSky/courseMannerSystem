@@ -57,3 +57,14 @@ export function studentAddCourse(data) {
     data
   })
 }
+
+export function studentExitCourse(data) {
+  return request({
+    url: '/test/dropOutOfPractcumServlet',
+    method: 'post',
+    params: {
+      stuId: data.stuId,
+      practId: data.practId
+    }
+  })
+}

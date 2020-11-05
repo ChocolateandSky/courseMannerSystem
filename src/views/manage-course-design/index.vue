@@ -149,7 +149,7 @@ export default {
       userId: '', // 用户id
       userName: '', // 用户名
       currentPage: 1, // 当前页码，默认为第 1 页
-      pageSize: 6, // 每页的大小
+      pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
       tableData: [],
       defaultDate: {
