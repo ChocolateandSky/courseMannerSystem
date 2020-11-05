@@ -123,7 +123,7 @@
           />
         </el-form-item>
         <el-form-item label="简介" prop="desc">
-          <el-input v-model="editForm.desc" type="textarea" resize="none" rows="6" />
+          <el-input v-model="editForm.desc" type="textarea" maxlength="150" show-word-limit resize="none" rows="6" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
