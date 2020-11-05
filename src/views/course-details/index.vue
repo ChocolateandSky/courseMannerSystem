@@ -185,6 +185,13 @@ export default {
       })
     },
     handleEnterTeam(index, row) {
+      if (row.num === row.num2) {
+        this.$message({
+          type: 'error',
+          message: '加入失败，该小组已满'
+        })
+        return
+      }
       stuEnterGroup({
         groupId: row.id,
         stuId: this.stuId,

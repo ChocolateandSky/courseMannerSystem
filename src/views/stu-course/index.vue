@@ -155,6 +155,13 @@ export default {
     handleAddCourses(index, row) {
       // console.log(index)
       // this.tableData[(this.currentPage - 1) * this.pageSize + index].buttonVisible = !buttonVisible
+      if (row.num1 === row.num2) {
+        this.$message({
+          type: 'error',
+          message: '加入失败，该课程设计已满'
+        })
+        return
+      }
       studentAddCourse({
         'major': this.major,
         'practId': row.courseNumber,
