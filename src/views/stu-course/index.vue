@@ -193,21 +193,32 @@ export default {
     handleExitCourse(index, row) {
       // console.log(index, row)
       // row.buttonVisible = !row.buttonVisible
-      studentExitCourse({
-        stuId: this.userId,
-        practId: row.courseNumber
-      }).then(res => {
-        row.buttonVisible = !row.buttonVisible
-        row.num2--
-        this.filterData(this.select)
-        this.$message({
-          type: 'success',
-          message: '退出成功'
+      this.$confirm('此操作将退出该课程设计, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        studentExitCourse({
+          stuId: this.userId,
+          practId: row.courseNumber
+        }).then(res => {
+          row.buttonVisible = !row.buttonVisible
+          row.num2--
+          this.filterData(this.select)
+          this.$message({
+            type: 'success',
+            message: '退出成功'
+          })
+        }).catch(res => {
+          this.$message({
+            type: 'error',
+            message: '退出失败'
+          })
         })
-      }).catch(res => {
+      }).catch(() => {
         this.$message({
-          type: 'error',
-          message: '退出失败'
+          type: 'info',
+          message: '已取消退出'
         })
       })
     }

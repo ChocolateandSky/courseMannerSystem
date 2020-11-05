@@ -225,6 +225,7 @@ export default {
           message: '创建成功'
         })
         this.dialogFormVisible = false
+        this.tableData = []
         this.getTableData(this.stuId, this.courseId)
       }).catch(res => {
         this.$message({
@@ -235,26 +236,33 @@ export default {
       })
     },
     handleExitGroup(index, row) {
-      stuExitGroup({
-        stuId: this.stuId,
-        groupId: row.id
-      }).then(res => {
-        row.buttonVisible = !row.buttonVisible
-        row.num2--
-        this.disable = false
-        this.$message({
-          type: 'success',
-          message: '退出成功'
+      this.$confirm('此操作将退出该小组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        stuExitGroup({
+          stuId: this.stuId,
+          groupId: row.id
+        }).then(res => {
+          row.buttonVisible = !row.buttonVisible
+          row.num2--
+          this.disable = false
+          this.$message({
+            type: 'success',
+            message: '退出成功'
+          })
+        }).catch(res => {
+          this.$message({
+            type: 'error',
+            message: '退出失败'
+          })
         })
-      }).catch(res => {
+      }).catch(() => {
         this.$message({
-          type: 'error',
-          message: '退出失败'
+          type: 'info',
+          message: '已取消退出'
         })
-      })
-      console.log({
-        stuId: this.stuId,
-        groupId: row.id
       })
     },
     handleDialogOpen() {
