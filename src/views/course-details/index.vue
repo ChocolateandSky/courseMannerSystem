@@ -11,21 +11,9 @@
           </el-tab-pane>
           <el-tab-pane label="老师详情" name="second">
             <el-collapse v-model="activeName2" accordion>
-              <el-collapse-item title="小明" name="1">
-                <div>电话号码：</div>
-                <div>邮箱：</div>
-              </el-collapse-item>
-              <el-collapse-item title="小红" name="2">
-                <div>电话号码：</div>
-                <div>邮箱：</div>
-              </el-collapse-item>
-              <el-collapse-item title="小王" name="3">
-                <div>电话号码：</div>
-                <div>邮箱：</div>
-              </el-collapse-item>
-              <el-collapse-item title="小黄" name="4">
-                <div>电话号码：</div>
-                <div>邮箱：</div>
+              <el-collapse-item v-for="(item, index) in teachersInfo" :key="item.id" :title="item.name" :name="index">
+                <div>电话号码：{{ item.phone }}</div>
+                <div>邮箱：{{ item.email }}</div>
               </el-collapse-item>
             </el-collapse>
           </el-tab-pane>
@@ -128,6 +116,7 @@ export default {
         teacher: '',
         desc: ''
       },
+      teachersInfo: [],
       courseId: '',
       stuId: '',
       stuName: ''
@@ -141,6 +130,7 @@ export default {
   },
   mounted() {
     this.getTableData(this.stuId, this.courseId)
+    this.handleGetTeachersInfo()
   },
   methods: {
     getUser() {
@@ -155,7 +145,7 @@ export default {
         if (res.data.length === 1) {
           this.disable = true
         }
-        console.log(res.data)
+        // console.log(res.data)
         for (const i in res.data) {
           this.tableData.push({
             id: res.data[i].id,
@@ -182,6 +172,12 @@ export default {
             buttonVisible: true
           })
         }
+      })
+    },
+    handleGetTeachersInfo() {
+      getTeachersInfo(this.courseId).then(res => {
+        this.teachersInfo = res.data
+        // console.log(this.teachersInfo)
       })
     },
     handleEnterTeam(index, row) {
