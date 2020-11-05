@@ -14,6 +14,7 @@
               <el-collapse-item v-for="(item, index) in teachersInfo" :key="item.id" :title="item.name" :name="index">
                 <div>电话号码：{{ item.phone }}</div>
                 <div>邮箱：{{ item.email }}</div>
+                <div>个人简介：{{ item.introduction }}</div>
               </el-collapse-item>
             </el-collapse>
           </el-tab-pane>
