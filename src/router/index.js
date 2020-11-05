@@ -247,9 +247,23 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/course-details'),
+        component: () => import('@/views/course-details/index'),
         name: 'courseDetails',
         meta: { title: '课程设计详细', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+      }
+    ]
+  },
+  {
+    path: '/mygroups',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['student'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/mygroups/index'),
+        name: 'Mygroups',
+        meta: { title: '我的小组', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
       }
     ]
   },
