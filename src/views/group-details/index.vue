@@ -3,7 +3,7 @@
     <div
       class="filter-container "
     >
-      <one-groups :team-data="teamData" class="one-groups" :style="{height:autoHeight}" />
+      <one-groups class="one-groups" :style="{height:autoHeight}" />
     </div>
   </div>
 </template>
@@ -20,9 +20,6 @@ export default {
     return {
       autoHeight: '200px'
     }
-  },
-  created() {
-    this.getGroupDetail(this.teamId)
   },
   mounted() {
     this.getAutoHeight()

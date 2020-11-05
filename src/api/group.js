@@ -40,3 +40,11 @@ export function getGroupDetail(id) {
   })
 }
 
+export function setStudentWork(data) {
+  return request({
+    url: '/test/setStudentWorkInGroupServlet',
+    method: 'post',
+    data
+  })
+}
+

@@ -83,7 +83,7 @@
                   <el-button slot="reference" size="medium" type="primary" :disabled="disable">加入</el-button>
                 </el-popconfirm>
                 <div v-else>
-                  <el-button size="medium" type="info" icon="el-icon-view">查看</el-button>
+                  <el-button size="medium" type="info" icon="el-icon-view" @click="checkGroup(scope.row)">查看</el-button>
                   <el-button size="medium" type="danger" @click="handleExitGroup(scope.$index, scope.row)">退出<i class="el-icon-close el-icon--right" /></el-button>
                 </div>
               </template>
@@ -292,6 +292,14 @@ export default {
     handleDialogClose() {
       this.$nextTick(() => {
         this.$refs['form'].resetFields()
+      })
+    },
+    checkGroup(row) {
+      this.$router.push({
+        name: 'GroupDetails',
+        query: {
+          teamId: row.id
+        }
       })
     }
   }

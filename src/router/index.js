@@ -200,13 +200,13 @@ export const asyncRoutes = [
     path: '/groupDetails',
     component: Layout,
     hidden: true,
-    meta: { roles: ['teacher', 'admin'] },
+    meta: { roles: ['teacher', 'admin', 'student'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/group-details/index'),
         name: 'GroupDetails',
-        meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+        meta: { title: '小组详情', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin', 'student'] }
       }
     ]
   },
@@ -214,13 +214,13 @@ export const asyncRoutes = [
     path: '/studentManager',
     component: Layout,
     hidden: false,
-    meta: { roles: ['teacher', 'admin'] },
+    meta: { roles: ['teacher', 'admin', 'student'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/studentManager/index'),
         name: 'StudentManager',
-        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin'] }
+        meta: { title: '已选课设学生管理', icon: 'el-icon-s-help', noCache: true, roles: ['teacher', 'admin', 'student'] }
       }
     ]
   },

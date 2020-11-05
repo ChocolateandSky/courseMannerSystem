@@ -41,16 +41,14 @@
             <div class="top-container">
               <el-card class="box-card" style="height:100%">
                 <el-tabs v-model="fileActiveName">
+                  <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组所上传文件" name="first">
-                    <!-- <el-row v-for="i in 3" :key="i" :gutter="90">
-                    <el-col v-for="o in 6" :key="o" :span="5.5" class="file-col">-->
                     <div v-for="o in 44" :key="o" class="file-div">
                       <svg-icon icon-class="file" style="width:50px;height:50px" />
                       <i class="file-name">文件.txt</i>
                     </div>
-                    <!-- </el-col>
-                    </el-row>-->
                   </el-tab-pane>
+                  <!-- 文件上传 -->
                   <el-tab-pane class="file-upload" label="上传文件" name="second">
                     <el-upload
                       drag
@@ -68,6 +66,15 @@
                       <div slot="tip" class="el-upload__tip">可上传.doc .docx .xls .xlsx .txt .pdf</div>
                     </el-upload>
                   </el-tab-pane>
+                  <!-- 任务分配 -->
+                  <el-tab-pane v-if="isLeader" label="成员任务分配" name="third">
+                    <el-form label-position="right" label-width="120px" :model="memberWork">
+                      <el-form-item v-for="(item,index) in memberWork.stuIdAndWork" :key="index" :label="item.stuName">
+                        <el-input v-model="item.work" style="width:95%" />
+                      </el-form-item>
+                    </el-form>
+                    <el-button style="margin-left:80%;width:120px" type="primary" @click="setStudentWork">设置</el-button>
+                  </el-tab-pane>
                 </el-tabs>
               </el-card>
             </div>
@@ -80,7 +87,7 @@
                 </div>
                 <div class="text item">
                   <el-input
-                    v-model="emailContent"
+                    v-model="emailContent.notice"
                     type="textarea"
                     :rows="12"
                     :disabled="!roleNum"
@@ -101,7 +108,8 @@
 
 <script>
 import splitPane from 'vue-splitpane'
-import { getGroupDetail, getMemberList } from '@/api/group'
+import { getGroupDetail, getMemberList, setStudentWork } from '@/api/group'
+import { sendMailToGroup } from '@/api/user'
 export default {
   name: 'OneGroups',
   components: { splitPane },
@@ -112,18 +120,31 @@ export default {
       teamData: {},
       teamId: this.$route.query.teamId,
       member: [],
+      memberWork: {
+        groupId: this.$route.query.teamId,
+        stuIdAndWork: []
+      },
       leaderId: '',
+      isLeader: false,
       roleNum: this.$store.getters.roleNum,
       loading: false,
-      emailContent: ''
+      emailContent: {
+        stuId: '',
+        teacherId: this.$store.getters.user.id,
+        notice: ''
+      }
     }
   },
   mounted() {
-    this.loading = true
-    this.getGroupDetail(this.teamId)
-    this.getMemberList(this.teamId)
+    this.getInfo()
   },
   methods: {
+    getInfo() {
+      this.loading = true
+      this.getGroupDetail(this.teamId)
+      this.getMemberList(this.teamId)
+      this.loading = false
+    },
     resize() {
       console.log('resize')
     },
@@ -159,12 +180,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log('发送成功')
+        this.sendMailToGroup()
       }).catch(() => {
         console.error('catch err')
       })
     },
     getGroupDetail(id) {
+      // console.log(id)
       getGroupDetail(id).then(res => {
         this.teamData = res.data
       })
@@ -172,17 +194,46 @@ export default {
     getMemberList(id) {
       getMemberList(id).then(res => {
         this.member = res.data
-        console.log(this.member)
+        // console.log(this.member)
+        const temp = {}
         this.member.forEach(el => {
+          temp.stuId = el.stuId
+          temp.stuName = el.stuName
+          this.memberWork.stuIdAndWork.push(temp)
           if (el.leader === 1) {
             this.leaderId = el.stuId
+            this.emailContent.stuId = this.leaderId
             console.log(this.leaderId)
-            this.loading = false
-            return
           }
         })
-        this.loading = false
+        if (this.leaderId === this.$store.getters.user.id) {
+          this.isLeader = true
+        } else {
+          this.isLeader = false
+        }
       })
+    },
+    sendMailToGroup() {
+      sendMailToGroup(this.emailContent)
+        .then(res => {
+          this.$message.success('成功发送')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('发送失败')
+        })
+    },
+    setStudentWork() {
+      console.log(this.memberWork)
+      setStudentWork(this.memberWork)
+        .then(res => {
+          console.log(res)
+          this.$message.success('设置成功')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('设置失败')
+        })
     }
   }
 }
