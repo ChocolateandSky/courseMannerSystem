@@ -68,3 +68,26 @@ export function studentExitCourse(data) {
     }
   })
 }
+
+export function changeCourseInfo(data) {
+  return request({
+    url: '/test/changePracticumByAdmin',
+    method: 'post',
+    params: {
+      practName: data.practName,
+      practId: data.practId,
+      stuAmountMax: data.stuAmountMax,
+      beginTime: data.beginTime,
+      endTime: data.endTime,
+      introduction: data.introduction
+    }
+  })
+}
+
+export function deleteCourse(id) {
+  return request({
+    url: 'test/deletePracticumServlet',
+    method: 'post',
+    params: { practId: id }
+  })
+}

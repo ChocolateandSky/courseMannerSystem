@@ -4,10 +4,7 @@
       <el-col :span="10">
         <el-tabs v-model="activeName1" class="left" type="border-card">
           <el-tab-pane label="课程简介" name="first">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde, repellat reprehenderit. Labore dicta veniam vel rerum. Assumenda explicabo dolorem tempora quidem aliquam culpa eaque impedit. Quasi quidem qui corrupti corporis.
-            Esse porro sequi officiis a fugit ex, repellat illum totam suscipit, magnam mollitia earum, tenetur et hic. Dolore quidem, dolorem debitis blanditiis rerum quia, provident ratione corrupti fugit eligendi inventore?
-            Quia dicta distinctio facilis atque accusamus a ipsam quasi illum unde quisquam earum libero quaerat, totam eum aut amet tempore et itaque velit maiores, nihil asperiores exercitationem? Magni, ut laudantium?
-            Officia odio dolorum sequi, eum laudantium vitae reprehenderit iste quaerat? Qui velit asperiores tempora! Beatae est facere, reiciendis repudiandae libero labore porro architecto obcaecati, quos explicabo voluptates illum, consequatur velit.
+            <p>{{ courseDesc }}</p>
           </el-tab-pane>
           <el-tab-pane label="老师详情" name="second">
             <el-collapse v-model="activeName2" accordion>
@@ -101,6 +98,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getStuChosenGroupInfo, getStuNotChosenGroupInfo, getTeachersInfo, createNewStuGroup, stuEnterGroup, stuExitGroup } from '@/api/stu-group'
+import { getStuChosenCourseInfo } from '@/api/course'
 export default {
   data() {
     return {
@@ -120,7 +118,8 @@ export default {
       teachersInfo: [],
       courseId: '',
       stuId: '',
-      stuName: ''
+      stuName: '',
+      courseDesc: ''
     }
   },
   computed: {
@@ -132,12 +131,22 @@ export default {
   mounted() {
     this.getTableData(this.stuId, this.courseId)
     this.handleGetTeachersInfo()
+    this.getCourseInfo()
   },
   methods: {
     getUser() {
       this.stuId = this.user.id
       this.stuName = this.user.name
       this.courseId = this.$route.query.courseId
+    },
+    getCourseInfo() {
+      getStuChosenCourseInfo(this.user.id).then(res => {
+        for (const i in res.data) {
+          if (res.data[i].id === this.courseId) {
+            this.courseDesc = res.data[i].introduction
+          }
+        }
+      })
     },
     getTableData(stuId, practId) {
       // console.log(stuId, practId)
