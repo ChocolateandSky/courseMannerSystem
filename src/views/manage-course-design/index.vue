@@ -252,7 +252,7 @@ export default {
     },
     // 编辑课程设计
     // 展示编辑用户的对话框
-    showEditDialog(index, row) {
+    async showEditDialog(index, row) {
       this.editForm.courseName = row.practName
       this.editForm.practId = row.id
       this.editForm.sum = row.stuAmountMax

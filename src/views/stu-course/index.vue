@@ -211,7 +211,10 @@ export default {
         }).then(res => {
           row.buttonVisible = !row.buttonVisible
           row.num2--
-          this.filterData(this.select)
+          // this.filterData(this.select)
+          if (this.select === '0' || this.select === '1') {
+            this.filterTableData.splice(index, 1)
+          }
           this.$message({
             type: 'success',
             message: '退出成功'
