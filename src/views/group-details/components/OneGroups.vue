@@ -16,16 +16,19 @@
               <el-divider />
               <span style="font-size:18px;color:rgb(100,217,214)">指导老师：{{ teamData.teacherName }}</span>
               <el-divider style="margin-bootom:30px" />
-              <div style="font-size:18px;color:rgb(100,217,214)">
+              <div class="phase" style="font-size:18px;color:rgb(100,217,214)">
                 <span>目前所处阶段:</span>
                 <el-input
                   v-model="teamData.phase"
                   :class="{active:!readonly}"
                   :readonly="readonly"
-                  style="width:200px;border:none"
+                  style="width:300px;"
                 />
-                <el-link v-if="readonly" type="primary" @click="changeReadonly">设置目前阶段</el-link>
-                <el-link v-else type="primary" @click="setPhase">确定</el-link>
+                <el-link v-if="readonly" type="primary" style="margin-left:29%" @click="changeReadonly">设置目前阶段</el-link>
+                <div v-else style="display: inline;margin-left:29%">
+                  <el-link type="primary" style="margin-right:2%" @click="chancelPhase">取消</el-link>
+                  <el-link type="primary" @click="setPhase">确定</el-link>
+                </div>
               </div>
               <el-divider style="margin-bootom:30px" />
               <div>
@@ -137,6 +140,7 @@ export default {
       },
       leaderId: '',
       isLeader: false,
+      tempPhase: '',
       roleNum: this.$store.getters.roleNum,
       loading: false,
       emailContent: {
@@ -206,15 +210,15 @@ export default {
       getMemberList(id).then(res => {
         this.member = res.data
         // console.log(this.member)
-        const temp = {}
         this.member.forEach(el => {
+          const temp = {}
           temp.stuId = el.stuId
           temp.stuName = el.stuName
           this.memberWork.stuIdAndWork.push(temp)
           if (el.leader === 1) {
             this.leaderId = el.stuId
             this.emailContent.stuId = this.leaderId
-            console.log(this.leaderId)
+            // console.log(this.leaderId)
           }
         })
         if (this.leaderId === this.$store.getters.user.id) {
@@ -222,6 +226,7 @@ export default {
         } else {
           this.isLeader = false
         }
+        console.log(this.memberWork)
       })
     },
     sendMailToGroup() {
@@ -238,8 +243,8 @@ export default {
       console.log(this.memberWork)
       setStudentWork(this.memberWork)
         .then(res => {
-          console.log(res)
           this.$message.success('设置成功')
+          this.getMemberList(this.teamId)
         })
         .catch(err => {
           console.log(err)
@@ -247,25 +252,41 @@ export default {
         })
     },
     setPhase() {
-      setPhase().then(res => {
-        console.log(res)
+      setPhase({
+        groupId: this.teamId,
+        phase: this.teamData.phase
+      }).then(res => {
+        this.$message.success('更改成功')
         this.readonly = true
       })
         .catch(err => {
+          this.$message.error('更改失败')
           console.log(err)
         })
     },
     changeReadonly() {
+      this.tempPhase = this.teamData.phase
       this.readonly = false
+    },
+    chancelPhase() {
+      this.teamData.phase = this.tempPhase
+      this.readonly = true
     }
   }
 }
 </script>
 
 <style  lang="scss">
-.active{
-  border: solid 1px;
+.phase{
+  .active{
+  border: solid 0.5px;
+  // border: none;
 }
+  .el-input__inner{
+    border: none;
+  }
+}
+
 .emailInput{
   border: solid 1px rgb(255,187,0);
 }

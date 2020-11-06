@@ -220,28 +220,31 @@ export default {
           { required: true, message: '请填写标题', trigger: 'blur' }
         ],
         collegeName: [
-          { message: '请选择学院', trigger: 'blur' }
+          { required: true, message: '请选择学院', trigger: 'blur' }
         ],
         practName: [
-          { message: '请填写课程名称,代码', trigger: 'blur' }
+          { required: true, message: '请填写课程名称,代码', trigger: 'blur' }
         ],
         practNum: [
-          { message: '请填写课程序号', trigger: 'blur' }
+          { required: true, message: '请填写课程序号', trigger: 'blur' }
         ],
         time: [
-          { message: '请填写学时', trigger: 'blur' }
+          { required: true, message: '请填写学时', trigger: 'blur' }
         ],
         periods: [
-          { type: 'array', message: '请填写实施时间', trigger: 'blur' }
+          { required: true, type: 'array', message: '请填写实施时间', trigger: 'blur' }
         ],
         teacherName: [
-          { message: '请填写指导老师', trigger: 'blur' }
+          { required: true, message: '请填写指导老师', trigger: 'blur' }
         ],
         address: [
-          { message: '请填写设计场地', trigger: 'blur' }
+          { required: true, message: '请填写设计场地', trigger: 'blur' }
         ],
         major: [
-          { message: '请填写所面向的年级专业', trigger: 'blur' }
+          { required: true, message: '请填写所面向的年级专业', trigger: 'blur' }
+        ],
+        preparer: [
+          { required: true, message: '请填写所面向的年级专业', trigger: 'blur' }
         ]
       }
     }
@@ -265,7 +268,7 @@ export default {
     exportScheduleWord() {
       console.log(this.ruleForm)
       const data = this.ruleForm
-      exportScheduleWord(data, 'sad')
+      exportScheduleWord(data, '计划安排进度表')
       // exportScheduleWord(this.ruleForm)
       //   .then(res => {
       //     console.log(res)

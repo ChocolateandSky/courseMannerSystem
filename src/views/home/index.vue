@@ -25,6 +25,10 @@
       </div>
       <el-divider />
       <div class="main-content">
+        <div v-if="empty">
+          <el-divider />
+          <h2 style="margin-left:40%">抱歉，暂时没有数据</h2>
+        </div>
         <el-row>
           <el-col v-for="(item,index) in fromData" :key="index" :span="6">
             <el-card v-waves style="margin-bottom:20px" :body-style="{ padding: '0px'}">
@@ -82,6 +86,7 @@ export default {
       practicumList: [],
       teacherList: [],
       fromData: [],
+      empty: [],
       tempFromData: [],
       role: 0,
       loading: false
@@ -90,6 +95,7 @@ export default {
   watch: {
     teacherName(newValue, oldValue) {
       this.loading = true
+      this.practName = ''
       if (newValue === '') {
         this.fromData = [...this.tempFromData]
       } else {
@@ -100,10 +106,16 @@ export default {
           }
         })
       }
+      if (this.fromData.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
+      }
       this.loading = false
     },
     practicum(newValue, oldValue) {
       this.loading = true
+      this.teacherName = ''
       if (newValue === '') {
         this.fromData = [...this.tempFromData]
       } else {
@@ -113,6 +125,11 @@ export default {
             this.fromData.push(el)
           }
         })
+      }
+      if (this.fromData.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
       }
       this.loading = false
     }
@@ -179,6 +196,11 @@ export default {
         .then(res => {
           this.fromData = res.data
           this.tempFromData = res.data
+          if (this.tempFromData.length === 0) {
+            this.empty = true
+          } else {
+            this.empty = false
+          }
         })
     },
     async getBaseIfo() {

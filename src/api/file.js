@@ -31,7 +31,7 @@ export function exportScheduleWord(data, fileName) {
       date: data.date
     }
   }).then(resp => {
-    const blob = new Blob([resp.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8' }) // 创建一个类文件对象：Blob对象表示一个不可变的、原始数据的类文件对象
+    const blob = new Blob([resp.data], { type: 'application/msword;charset=utf-8' }) // 创建一个类文件对象：Blob对象表示一个不可变的、原始数据的类文件对象
     doDownload(blob, fileName)
   })
 }

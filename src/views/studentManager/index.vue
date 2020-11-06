@@ -31,7 +31,11 @@
         <el-button class="pan-btn green-btn message-btn" style="margin-left:20px" @click="handlePostMessage">发布公告</el-button>
       </div>
       <div>
-        <el-collapse accordion class="groupCollapse">
+        <div v-if="empty">
+          <el-divider />
+          <h2 style="margin-left:40%">抱歉，暂时没有数据</h2>
+        </div>
+        <el-collapse v-else accordion class="groupCollapse">
           <el-collapse-item v-for="(item,index) in dataList" :key="index">
             <template slot="title">
               <div style="font-size: 15px;"> {{ item.stuId }}{{ item.stuName }}</div>
@@ -68,6 +72,7 @@ export default {
       teacherName: '',
       teacherList: [],
       dataList: [],
+      empty: true,
       tempDataList: [],
       teacherId: this.$store.getters.user.id,
       roles: this.$store.getters.roles,
@@ -79,6 +84,7 @@ export default {
   watch: {
     teacherName(newValue, oldValue) {
       this.loading = true
+      this.practName = ''
       if (newValue === '') {
         this.dataList = [...this.tempDataList]
       } else {
@@ -89,10 +95,16 @@ export default {
           }
         })
       }
+      if (this.dataList.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
+      }
       this.loading = false
     },
     practName(newValue, oldValue) {
       this.loading = true
+      this.teacherName = ''
       if (newValue === '') {
         this.dataList = [...this.tempDataList]
       } else {
@@ -102,6 +114,11 @@ export default {
             this.dataList.push(el)
           }
         })
+      }
+      if (this.dataList.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
       }
       this.loading = false
     }
@@ -134,6 +151,11 @@ export default {
         .then(res => {
           this.dataList = res.data
           this.tempDataList = res.data
+          if (this.tempDataList.length === 0) {
+            this.empty = true
+          } else {
+            this.empty = false
+          }
           console.log(this.dataList)
         })
     },
@@ -157,6 +179,11 @@ export default {
             this.dataList.push(el)
           }
         })
+      }
+      if (this.dataList.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
       }
       this.loading = false
     }
