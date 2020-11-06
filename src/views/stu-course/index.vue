@@ -168,8 +168,8 @@ export default {
         'practName': row.courseName,
         'stuId': this.userId,
         'stuName': this.userName,
-        'teacherId': row.teacherId,
-        'teacherName': row.admin
+        'managerId': row.teacherId,
+        'managerName': row.admin
       }).then(res => {
         row.buttonVisible = !row.buttonVisible
         row.num2++
