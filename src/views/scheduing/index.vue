@@ -12,12 +12,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="进度计划表标题:" prop="title">
-                  <el-input v-model="ruleForm.title" clearable />
+                  <el-input v-model="ruleForm.title" placeholder="文件标题" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="总人数:" prop="stuAmountMax">
-                  <el-input v-model="ruleForm.stuAmountMax" clearable />
+                  <el-input v-model="ruleForm.stuAmountMax" type="number" placeholder="只能填写数字" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -50,19 +50,19 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="课程序号:" prop="practNum">
-                  <el-input v-model="ruleForm.practNum" clearable />
+                  <el-input v-model="ruleForm.practNum" placeholder="填写课程序号" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="面向年级、专业:" prop="major">
-                  <el-input v-model="ruleForm.major" clearable />
+                  <el-input v-model="ruleForm.major" placeholder="填写年级专业" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="学时:" prop="time">
-                  <el-input v-model="ruleForm.time" clearable />
+                  <el-input v-model="ruleForm.time" placeholder="只能填写数字" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -81,12 +81,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="指导老师:" prop="teacherName">
-                  <el-input v-model="ruleForm.teacherName" clearable />
+                  <el-input v-model="ruleForm.teacherName" placeholder="填写指导老师" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="设计场所:" prop="address">
-                  <el-input v-model="ruleForm.address" clearable />
+                  <el-input v-model="ruleForm.address" placeholder="填写设计场所" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -136,12 +136,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="填表人:" prop="preparer">
-                  <el-input v-model="ruleForm.preparer" style="width:70%" size="small" clearable />
+                  <el-input v-model="ruleForm.preparer" style="width:70%" placeholder="输入填表人" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="教研室主任:" prop="director">
-                  <el-input v-model="ruleForm.director" style="width:70%" size="small" clearable />
+                  <el-input v-model="ruleForm.director" style="width:70%" placeholder="填写教研室主任名字" size="small" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -216,6 +216,9 @@ export default {
         }
       ],
       rules: {
+        stuAmountMax: [
+          { required: true, message: '请填写总人数', trigger: 'blur' }
+        ],
         title: [
           { required: true, message: '请填写标题', trigger: 'blur' }
         ],
@@ -244,7 +247,13 @@ export default {
           { required: true, message: '请填写所面向的年级专业', trigger: 'blur' }
         ],
         preparer: [
-          { required: true, message: '请填写所面向的年级专业', trigger: 'blur' }
+          { required: true, message: '请填写填表人', trigger: 'blur' }
+        ],
+        director: [
+          { required: true, message: '请填写教研室主任', trigger: 'blur' }
+        ],
+        date: [
+          { required: true, message: '请填写日期', trigger: 'blur' }
         ]
       }
     }
@@ -312,6 +321,10 @@ export default {
     },
     addRow() {
       const item = { ...this.wokerTable }
+      if (this.newList.length >= 6) {
+        this.$message.error('抱歉，内容最多只能填写6行')
+        return
+      }
       this.newList.push(item)
     },
     changeInput(row) {
