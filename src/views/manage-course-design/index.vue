@@ -317,7 +317,8 @@ export default {
         'introduction': this.addForm.desc
       }
       createCourse(temp).then(res => {
-        this.tableData.push(temp)
+        // this.tableData.push(temp)
+        this.getTableData(this.userId)
         this.$message({
           message: '添加成功',
           type: 'success'
