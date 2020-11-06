@@ -174,13 +174,13 @@ export const asyncRoutes = [
     path: '/manage-course-design',
     component: Layout,
     hidden: false,
-    meta: { roles: ['admin'] },
+    meta: { roles: ['admin', 'teacher'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/manage-course-design/index'),
         name: 'manage-course-design',
-        meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true, roles: ['admin'] }
+        meta: { title: '课程设计管理', icon: 'el-icon-edit-outline', noCache: true, roles: ['admin', 'teacher'] }
       }
     ]
   },

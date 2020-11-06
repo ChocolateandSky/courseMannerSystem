@@ -55,15 +55,16 @@ export default {
       this.$emit('close')
       this.$refs.dataForm.clearValidate()
     },
-    sendMail() {
+    async sendMail() {
       const data = {
         id: this.$store.getters.user.id,
         notice: this.form.textarea
       }
-      sendMail(data)
+      await sendMail(data)
         .then(res => {
-          console.log(res)
+          this.$message.success('发送成功')
         })
+      this.close()
     }
   }
 }

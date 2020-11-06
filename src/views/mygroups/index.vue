@@ -4,7 +4,11 @@
       v-loading="loading"
       class="filter-container"
     >
+      <div v-if="empty" style="padding-left:30%;padding-right:30%">
+        <h2>抱歉，你没有加入任何小组（<el-link type="primary" @click="goToAddGroup">点击前往加入小组</el-link>）</h2>
+      </div>
       <el-table
+        v-else
         highlight-current-row
         stripe
         :data="tableData"
@@ -43,9 +47,7 @@
         >
           <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="checkDetail(row)">查看</el-button>
-          </template>
-          <template slot-scope="{row}">
-            <el-button type="danger" size="mini" @click="checkDetail(row)">退出</el-button>
+            <el-button type="danger" size="mini" @click="quitGroup(row)">退出</el-button>
           </template>
         </el-table-column>
         <div v-if="empty" style="margin:0 auto;margin-left:40%"> <el-link type="primary" style="font-size:20px">主要链接</el-link></div>
@@ -55,6 +57,8 @@
 </template>
 
 <script>
+import { getGroupBystudentId } from '@/api/group'
+
 export default {
   components: {
 
@@ -62,8 +66,47 @@ export default {
   data() {
     return {
       loading: false,
-      empty: true,
-      tableData: []
+      empty: false,
+      tableData: [],
+      id: this.$store.getters.user.id
+    }
+  },
+  mounted() {
+    this.getGroupBystudentId()
+  },
+  methods: {
+    getGroupBystudentId() {
+      this.loading = true
+      getGroupBystudentId(this.id)
+        .then(res => {
+          this.tableData = res.data
+          if (this.tableData === 0) {
+            this.empty = true
+          } else {
+            this.empty = false
+          }
+          this.loading = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.loading = false
+        })
+    },
+    quitGroup(row) {
+      console.log('sss')
+    },
+    checkDetail(row) {
+      this.$router.push({
+        name: 'GroupDetails',
+        query: {
+          teamId: row.id
+        }
+      })
+    },
+    goToAddGroup() {
+      this.$router.push({
+        name: 'StuCourse'
+      })
     }
   }
 }

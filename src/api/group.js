@@ -59,3 +59,22 @@ export function setPhase(data) {
   })
 }
 
+export function getGroupBystudentId(stuId) {
+  return request({
+    url: '/test/getGroupInfoByStudentIdServlet',
+    method: 'get',
+    params: {
+      stuId
+    }
+  })
+}
+
+export function getHomeListInStudent(stuId) {
+  return request({
+    url: '/test/getGroupInfoInSelectPractcumBystudentServlet',
+    method: 'get',
+    params: {
+      stuId
+    }
+  })
+}

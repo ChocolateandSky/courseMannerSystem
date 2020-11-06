@@ -32,7 +32,7 @@
         <el-row>
           <el-col v-for="(item,index) in fromData" :key="index" :span="6">
             <el-card v-waves style="margin-bottom:20px" :body-style="{ padding: '0px'}">
-              <div slot="header" class="clearfix">
+              <div slot="header" style="height:25px" class="clearfix">
                 <span style="margin-right:5px">{{ item.subName }}</span>
                 <span style="color:rgb(66,185,131)">({{ item.practName }})</span>
               </div>
@@ -67,7 +67,7 @@
 <script>
 import fillPersonInfo from './components/fillPersonInfo'
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import { getGroupList } from '@/api/group'
+import { getGroupList, getHomeListInStudent } from '@/api/group'
 import { getTeacherList, getAllPracticum } from '@/api/user'
 export default {
   components: {
@@ -138,7 +138,11 @@ export default {
     this.loading = true
     this.judgeFirstLogin()
     this.judgeRole()
-    this.getGroupList(this.$store.getters.user.id)
+    if (this.$store.getters.roleNum === 0) {
+      this.getHomeListInStudent(this.$store.getters.user.id)
+    } else {
+      this.getGroupList(this.$store.getters.user.id)
+    }
     this.getBaseIfo()
     this.getAutoHeight()
     window.onresize = () => {
@@ -154,6 +158,17 @@ export default {
       } else {
         this.role = 0
       }
+    },
+    getHomeListInStudent(id) {
+      getHomeListInStudent(id).then(res => {
+        this.fromData = res.data
+        this.tempFromData = res.data
+        if (this.tempFromData.length === 0) {
+          this.empty = true
+        } else {
+          this.empty = false
+        }
+      })
     },
     judgeFirstLogin() {
       console.log(this.$store.getters.loginCount)

@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">欢迎来到课程设计管理系统</h3>
+        <h3 class="title">桂林电子科技大学课程设计管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -74,8 +74,8 @@ export default {
     // }
     return {
       loginForm: {
-        username: '1800301322',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -234,6 +234,7 @@ $light_gray:#eee;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
+  // background-image: url(./img/school.jpg);
   overflow: hidden;
 
   .login-form {

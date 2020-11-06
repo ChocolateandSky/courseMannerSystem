@@ -24,8 +24,8 @@
                   :readonly="readonly"
                   style="width:300px;"
                 />
-                <el-link v-if="readonly" type="primary" style="margin-left:29%" @click="changeReadonly">设置目前阶段</el-link>
-                <div v-else style="display: inline;margin-left:29%">
+                <el-link v-if="readonly&&roleNum===0" type="primary" style="margin-left:15%" @click="changeReadonly">设置目前阶段</el-link>
+                <div v-if="!readonly&&roleNum===0" style="display: inline;margin-left:29%">
                   <el-link type="primary" style="margin-right:2%" @click="chancelPhase">取消</el-link>
                   <el-link type="primary" @click="setPhase">确定</el-link>
                 </div>
