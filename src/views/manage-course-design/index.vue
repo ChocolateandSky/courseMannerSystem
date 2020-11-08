@@ -99,7 +99,7 @@
     </el-dialog>
     <!-- 修改课程设计的对话框内容 -->
     <el-dialog
-      title="修改用户"
+      title="修改课程设计"
       :visible.sync="editDialogVisible"
       width="40%"
       @close="editDialogClosed"
