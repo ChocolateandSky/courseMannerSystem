@@ -9,6 +9,16 @@ export function getNoticeFileList() {
   })
 }
 
+export function getGroupFileList(groupId) {
+  return request({
+    url: '/test/getGroup_FileInfoServlet',
+    method: 'get',
+    params: {
+      groupId
+    }
+  })
+}
+
 export function downloadFile(id, name) {
   console.log(id)
   console.log(name)

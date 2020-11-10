@@ -48,6 +48,7 @@
           </el-card>
         </div>
       </template>
+
       <template slot="paneR">
         <split-pane split="horizontal">
           <template slot="paneL">
@@ -56,27 +57,33 @@
                 <el-tabs v-model="fileActiveName">
                   <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组所上传文件" name="first">
-                    <div v-for="o in 44" :key="o" class="file-div">
-                      <svg-icon icon-class="file" style="width:50px;height:50px" />
-                      <i class="file-name">文件.txt</i>
+                    <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)">
+                      <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
+                      <div class="file-name">
+                        <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
+                        <span style="margin:0 auto">{{ item.date }}</span>
+                      </div>
                     </div>
                   </el-tab-pane>
                   <!-- 文件上传 -->
                   <el-tab-pane class="file-upload" label="上传文件" name="second">
                     <el-upload
                       drag
-                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :action="postAction"
+                      :headers="myHeaders"
+                      multiple
+                      :data="uploadParams"
                       :before-upload="beforeUpload"
-                      :on-error="onError"
-                      :on-success="onSuccess"
+                      :on-success="successResources"
                       :file-list="fileList"
+                      :on-error="OnError"
                     >
                       <i class="el-icon-upload" />
                       <div class="el-upload__text">
                         将文件拖到此处，或
                         <em>点击上传</em>
                       </div>
-                      <div slot="tip" class="el-upload__tip">可上传.doc .docx .xls .xlsx .txt .pdf</div>
+                      <div slot="tip" class="el-upload__tip">不超过5Mb(按ctrl+鼠标点击可多选文件)</div>
                     </el-upload>
                   </el-tab-pane>
                   <!-- 任务分配 -->
@@ -100,7 +107,7 @@
                 </div>
                 <div class="text item">
                   <el-input
-                    v-model="emailContent.notice"
+                    v-model="emailContent.body"
                     type="textarea"
                     :rows="12"
                     :disabled="!roleNum"
@@ -122,6 +129,7 @@
 <script>
 import splitPane from 'vue-splitpane'
 import { getGroupDetail, getMemberList, setStudentWork, setPhase } from '@/api/group'
+import { getGroupFileList, downloadFile } from '@/api/file'
 import { sendMailToGroup } from '@/api/user'
 export default {
   name: 'OneGroups',
@@ -130,6 +138,7 @@ export default {
     return {
       fileActiveName: 'first',
       fileList: [],
+      groupFileList: [],
       teamData: {},
       teamId: this.$route.query.teamId,
       member: [],
@@ -144,36 +153,70 @@ export default {
       roleNum: this.$store.getters.roleNum,
       loading: false,
       emailContent: {
-        stuId: '',
+        stuId: [],
         teacherId: this.$store.getters.user.id,
-        notice: ''
+        body: ''
+      },
+      postAction: process.env.VUE_APP_BASE_API + `/test/uploadGroupFileServlet`,
+      uploadParams: {
+        groupId: this.teamId,
+        userId: this.$store.getters.user.id,
+        userName: this.$store.getters.user.name,
+        roles: this.role
       }
+    }
+  },
+  computed: {
+    myHeaders() {
+      return {
+        'ContentType': 'multipart/form-data'
+      }
+    },
+    role() {
+      return this.$store.getters.roles.toString()
     }
   },
   mounted() {
     this.getInfo()
   },
   methods: {
+    DownloadFile(item) {
+      this.$confirm('是否要下载该文件', '提示', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning'
+      }).then(() => {
+        downloadFile(item.id, item.name)
+      }).catch(() => {
+        this.$message({
+          type: 'warning',
+          message: '已取消下载'
+        })
+      })
+    },
+    successResources(response) {
+      console.log(response)
+      this.$message({
+        type: 'success',
+        message: '上传成功！'
+      })
+    },
+    OnError() {
+      this.$message.error('上传失败')
+    },
     getInfo() {
       this.loading = true
       this.getGroupDetail(this.teamId)
       this.getMemberList(this.teamId)
+      this.getGroupFileList()
       this.loading = false
     },
     resize() {
       console.log('resize')
     },
     beforeUpload(file) {
-      console.log(file)
-      const AllUpExt = `.doc|.docx|.xls|.xlsx|.txt|.pdf`
-      const extName = file.name
-        .substring(file.name.lastIndexOf('.'))
-        .toLowerCase()
       const fileSize = file.size / 1024 / 1024 < 5
-      if (AllUpExt.indexOf(extName + '|') === -1) {
-        this.$message.error('文件格式不对')
-        return false
-      } else if (!fileSize) {
+      if (!fileSize) {
         this.$message.error('文件大小不能超过5M')
         return false
       } else {
@@ -209,15 +252,14 @@ export default {
     getMemberList(id) {
       getMemberList(id).then(res => {
         this.member = res.data
-        // console.log(this.member)
         this.member.forEach(el => {
           const temp = {}
           temp.stuId = el.stuId
           temp.stuName = el.stuName
           this.memberWork.stuIdAndWork.push(temp)
+          this.emailContent.stuId.push(el.stuId)
           if (el.leader === 1) {
             this.leaderId = el.stuId
-            this.emailContent.stuId = this.leaderId
             // console.log(this.leaderId)
           }
         })
@@ -226,7 +268,7 @@ export default {
         } else {
           this.isLeader = false
         }
-        console.log(this.memberWork)
+        // console.log(this.emailContent.stuId)
       })
     },
     sendMailToGroup() {
@@ -271,12 +313,37 @@ export default {
     chancelPhase() {
       this.teamData.phase = this.tempPhase
       this.readonly = true
+    },
+    getGroupFileList() {
+      console.log(this.teamId)
+      getGroupFileList(this.teamId)
+        .then(res => {
+          this.groupFileList = res.data
+          this.matchFileType()
+          console.log(this.groupFileList)
+        })
+    },
+    matchFileType() {
+      this.groupFileList.forEach(item => {
+        if (item.type === 'doc' || item.type === 'docx') {
+          item.icon = 'word'
+        } else if (item.type === 'xlsx') {
+          item.icon = 'excel'
+        } else if (item.type === 'pdf') {
+          item.icon = 'pdf'
+        } else if (item.type === 'zip') {
+          item.icon = 'zip'
+        } else {
+          item.icon = 'txt'
+        }
+      })
     }
   }
 }
 </script>
 
 <style  lang="scss">
+
 .phase{
   .active{
   border: solid 0.5px;
@@ -349,10 +416,10 @@ export default {
             padding-bottom: 20px;
             overflow: scroll;
           }
-          .file-pane {
-            display: flex;
-            flex-wrap: wrap;
-          }
+          // .file-pane {
+          //   // display: flex;
+          //   // flex-wrap: wrap;
+          // }
           .file-div:hover {
             box-shadow: 0 10px 12px 0 rgba(0, 0, 0, 0.2);
             backface-visibility: hidden;
@@ -362,8 +429,15 @@ export default {
           .file-div {
             border-radius: 4px;
             display: flex;
-            flex-direction: column;
+            // flex-direction: column;
             margin: 10px 20px;
+            background-color: rgb(236,236,236);
+            .file-name{
+              font-size: 15px;
+              display: flex;
+              flex-direction: column;
+               margin: 0 auto;
+            }
           }
           .file-upload {
             .el-upload {

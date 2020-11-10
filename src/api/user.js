@@ -79,14 +79,10 @@ export function getAllStudentList(teacherId, roles) {
   })
 }
 
-export function sendMailToGroup({ stuId, teacherId, notice }) {
+export function sendMailToGroup(data) {
   return request({
-    url: '/test/mailForSingleServlet',
+    url: '/test/mailForGroupMemberServlet',
     method: 'post',
-    params: {
-      stuId,
-      teacherId,
-      notice
-    }
+    data
   })
 }
