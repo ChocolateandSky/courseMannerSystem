@@ -37,7 +37,7 @@
         </div>
         <el-collapse v-else accordion class="groupCollapse">
           <el-collapse-item v-for="(item,index) in dataList" :key="index">
-            <template slot="title">
+            <template slot="title" style="postion:relative">
               <div style="font-size: 15px;"> {{ item.stuId }}{{ item.stuName }}</div>
               <div style="font-size: 15px;">——{{ item.practName }}</div>
               <el-button type="text" size="mini" class="groupDetail" style="font-size: 15px;" @click.native="checkGroup(item)">查看所属小组详情</el-button>
@@ -156,7 +156,7 @@ export default {
           } else {
             this.empty = false
           }
-          console.log(this.dataList)
+          // console.log(this.dataList)
         })
     },
     async  getBaseInfo() {
@@ -197,7 +197,8 @@ export default {
     width: 100%;
     padding: 12px;
     .groupDetail{
-      margin-left:50px;
+      position: absolute;
+      right: 100px;
       color:rgb(242,107,58)
     }
     .groupDetail:hover{
@@ -206,7 +207,7 @@ export default {
     .filter-container {
       align-items: center;
       background-color: #fff;
-      padding: 20px 20px 10px 20px;
+      padding: 20px 20px 100px 20px;
       font-size: 14px;
 
       .header {

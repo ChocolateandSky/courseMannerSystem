@@ -128,7 +128,7 @@ export default {
       }
       await sendMail(data)
         .then(res => {
-          this.$message.success('发送成功')
+          this.$message.success('已发送通知')
         })
     },
     closeDialog() {
