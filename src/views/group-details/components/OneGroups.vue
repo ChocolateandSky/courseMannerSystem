@@ -57,12 +57,17 @@
                 <el-tabs v-model="fileActiveName">
                   <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组所上传文件" name="first">
-                    <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)">
-                      <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
-                      <div class="file-name">
-                        <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
-                        <span style="margin:0 auto">{{ item.date }}</span>
+                    <div v-if="fileNum!==0">
+                      <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)">
+                        <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
+                        <div class="file-name">
+                          <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
+                          <span style="margin:0 auto">{{ item.date }}</span>
+                        </div>
                       </div>
+                    </div>
+                    <div v-else>
+                      <h2 style="margin:50px auto auto 29%">抱歉，目前小组没有上传文件</h2>
                     </div>
                   </el-tab-pane>
                   <!-- 文件上传 -->
@@ -139,6 +144,7 @@ export default {
       fileActiveName: 'first',
       fileList: [],
       groupFileList: [],
+      fileNum: 0,
       teamData: {},
       teamId: this.$route.query.teamId,
       member: [],
@@ -319,7 +325,12 @@ export default {
       getGroupFileList(this.teamId)
         .then(res => {
           this.groupFileList = res.data
-          this.matchFileType()
+          if (this.groupFileList.length === 0) {
+            this.fileNum = 0
+          } else {
+            this.fileNum = this.groupFileList.length
+            this.matchFileType()
+          }
           console.log(this.groupFileList)
         })
     },
