@@ -25,7 +25,7 @@
       <el-col :span="22">
         <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible = true">新建小组</el-button>
         <el-dialog title="小组信息" :visible.sync="dialogFormVisible" width="40%" @open.once="handleDialogOpen()" @close="handleDialogClose()">
-          <el-form ref="form" :model="form" label-position="right" label-width="80px">
+          <el-form ref="form" :model="form" :rules="rules" label-position="right" label-width="80px">
             <el-form-item label="小组名称" prop="teamName">
               <el-input v-model="form.teamName" />
             </el-form-item>
@@ -114,6 +114,11 @@ export default {
         num: 1,
         teacher: '',
         desc: ''
+      },
+      rules: {
+        teamName: [{ required: true, message: '请输入小组名称', trigger: 'blur' }],
+        subject: [{ required: true, message: '请输入课题', trigger: 'blur' }],
+        teacher: [{ required: true, message: '请选择指导老师', trigger: 'change' }]
       },
       teachersInfo: [],
       courseId: '',
@@ -219,33 +224,39 @@ export default {
     },
     handleCreateNewGroup() {
       // console.log(this.options[this.form.teacher])
-      createNewStuGroup({
-        introduction: this.form.desc,
-        leaderId: this.stuId,
-        leaderName: this.stuName,
-        managerId: this.$route.query.teacherId,
-        managerName: this.$route.query.teacherName,
-        name: this.form.teamName,
-        practId: this.courseId,
-        practName: this.$route.query.courseName,
-        stuAmountMax: this.form.num,
-        subName: this.form.subject,
-        teacherId: this.options[this.form.teacher].teacherId,
-        teacherName: this.options[this.form.teacher].label
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '创建成功'
-        })
-        this.dialogFormVisible = false
-        this.tableData = []
-        this.getTableData(this.stuId, this.courseId)
-      }).catch(res => {
-        this.$message({
-          type: 'error',
-          message: '创建失败'
-        })
-        this.dialogFormVisible = false
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          createNewStuGroup({
+            introduction: this.form.desc,
+            leaderId: this.stuId,
+            leaderName: this.stuName,
+            managerId: this.$route.query.teacherId,
+            managerName: this.$route.query.teacherName,
+            name: this.form.teamName,
+            practId: this.courseId,
+            practName: this.$route.query.courseName,
+            stuAmountMax: this.form.num,
+            subName: this.form.subject,
+            teacherId: this.options[this.form.teacher].teacherId,
+            teacherName: this.options[this.form.teacher].label
+          }).then(res => {
+            this.$message({
+              type: 'success',
+              message: '创建成功'
+            })
+            this.dialogFormVisible = false
+            this.tableData = []
+            this.getTableData(this.stuId, this.courseId)
+          }).catch(res => {
+            this.$message({
+              type: 'error',
+              message: '创建失败'
+            })
+            this.dialogFormVisible = false
+          })
+        } else {
+          return
+        }
       })
     },
     handleExitGroup(index, row) {

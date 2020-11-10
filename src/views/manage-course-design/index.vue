@@ -67,7 +67,7 @@
       width="40%"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :model="addForm" label-position="right" label-width="80px">
+      <el-form ref="addFormRef" :model="addForm" :rules="rules" label-position="right" label-width="80px">
         <el-form-item label="课设名称" prop="courseName">
           <el-input v-model="addForm.courseName" placeholder="请输入内容" />
         </el-form-item>
@@ -99,12 +99,12 @@
     </el-dialog>
     <!-- 修改课程设计的对话框内容 -->
     <el-dialog
-      title="修改用户"
+      title="修改课程设计"
       :visible.sync="editDialogVisible"
       width="40%"
       @close="editDialogClosed"
     >
-      <el-form ref="editFormRef" :model="editForm" label-position="right" label-width="80px">
+      <el-form ref="editFormRef" :model="editForm" :rules="rules" label-position="right" label-width="80px">
         <el-form-item label="课设名称" prop="courseName">
           <el-input v-model="editForm.courseName" />
         </el-form-item>
@@ -142,6 +142,11 @@ export default {
   name: 'ManageCourseDesign',
   data() {
     return {
+      rules: {
+        courseName: [{ required: true, message: '请输入课程设计名称', trigger: 'blur' }],
+        date: [{ required: true, message: '请选择日期', trigger: 'blur' }],
+        optionValue: [{ required: true, message: '请选择指导老师', trigger: 'change' }]
+      },
       userId: '', // 用户id
       userName: '', // 用户名
       currentPage: 1, // 当前页码，默认为第 1 页
@@ -261,20 +266,26 @@ export default {
       this.editDialogVisible = true
     },
     handleCourseInfoChange() {
-      changeCourseInfo({
-        practName: this.editForm.courseName,
-        practId: this.editForm.practId,
-        stuAmountMax: this.editForm.sum,
-        beginTime: this.editForm.date[0],
-        endTime: this.editForm.date[1],
-        introduction: this.editForm.desc
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.editDialogVisible = false
-        this.getTableData(this.userId)
+      this.$refs.editFormRef.validate(valid => {
+        if (valid) {
+          changeCourseInfo({
+            practName: this.editForm.courseName,
+            practId: this.editForm.practId,
+            stuAmountMax: this.editForm.sum,
+            beginTime: this.editForm.date[0],
+            endTime: this.editForm.date[1],
+            introduction: this.editForm.desc
+          }).then(res => {
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+            this.editDialogVisible = false
+            this.getTableData(this.userId)
+          })
+        } else {
+          return false
+        }
       })
     },
     // 监听编辑对话框的关闭
@@ -302,35 +313,41 @@ export default {
     },
     // 添加课程设计
     addCourse() {
-      this.addForm.value = []
-      for (const i in this.addForm.optionValue) {
-        this.addForm.value.push(this.addForm.optionValue[i][2])
-      }
-      const temp = {
-        'practName': this.addForm.courseName,
-        'stuAmountMax': this.addForm.sum,
-        'beginTime': this.addForm.date[0],
-        'endTime': this.addForm.date[1],
-        'managerId': this.userId,
-        'managerName': this.userName,
-        'teacherId': this.addForm.value,
-        'introduction': this.addForm.desc
-      }
-      createCourse(temp).then(res => {
-        // this.tableData.push(temp)
-        this.getTableData(this.userId)
-        this.$message({
-          message: '添加成功',
-          type: 'success'
-        })
-      }).catch(res => {
-        this.$message({
-          message: '添加失败',
-          type: 'warning'
-        })
+      this.$refs.addFormRef.validate(valid => {
+        if (valid) {
+          this.addForm.value = []
+          for (const i in this.addForm.optionValue) {
+            this.addForm.value.push(this.addForm.optionValue[i][2])
+          }
+          const temp = {
+            'practName': this.addForm.courseName,
+            'stuAmountMax': this.addForm.sum,
+            'beginTime': this.addForm.date[0],
+            'endTime': this.addForm.date[1],
+            'managerId': this.userId,
+            'managerName': this.userName,
+            'teacherId': this.addForm.value,
+            'introduction': this.addForm.desc
+          }
+          createCourse(temp).then(res => {
+            // this.tableData.push(temp)
+            this.getTableData(this.userId)
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+          }).catch(res => {
+            this.$message({
+              message: '添加失败',
+              type: 'warning'
+            })
+          })
+          this.addDialogClosed()
+          this.addDialogVisible = false
+        } else {
+          return false
+        }
       })
-      this.addDialogClosed()
-      this.addDialogVisible = false
     }
   }
 }
