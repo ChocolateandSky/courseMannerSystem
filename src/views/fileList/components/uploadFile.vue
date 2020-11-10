@@ -1,28 +1,25 @@
 <template>
   <el-dialog title="上传附件" :visible.sync="visible" width="560px">
     <el-form ref="dataForm" :model="form">
-      <el-form-item v-if="roleNum !==0" label="公告：" :label-width="formLabelWidth">
-        <el-input
-          v-model="form.textarea"
-          type="textarea"
-          :rows="3"
-          placeholder="请输入公告内容"
-        />
-      </el-form-item>
       <el-form-item style="margin-left:120px">
         <el-upload
-          class="upload-demo"
-          drag
-          action="https://jsonplaceholder.typicode.com/posts/"
+          ref="upload"
+          :action="postAction"
+          :headers="myHeaders"
           multiple
+          drag
+          :data="uploadParams"
+          :before-upload="beforeUpload"
+          :on-success="successResources"
+          :auto-upload="false"
           style="width:100%;"
         >
           <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div slot="tip" class="el-upload__tip" style="margin-top:0">只能上传jpg/png文件，且不超过500kb(按ctrl+鼠标点击可多选文件)</div>
+          <div slot="tip" class="el-upload__tip" style="margin-top:0">不超过1Mb(按ctrl+鼠标点击可多选文件)</div>
         </el-upload>
       </el-form-item>
-      <el-form-item v-if="roleNum !==0">
+      <!-- <el-form-item v-if="roleNum !==0">
         <el-switch
           v-model="endTimeSwitch"
           active-color="#13ce66"
@@ -40,26 +37,37 @@
             style="width:100%"
           />
         </div>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-switch
           v-if="roleNum !==0"
           v-model="noticeStudent"
           active-color="#13ce66"
           inactive-color="#ff4949"
-          inactive-text="是否同时通知学生："
+          inactive-text="是否通知学生："
           style="margin-left:13%"
+        />
+      </el-form-item>
+      <el-form-item v-if="roleNum !==0&&noticeStudent" label="公告：" :label-width="formLabelWidth">
+        <el-input
+          v-model="form.textarea"
+          type="textarea"
+          :rows="3"
+          placeholder="请输入公告内容"
         />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button type="primary" @click="submitForm">确 定</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
+
+import { sendMail } from '@/api/user'
+
 export default {
   props: {
     dialogTableVisible: {
@@ -79,7 +87,12 @@ export default {
       endTimeSwitch: false,
       endTime: '',
       noticeStudent: false,
-      roleNum: this.$store.getters.roleNum
+      roleNum: this.$store.getters.roleNum,
+      postAction: process.env.VUE_APP_BASE_API + `/test/uploadNoticeFileServlet`,
+      uploadParams: {
+        teacherId: this.$store.getters.user.id,
+        teacherName: this.$store.getters.user.name
+      }
     }
   },
   computed: {
@@ -92,12 +105,52 @@ export default {
           this.closeDialog()
         }
       }
+    },
+    myHeaders() {
+      return {
+        'token': this.$store.getters.token,
+        'ContentType': 'multipart/form-data'
+      }
     }
   },
   methods: {
+    submitForm() {
+      this.$refs.upload.submit()
+      if (this.noticeStudent) {
+        this.sendMail()
+      }
+      this.closeDialog()
+    },
+    async sendMail() {
+      const data = {
+        id: this.$store.getters.user.id,
+        notice: this.form.textarea
+      }
+      await sendMail(data)
+        .then(res => {
+          this.$message.success('发送成功')
+        })
+    },
     closeDialog() {
       this.$emit('close')
+      this.$emit('refresh')
       this.$refs.dataForm.clearValidate()
+    },
+    successResources(response) {
+      console.log(response)
+
+      this.$message({
+        type: 'success',
+        message: '上传成功！'
+      })
+      this.$refs.upload.clearFiles()
+    },
+    beforeUpload(file) {
+      const isLt5M = file.size / 1024 / 1024 < 1
+      if (!isLt5M) {
+        this.$message.error('上传图片大小不能超过 1MB!')
+      }
+      return isLt5M
     }
   }
 }

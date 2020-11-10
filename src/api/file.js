@@ -1,6 +1,31 @@
-// eslint-disable-next-line no-unused-vars
+
 import request from '@/utils/request'
 import axios from 'axios'
+
+export function getNoticeFileList() {
+  return request({
+    url: '/test/getNotice_FileInfoServlet',
+    method: 'get'
+  })
+}
+
+export function downloadFile(id, name) {
+  console.log(id)
+  console.log(name)
+  axios.get('/test/downloadFileServlet', {
+    responseType: 'arraybuffer',
+    params: {
+      id,
+      name
+    }
+  }).then(resp => {
+    console.log(resp.data)
+    const blob = new Blob([resp.data], { type: resp.request })
+    console.log(blob)
+    doDownload(blob, name)
+  })
+}
+
 export function exportScheduleWord(data, fileName) {
   axios.get('/test/exportWordServlet', {
     params: {

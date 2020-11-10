@@ -21,7 +21,7 @@
       <div class="user-education user-bio-section">
         <div class="user-bio-section-header">
           <svg-icon icon-class="education" />
-          <span style="margin-right:50%">个人介绍</span>
+          <span style="margin-right:40%">个人介绍</span>
           <el-link type="primary" @click="updateItd">更改介绍</el-link>
         </div>
         <div class="user-bio-section-body">

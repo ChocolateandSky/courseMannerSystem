@@ -44,7 +44,7 @@
             </template>
             <div style="font-size: 13px;margin-left:18px">专业：软件工程</div>
             <div style="font-size: 13px;margin-left:18px">指导老师：{{ item.teacherName }}</div>
-            <div style="font-size: 13px;margin-left:18px">小组题目：{{ item.practName }}</div>
+            <div style="font-size: 13px;margin-left:18px">小组题目：{{ item.subName }}</div>
           </el-collapse-item>
         </el-collapse>
       </div>
