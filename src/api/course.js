@@ -91,3 +91,19 @@ export function deleteCourse(id) {
     params: { practId: id }
   })
 }
+
+export function checkIsClassLeader(stuId, practId) {
+  return request({
+    url: '/test/judgeLeaderServlet',
+    method: 'get',
+    params: { stuId, practId }
+  })
+}
+
+export function removeTeam(id) {
+  return request({
+    url: '/test/removeGroupServlet',
+    method: 'post',
+    params: { groupId: id }
+  })
+}
