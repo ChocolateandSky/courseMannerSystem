@@ -107,3 +107,11 @@ export function removeTeam(id) {
     params: { groupId: id }
   })
 }
+
+export function removeLeaderTeam(stuId, practId) {
+  return request({
+    url: '/test/removeGroupByStuIdAndPractIdServlet',
+    method: 'post',
+    params: { stuId, practId }
+  })
+}
