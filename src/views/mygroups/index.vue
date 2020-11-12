@@ -58,6 +58,8 @@
 
 <script>
 import { getGroupBystudentId } from '@/api/group'
+import { removeTeam } from '@/api/course'
+import { stuExitGroup } from '@/api/stu-group'
 
 export default {
   components: {
@@ -93,7 +95,50 @@ export default {
         })
     },
     quitGroup(row) {
-      console.log('sss')
+      if (row.leaderId === this.id) {
+        // 组长退出解散小组
+        this.$confirm('你是该小组组长，退出将解散该小组，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          removeTeam(row.id).then(res => {
+            this.getGroupBystudentId()
+            this.$message({
+              type: 'success',
+              message: '退出成功'
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出'
+          })
+        })
+      } else {
+        // 常规退出
+        this.$confirm('此操作将退出该小组, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          stuExitGroup({
+            stuId: this.id,
+            groupId: row.id
+          }).then(res => {
+            this.getGroupBystudentId()
+            this.$message({
+              type: 'success',
+              message: '退出成功'
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出'
+          })
+        })
+      }
     },
     checkDetail(row) {
       this.$router.push({
