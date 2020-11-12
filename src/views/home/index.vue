@@ -48,7 +48,7 @@
                     <el-link icon="el-icon-edit" type="primary" @click.native="groupDetails(item.id)">详情编辑</el-link>
                   </el-col>
                   <el-col :span="12">
-                    <el-link v-if="role!==0" icon="el-icon-delete" type="danger" @click.native="DeteleGroup(index)">删除</el-link>
+                    <el-link v-if="role!==0" icon="el-icon-delete" type="danger" @click.native="DeteleGroup(item)">删除</el-link>
                   </el-col>
                 </el-row>
               </div>
@@ -67,7 +67,7 @@
 <script>
 import fillPersonInfo from './components/fillPersonInfo'
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import { getGroupList, getHomeListInStudent } from '@/api/group'
+import { getGroupList, getHomeListInStudent, deleteGroup } from '@/api/group'
 import { getTeacherList, getAllPracticum } from '@/api/user'
 export default {
   components: {
@@ -191,18 +191,21 @@ export default {
         }
       })
     },
-    DeteleGroup($event) {
-      console.log($event)
-      delete $event.target
+    DeteleGroup(item) {
+      console.log(item)
       this.$confirm('确定删除该类型吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log('删除成功')
+        deleteGroup(item.id).then(res => {
+          this.$message.success('删除成功')
+          this.getBaseIfo()
+        }).catch(() => {
+          this.$message.error('删除失败')
+        })
       }).catch(() => {
-        console.error('catch err')
-        this.$message.error('删除失败')
+        this.$message.error('已取消删除')
       })
     },
     getGroupList(id) {

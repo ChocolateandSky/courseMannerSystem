@@ -22,7 +22,7 @@
               <el-badge class="mark" type="primary" :value="NoticeNum" />
             </el-dropdown-item>
           </router-link>
-          <el-dropdown-item>
+          <!-- <el-dropdown-item>
             <el-popover
               placement="left"
               width="100"
@@ -33,7 +33,7 @@
               </div>
               <el-button slot="reference" style="color:rgb(96,98,102)" type="text">转让管理员</el-button>
             </el-popover>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item>
             <div @click="changePsw">修改密码</div>
           </el-dropdown-item>

@@ -293,6 +293,7 @@ export default {
           const temp = {}
           temp.stuId = el.stuId
           temp.stuName = el.stuName
+          temp.work = el.work
           this.memberWork.stuIdAndWork.push(temp)
           this.emailContent.stuId.push(el.stuId)
           if (el.leader === 1) {
@@ -305,7 +306,7 @@ export default {
         } else {
           this.isLeader = false
         }
-        // console.log(this.emailContent.stuId)
+        console.log(this.memberWork.stuIdAndWork)
       })
     },
     sendMailToGroup() {
@@ -323,6 +324,10 @@ export default {
       setStudentWork(this.memberWork)
         .then(res => {
           this.$message.success('设置成功')
+          this.memberWork = {
+            groupId: this.$route.query.teamId,
+            stuIdAndWork: []
+          }
           this.getMemberList(this.teamId)
         })
         .catch(err => {

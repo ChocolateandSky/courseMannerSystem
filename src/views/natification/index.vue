@@ -47,6 +47,9 @@ export default {
 
 <style scoped lang="scss">
  .natification{
+   .block{
+     padding-bottom: 100px;
+   }
    margin-top: 10px;
    .notice-card{
      position: relative;

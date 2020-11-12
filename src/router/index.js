@@ -98,7 +98,7 @@ export const asyncRoutes = [
         path: 'home',
         component: () => import('@/views/home/index'),
         name: 'home',
-        meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['student', 'teacher', 'admin'] }
+        meta: { title: '首页', icon: 'el-icon-s-home', affix: true, roles: ['student', 'teacher', 'admin'] }
       }
     ]
   },
@@ -153,7 +153,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/fileList/index'),
         name: 'FileList',
-        meta: { title: '文件列表', icon: 'el-icon-s-help', noCache: true }
+        meta: { title: '文件列表', icon: 'el-icon-folder', noCache: true }
       }
     ]
   },
@@ -235,7 +235,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/stu-course/index'),
         name: 'StuCourse',
-        meta: { title: '选课', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+        meta: { title: '选课', icon: 'el-icon-reading', noCache: true, roles: ['student'] }
       }
     ]
   },
@@ -263,7 +263,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/mygroups/index'),
         name: 'Mygroups',
-        meta: { title: '我的小组', icon: 'el-icon-s-help', noCache: true, roles: ['student'] }
+        meta: { title: '我的小组', icon: 'el-icon-c-scale-to-original', noCache: true, roles: ['student'] }
       }
     ]
   },

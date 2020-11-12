@@ -78,3 +78,13 @@ export function getHomeListInStudent(stuId) {
     }
   })
 }
+
+export function deleteGroup(groupId) {
+  return request({
+    url: '/test/removeGroupServlet',
+    method: 'post',
+    params: {
+      groupId
+    }
+  })
+}
