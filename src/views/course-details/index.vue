@@ -23,7 +23,7 @@
     </el-row>
     <el-row type="flex" justify="center">
       <el-col :span="22">
-        <el-button type="success" icon="el-icon-plus" @click="dialogFormVisible = true">新建小组</el-button>
+        <el-button type="success" icon="el-icon-plus" :disabled="disable2" @click="dialogFormVisible = true">新建小组</el-button>
         <el-dialog title="小组信息" :visible.sync="dialogFormVisible" width="40%" @open.once="handleDialogOpen()" @close="handleDialogClose()">
           <el-form ref="form" :model="form" :rules="rules" label-position="right" label-width="80px">
             <el-form-item label="小组名称" prop="teamName">
@@ -98,11 +98,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getStuChosenGroupInfo, getStuNotChosenGroupInfo, getTeachersInfo, createNewStuGroup, stuEnterGroup, stuExitGroup } from '@/api/stu-group'
-import { getStuChosenCourseInfo } from '@/api/course'
+import { getStuChosenCourseInfo, removeTeam } from '@/api/course'
 export default {
   data() {
     return {
       disable: false,
+      disable2: false,
       activeName1: 'first',
       activeName2: '0',
       tableData: [],
@@ -172,6 +173,7 @@ export default {
             num2: res.data[i].stuNumber,
             buttonVisible: false
           })
+          if (res.data[i].leaderName === this.stuName) { this.disable2 = true }
         }
       })
       getStuNotChosenGroupInfo(data).then(res => {
@@ -186,6 +188,7 @@ export default {
             num2: res.data[i].stuNumber,
             buttonVisible: true
           })
+          if (res.data[i].leaderName === this.stuName) { this.disable2 = true }
         }
       })
     },
@@ -260,34 +263,57 @@ export default {
       })
     },
     handleExitGroup(index, row) {
-      this.$confirm('此操作将退出该小组, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        stuExitGroup({
-          stuId: this.stuId,
-          groupId: row.id
-        }).then(res => {
-          row.buttonVisible = !row.buttonVisible
-          row.num2--
-          this.disable = false
-          this.$message({
-            type: 'success',
-            message: '退出成功'
+      if (row.leader === this.stuName) {
+        this.$confirm('你是该小组组长，退出将解散该小组，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          removeTeam(row.id).then(res => {
+            this.disable = false
+            this.disable2 = false
+            this.tableData.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '退出成功'
+            })
           })
-        }).catch(res => {
+        }).catch(() => {
           this.$message({
-            type: 'error',
-            message: '退出失败'
+            type: 'info',
+            message: '已取消退出'
           })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消退出'
+      } else {
+        this.$confirm('此操作将退出该小组, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          stuExitGroup({
+            stuId: this.stuId,
+            groupId: row.id
+          }).then(res => {
+            row.buttonVisible = !row.buttonVisible
+            row.num2--
+            this.disable = false
+            this.$message({
+              type: 'success',
+              message: '退出成功'
+            })
+          }).catch(res => {
+            this.$message({
+              type: 'error',
+              message: '退出失败'
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出'
+          })
         })
-      })
+      }
     },
     handleDialogOpen() {
       getTeachersInfo(this.courseId).then(res => {
