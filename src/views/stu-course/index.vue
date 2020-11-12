@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container>
+    <el-container v-loading="loading">
       <el-header>
         <el-input :style="{ 'width': '350px' }" placeholder="请输入内容">
           <el-select slot="prepend" v-model="select" class="input-with-select" style="width: 80px" placeholder="筛选" @change="filterData">
@@ -71,10 +71,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getStuChosenCourseInfo, getStuNotChosenCourseInfo, studentAddCourse, studentExitCourse } from '@/api/course'
+import { getStuChosenCourseInfo, getStuNotChosenCourseInfo, studentAddCourse, studentExitCourse, checkIsClassLeader, removeLeaderTeam } from '@/api/course'
+import { getStuChosenGroupInfo } from '@/api/stu-group'
 export default {
   data() {
     return {
+      loading: true,
       currentPage: 1,
       pageSize: 5,
       filterTableData: [],
@@ -135,6 +137,7 @@ export default {
               buttonVisible: true
             })
           }
+          this.loading = false
         })
       })
     },
@@ -200,36 +203,104 @@ export default {
     handleExitCourse(index, row) {
       // console.log(index, row)
       // row.buttonVisible = !row.buttonVisible
-      this.$confirm('此操作将退出该课程设计, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        studentExitCourse({
-          stuId: this.userId,
-          practId: row.courseNumber
-        }).then(res => {
-          row.buttonVisible = !row.buttonVisible
-          row.num2--
-          // this.filterData(this.select)
-          if (this.select === '0' || this.select === '1') {
-            this.filterTableData.splice(index, 1)
-          }
-          this.$message({
-            type: 'success',
-            message: '退出成功'
+      getStuChosenGroupInfo({
+        stuId: this.userId,
+        practId: row.courseNumber
+      }).then(res => {
+        if (res.data.length === 0) {
+          this.$confirm('此操作将退出该课程设计, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            studentExitCourse({
+              stuId: this.userId,
+              practId: row.courseNumber
+            }).then(res => {
+              row.buttonVisible = !row.buttonVisible
+              row.num2--
+              // this.filterData(this.select)
+              if (this.select === '0' || this.select === '1') {
+                this.filterTableData.splice(index, 1)
+              }
+              this.$message({
+                type: 'success',
+                message: '退出成功'
+              })
+            }).catch(res => {
+              this.$message({
+                type: 'error',
+                message: '退出失败'
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消退出'
+            })
           })
-        }).catch(res => {
-          this.$message({
-            type: 'error',
-            message: '退出失败'
+        } else {
+          checkIsClassLeader(this.userId, row.courseNumber).then(res => {
+            if (res.data.leader) {
+              this.$confirm('退出该课程设计将解散你创建的小组, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                // 代码写这
+                removeLeaderTeam(this.userId, row.courseNumber).then(res => {
+                  row.buttonVisible = !row.buttonVisible
+                  row.num2--
+                  // this.filterData(this.select)
+                  if (this.select === '0' || this.select === '1') {
+                    this.filterTableData.splice(index, 1)
+                  }
+                  this.$message({
+                    type: 'success',
+                    message: '退出成功'
+                  })
+                })
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消退出'
+                })
+              })
+            } else {
+              this.$confirm('此操作将退出该课程设计, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                studentExitCourse({
+                  stuId: this.userId,
+                  practId: row.courseNumber
+                }).then(res => {
+                  row.buttonVisible = !row.buttonVisible
+                  row.num2--
+                  // this.filterData(this.select)
+                  if (this.select === '0' || this.select === '1') {
+                    this.filterTableData.splice(index, 1)
+                  }
+                  this.$message({
+                    type: 'success',
+                    message: '退出成功'
+                  })
+                }).catch(res => {
+                  this.$message({
+                    type: 'error',
+                    message: '退出失败'
+                  })
+                })
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消退出'
+                })
+              })
+            }
           })
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消退出'
-        })
+        }
       })
     }
   }
