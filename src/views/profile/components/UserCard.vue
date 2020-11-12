@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { updateTeacherIfo } from '@/api/user'
+import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
 import PanThumb from '@/components/PanThumb'
 import '../css/index.css'
 export default {
@@ -94,7 +94,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        await this.updateTeacherIfo()
+        if (this.$store.getters.roleNum !== 0) {
+          await this.updateTeacherIfo()
+        } else {
+          await this.updateStudentIfo()
+        }
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -109,6 +113,17 @@ export default {
     },
     updateTeacherIfo() {
       updateTeacherIfo(this.user)
+        .then(res => {
+          this.$message({
+            type: 'success',
+            message: '更改成功!'
+          })
+          // console.log(this.user)
+          this.$emit('refresh', this.user)
+        })
+    },
+    updateStudentIfo() {
+      updateStudentIfo(this.user)
         .then(res => {
           this.$message({
             type: 'success',

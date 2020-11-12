@@ -54,6 +54,14 @@ export function updateTeacherIfo(data) {
   })
 }
 
+export function updateStudentIfo(data) {
+  return request({
+    url: '/test/updateStudentInfoServlet',
+    method: 'put',
+    data
+  })
+}
+
 export function getTeacherList() {
   return request({
     url: '/test/getALLInstructorInfoServlet',
@@ -100,6 +108,14 @@ export function getNotice(userId) {
 export function sendNotice(data) {
   return request({
     url: '/test/SendNoticeWhenuploadFileServlet',
+    method: 'post',
+    data
+  })
+}
+
+export function readNotice(data) {
+  return request({
+    url: '/test/readNoticeServlet',
     method: 'post',
     data
   })

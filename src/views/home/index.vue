@@ -171,9 +171,8 @@ export default {
       })
     },
     judgeFirstLogin() {
-      console.log(this.$store.getters.loginCount)
-      if (this.$store.getters.loginCount !== 1) {
-        this.dialogFormVisible = false
+      if (this.$store.getters.user.email === 'null') {
+        this.dialogFormVisible = true
       }
     },
     close() {

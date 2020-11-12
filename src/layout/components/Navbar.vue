@@ -7,7 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <el-badge :value="12" class="item" type="primary">
+          <el-badge :value="NoticeNum" class="item" type="primary">
             <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           </el-badge>
           <i class="el-icon-caret-bottom" />
@@ -19,7 +19,7 @@
           <router-link to="/natification/index">
             <el-dropdown-item>
               消息
-              <el-badge class="mark" type="primary" :value="12" />
+              <el-badge class="mark" type="primary" :value="NoticeNum" />
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item>
@@ -63,7 +63,8 @@ export default {
   data() {
     return {
       showDialog: false,
-      id: this.$store.getters.user.id
+      id: this.$store.getters.user.id,
+      noticeNum: 0
     }
   },
   computed: {
@@ -71,7 +72,16 @@ export default {
       'sidebar',
       'avatar',
       'device'
-    ])
+    ]),
+    NoticeNum() {
+      let num = 0
+      this.$store.getters.notice.forEach(el => {
+        if (el.havaRead === 0) {
+          num++
+        }
+      })
+      return num
+    }
   },
   methods: {
     toggleSideBar() {

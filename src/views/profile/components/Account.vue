@@ -21,7 +21,10 @@
           <el-form-item label="Email:" prop="email">
             <el-input v-model.trim="user.email" />
           </el-form-item>
-          <el-form-item label="管理年级:" prop="grade">
+          <el-form-item v-if="roleNum!==0" label="管理年级:" prop="grade">
+            <el-input v-model.number="user.grade" />
+          </el-form-item>
+          <el-form-item v-else label="所属年级:" prop="grade">
             <el-input v-model.number="user.grade" />
           </el-form-item>
           <el-form-item label="所属专业:" prop="major">
@@ -35,7 +38,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="updateTeacherIfo">更改基本信息</el-button>
+            <el-button type="primary" @click="updateInfo">更改基本信息</el-button>
             <el-button type="primary" @click="submitPsw">更改密码</el-button>
           </el-form-item>
         </el-form>
@@ -55,7 +58,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { updateTeacherIfo } from '@/api/user'
+import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
 import UpdatePassword from '@/components/UpdatePassword/index'
 export default {
   components: {
@@ -110,7 +113,8 @@ export default {
         label: '信息安全'
       }],
       showDialog: false,
-      id: ''
+      id: '',
+      roleNum: this.$store.getters.roleNum
     }
   },
   computed: {
@@ -125,31 +129,37 @@ export default {
     submitPsw() {
       this.showDialog = true
     },
-    updateTeacherIfo() {
-      // eslint-disable-next-line no-unused-vars
-      // const ruleForm = {
-      //   id: this.user.id,
-      //   // name: this.user.name,
-      //   email: this.user.email,
-      //   // gender: this.user.gender,
-      //   phone: this.user.phone,
-      //   major: this.user.major,
-      //   grade: this.user.grade,
-      //   introduction: this.user.introduction
-      // }
+    updateInfo() {
       this.$confirm('是否确认修改基本信息吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        updateTeacherIfo(this.user).then(res => {
-          this.$message({
-            type: 'success',
-            message: '更改成功!',
-            duration: 5 * 1000
+        if (this.$store.getters.roleNum !== 0) {
+          updateTeacherIfo(this.user).then(res => {
+            this.$message({
+              type: 'success',
+              message: '更改成功!',
+              duration: 5 * 1000
+            })
+            this.$emit('refresh', this.user)
+          }).catch(err => {
+            console.log(err)
+            this.$message.error('更改失败')
           })
-          this.$emit('refresh', this.user)
-        })
+        } else {
+          updateStudentIfo(this.user).then(res => {
+            this.$message({
+              type: 'success',
+              message: '更改成功!',
+              duration: 5 * 1000
+            })
+            this.$emit('refresh', this.user)
+          }).catch(err => {
+            console.log(err)
+            this.$message.error('更改失败')
+          })
+        }
       }).catch(() => {
         this.$message({
           type: 'info',

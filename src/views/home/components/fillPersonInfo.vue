@@ -9,29 +9,20 @@
       :close-on-click-modal="false"
     >
       <el-form ref="ruleForm" label-width="120px" :model="user" :rules="rules" class="demo-ruleForm">
-        <!-- <el-form-item label="教师编号:">
-          <el-input v-model.trim="user.teacherId" placeholder="请输入教师编号" />
-        </el-form-item> -->
-        <!-- <el-form-item label="姓名:">
-          <el-input v-model.trim="user.name" prop="name" placeholder="请输入您的姓名" />
-        </el-form-item>
-        <el-form-item label="性别:">
-          <el-radio-group v-model="user.gender">
-            <el-radio label="男" />
-            <el-radio label="女" />
-          </el-radio-group>
-        </el-form-item> -->
-        <el-form-item label="电话:">
-          <el-input v-model.trim="user.phone" placeholder="请输入您的电话号码" />
+        <el-form-item label="电话:" prop="phone">
+          <el-input v-model.number="user.phone" />
         </el-form-item>
         <el-form-item label="Email:" prop="email">
-          <el-input v-model.trim="user.email" placeholder="请输入您的邮件" />
+          <el-input v-model.trim="user.email" />
         </el-form-item>
-        <el-form-item label="管理年级:" prop="grade">
-          <el-input v-model.trim="user.grade" placeholder="请输入您所管理的年级" />
+        <el-form-item v-if="roleNum!==0" label="管理年级:" prop="grade">
+          <el-input v-model.number="user.grade" />
         </el-form-item>
-        <el-form-item label="所属学院专业:" prop="major">
-          <el-select v-model.trim="user.major" filterable placeholder="请选择所属专业">
+        <el-form-item v-else label="所属年级:" prop="grade">
+          <el-input v-model.number="user.grade" />
+        </el-form-item>
+        <el-form-item label="所属专业:" prop="major">
+          <el-select v-model.trim="user.major" filterable placeholder="请选择">
             <el-option
               v-for="item in majorList"
               :key="item.value"
@@ -40,14 +31,9 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="新密码:">
-          <el-input v-model="user.password" placeholder="请输入密码" show-password />
-        </el-form-item>
-        <el-form-item label="再次确认密码:">
-          <el-input v-model="newPassword" show-password />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="logout">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
@@ -56,7 +42,8 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
+import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
 export default {
   props: {
     dialogFormVisible: {
@@ -79,16 +66,7 @@ export default {
     }
     return {
       newPassword: '',
-      user: {
-        teacherId: '',
-        name: '',
-        email: '',
-        gender: '',
-        phone: '',
-        major: '',
-        grade: '',
-        password: ''
-      },
+      roleNum: this.$store.getters.roleNum,
       rules: {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' }
@@ -125,9 +103,10 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters([
-    //   'user'
-    // ])
+    ...mapGetters([
+      'user',
+      'loginCount'
+    ]),
     visible: {
       get() {
         return this.dialogFormVisible
@@ -139,10 +118,43 @@ export default {
       }
     }
   },
+  mounted() {
+    console.log(this.user)
+  },
   methods: {
+    updateStudentIfo() {
+      updateStudentIfo(this.user)
+        .then(res => {
+          console.log(res)
+          this.$message.success('修改成功')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('修改失败')
+        })
+    },
+    updateTeacherIfo() {
+      updateTeacherIfo(this.user)
+        .then(res => {
+          console.log(res)
+          this.$message.success('修改成功')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('修改失败')
+        })
+    },
+    async updateInfo() {
+      if (this.roleNum !== 0) {
+        await this.updateTeacherIfo()
+      } else {
+        await this.updateStudentIfo()
+      }
+    },
     submit() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
+          this.updateInfo()
           this.closeDialog()
         } else {
           console.log('error submit!!')
@@ -152,6 +164,11 @@ export default {
     },
     closeDialog() {
       this.$emit('close')
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/`)
     }
   }
 }
