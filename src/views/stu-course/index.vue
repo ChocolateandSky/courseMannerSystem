@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container>
+    <el-container v-loading="loading">
       <el-header>
         <el-input :style="{ 'width': '350px' }" placeholder="请输入内容">
           <el-select slot="prepend" v-model="select" class="input-with-select" style="width: 80px" placeholder="筛选" @change="filterData">
@@ -76,6 +76,7 @@ import { getStuChosenGroupInfo } from '@/api/stu-group'
 export default {
   data() {
     return {
+      loading: true,
       currentPage: 1,
       pageSize: 5,
       filterTableData: [],
@@ -136,6 +137,7 @@ export default {
               buttonVisible: true
             })
           }
+          this.loading = false
         })
       })
     },
