@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, getNotice } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -11,10 +11,14 @@ const state = {
   roles: [],
   user: {},
   roleNum: 0,
-  loginCount: 1
+  loginCount: 1,
+  notice: []
 }
 
 const mutations = {
+  SET_NOTICE: (state, notice) => {
+    state.notice = notice
+  },
   SET_ROLENUM: (state, roleNum) => {
     state.roleNum = roleNum
   },
@@ -91,7 +95,9 @@ const actions = {
         commit('SET_NAME', realName)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        console.log(data)
+        getNotice(data.id).then(res => {
+          commit('SET_NOTICE', res.data)
+        })
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -99,27 +105,6 @@ const actions = {
     })
   },
 
-  // user logout
-  // logout({ commit, state, dispatch }) {
-  //   console.log(state.token)
-  //   const token = state.token
-  //   return new Promise((resolve, reject) => {
-  //     logout(token).then(() => {
-  //       console.log('sssssssssssssssssss')
-  //       commit('SET_TOKEN', '')
-  //       commit('SET_ROLES', [])
-  //       commit('SET_USER', {})
-  //       removeToken()
-  //       resetRouter()
-  //       // reset visited views and cached views
-  //       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-  //       dispatch('tagsView/delAllViews', null, { root: true })
-  //       resolve()
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
   logout({ commit, dispatch }) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async(resolve) => {

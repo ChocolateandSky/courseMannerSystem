@@ -27,6 +27,14 @@
               :value="item.practName"
             />
           </el-select>
+          <el-select v-model="groupStudent" style="margin-left:15px" clearable placeholder="学生筛选">
+            <el-option
+              v-for="(item,index) in isAddGroup"
+              :key="index"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
         </div>
         <el-button class="pan-btn green-btn message-btn" style="margin-left:20px" @click="handlePostMessage">发布公告</el-button>
       </div>
@@ -40,7 +48,8 @@
             <template slot="title" style="postion:relative">
               <div style="font-size: 15px;"> {{ item.stuId }}{{ item.stuName }}</div>
               <div style="font-size: 15px;">——{{ item.practName }}</div>
-              <el-button type="text" size="mini" class="groupDetail" style="font-size: 15px;" @click.native="checkGroup(item)">查看所属小组详情</el-button>
+              <el-button v-if="'groupId' in item" type="text" size="mini" class="groupDetail groupDetailHover" @click.native="checkGroup(item)">查看所属小组详情</el-button>
+              <div v-else class="groupDetail " style="color:rgb(122,39,251)">该同学未加入小组</div>
             </template>
             <div style="font-size: 13px;margin-left:18px">专业：软件工程</div>
             <div style="font-size: 13px;margin-left:18px">指导老师：{{ item.teacherName }}</div>
@@ -78,13 +87,16 @@ export default {
       roles: this.$store.getters.roles,
       loading: false,
       practName: '',
-      practList: []
+      practList: [],
+      groupStudent: '',
+      isAddGroup: ['未加入小组学生', '已加入小组学生']
     }
   },
   watch: {
     teacherName(newValue, oldValue) {
       this.loading = true
       this.practName = ''
+      this.groupStudent = ''
       if (newValue === '') {
         this.dataList = [...this.tempDataList]
       } else {
@@ -105,12 +117,41 @@ export default {
     practName(newValue, oldValue) {
       this.loading = true
       this.teacherName = ''
+      this.groupStudent = ''
       if (newValue === '') {
         this.dataList = [...this.tempDataList]
       } else {
         this.dataList = []
         this.tempDataList.forEach(el => {
           if (el.practName === newValue) {
+            this.dataList.push(el)
+          }
+        })
+      }
+      if (this.dataList.length === 0) {
+        this.empty = true
+      } else {
+        this.empty = false
+      }
+      this.loading = false
+    },
+    groupStudent(newValue) {
+      this.loading = true
+      this.teacherName = ''
+      this.practName = ''
+      if (newValue === '') {
+        this.dataList = [...this.tempDataList]
+      } else if (newValue === '已加入小组学生') {
+        this.dataList = []
+        this.tempDataList.forEach(el => {
+          if ('groupId' in el) {
+            this.dataList.push(el)
+          }
+        })
+      } else {
+        this.dataList = []
+        this.tempDataList.forEach(el => {
+          if (!('groupId' in el)) {
             this.dataList.push(el)
           }
         })
@@ -149,6 +190,7 @@ export default {
       this.roles = this.roles.toString()
       getAllStudentList(this.teacherId, this.roles)
         .then(res => {
+          console.log(res.data)
           this.dataList = res.data
           this.tempDataList = res.data
           if (this.tempDataList.length === 0) {
@@ -198,11 +240,13 @@ export default {
     padding: 12px;
     .groupDetail{
       position: absolute;
+      font-size: 15px;
       right: 100px;
       color:rgb(242,107,58)
     }
-    .groupDetail:hover{
-      font-size: 14px;
+    .groupDetailHover:hover{
+      color:rgb(48,176,143);
+      font-size: 18px;
     }
     .filter-container {
       align-items: center;

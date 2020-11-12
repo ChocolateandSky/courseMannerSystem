@@ -24,7 +24,7 @@
                   :readonly="readonly"
                   style="width:300px;"
                 />
-                <el-link v-if="readonly&&roleNum===0" type="primary" style="margin-left:15%" @click="changeReadonly">设置目前阶段</el-link>
+                <el-link v-if="readonly&&roleNum===0&&isGroupMenber" type="primary" style="margin-left:15%" @click="changeReadonly">设置目前阶段</el-link>
                 <div v-if="!readonly&&roleNum===0" style="display: inline;margin-left:29%">
                   <el-link type="primary" style="margin-right:2%" @click="chancelPhase">取消</el-link>
                   <el-link type="primary" @click="setPhase">确定</el-link>
@@ -56,7 +56,7 @@
               <el-card class="box-card" style="height:100%">
                 <el-tabs v-model="fileActiveName">
                   <!-- 小组所上传文件 -->
-                  <el-tab-pane class="file-pane" label="小组所上传文件" name="first">
+                  <el-tab-pane class="file-pane" label="小组文件" name="first">
                     <div v-if="fileNum!==0">
                       <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)">
                         <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
@@ -73,18 +73,23 @@
                   <!-- 文件上传 -->
                   <el-tab-pane class="file-upload" label="上传文件" name="second">
                     <el-upload
-                      drag
+                      ref="upload"
                       :action="postAction"
                       :headers="myHeaders"
                       multiple
+                      drag
                       :data="uploadParams"
                       :before-upload="beforeUpload"
                       :on-success="successResources"
-                      :file-list="fileList"
                       :on-error="OnError"
+                      :auto-upload="true"
+                      :disabled="!isGroupMenber&&roleNum===0"
                     >
                       <i class="el-icon-upload" />
-                      <div class="el-upload__text">
+                      <div v-if="!isGroupMenber&&roleNum===0" class="el-upload__text">
+                        你不是该小组成员，无法上传文件
+                      </div>
+                      <div v-else class="el-upload__text">
                         将文件拖到此处，或
                         <em>点击上传</em>
                       </div>
@@ -135,7 +140,7 @@
 import splitPane from 'vue-splitpane'
 import { getGroupDetail, getMemberList, setStudentWork, setPhase } from '@/api/group'
 import { getGroupFileList, downloadFile } from '@/api/file'
-import { sendMailToGroup } from '@/api/user'
+import { sendMailToGroup, sendNotice } from '@/api/user'
 export default {
   name: 'OneGroups',
   components: { splitPane },
@@ -146,6 +151,7 @@ export default {
       groupFileList: [],
       fileNum: 0,
       teamData: {},
+      isGroupMenber: false,
       teamId: this.$route.query.teamId,
       member: [],
       readonly: true,
@@ -163,12 +169,12 @@ export default {
         teacherId: this.$store.getters.user.id,
         body: ''
       },
-      postAction: process.env.VUE_APP_BASE_API + `/test/uploadGroupFileServlet`,
+      postAction: `/test/uploadGroupFileServlet`,
       uploadParams: {
-        groupId: this.teamId,
+        groupId: this.$route.query.teamId,
         userId: this.$store.getters.user.id,
         userName: this.$store.getters.user.name,
-        roles: this.role
+        roles: ''
       }
     }
   },
@@ -184,6 +190,7 @@ export default {
   },
   mounted() {
     this.getInfo()
+    this.uploadParams.roles = this.roles
   },
   methods: {
     DownloadFile(item) {
@@ -200,15 +207,35 @@ export default {
         })
       })
     },
-    successResources(response) {
-      console.log(response)
+    successResources(response, file, fileList) {
+      this.$refs.upload.clearFiles()
       this.$message({
         type: 'success',
         message: '上传成功！'
       })
+      // this.fileList = []
+      console.log(fileList)
+      this.sendNotice(fileList)
+      this.getInfo()
+    },
+    sendNotice(fileList) {
+      const data = {
+        userId: this.$store.getters.user.id,
+        userName: this.$store.getters.user.name,
+        roles: this.role,
+        groupId: this.$route.query.teamId,
+        body: '   上传了文件  '
+      }
+      fileList.forEach(el => {
+        data.body = data.body + el.name + '  ,  '
+      })
+      sendNotice(data).then(res => {
+        console.log(res)
+      })
     },
     OnError() {
       this.$message.error('上传失败')
+      return false
     },
     getInfo() {
       this.loading = true
@@ -221,13 +248,11 @@ export default {
       console.log('resize')
     },
     beforeUpload(file) {
-      const fileSize = file.size / 1024 / 1024 < 5
-      if (!fileSize) {
-        this.$message.error('文件大小不能超过5M')
-        return false
-      } else {
-        return true
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isLt5M) {
+        this.$message.error('上传图片大小不能超过 5MB!')
       }
+      return isLt5M
     },
     onError() {
       this.$message.error('图片上传失败')
@@ -246,7 +271,10 @@ export default {
       }).then(() => {
         this.sendMailToGroup()
       }).catch(() => {
-        console.error('catch err')
+        this.$message({
+          type: 'warning',
+          message: '已取消发送邮件'
+        })
       })
     },
     getGroupDetail(id) {
@@ -259,6 +287,9 @@ export default {
       getMemberList(id).then(res => {
         this.member = res.data
         this.member.forEach(el => {
+          if (this.$store.getters.user.id === el.stuId) {
+            this.isGroupMenber = true
+          }
           const temp = {}
           temp.stuId = el.stuId
           temp.stuName = el.stuName
@@ -338,14 +369,18 @@ export default {
       this.groupFileList.forEach(item => {
         if (item.type === 'doc' || item.type === 'docx') {
           item.icon = 'word'
-        } else if (item.type === 'xlsx') {
+        } else if (item.type === 'xlsx' || item.type === 'xls') {
           item.icon = 'excel'
         } else if (item.type === 'pdf') {
           item.icon = 'pdf'
-        } else if (item.type === 'zip') {
+        } else if (item.type === 'zip' || item.type === 'rar') {
           item.icon = 'zip'
-        } else {
+        } else if (item.type === 'txt') {
           item.icon = 'txt'
+        } else if (item.type === 'pptx') {
+          item.icon = 'ppt'
+        } else {
+          item.icon = 'file'
         }
       })
     }

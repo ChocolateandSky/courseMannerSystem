@@ -14,6 +14,6 @@ const getters = {
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
   loginCount: state => state.user.loginCount,
-  baseUrl: state => `http://47.115.127.25:8881`
+  notice: state => state.user.notice
 }
 export default getters

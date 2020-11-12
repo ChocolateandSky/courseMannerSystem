@@ -19,6 +19,16 @@ export function getGroupFileList(groupId) {
   })
 }
 
+export function deleteFile(id) {
+  return request({
+    url: '/test/deleteNoticeFileServlet',
+    method: 'post',
+    params: {
+      id
+    }
+  })
+}
+
 export function downloadFile(id, name) {
   console.log(id)
   console.log(name)

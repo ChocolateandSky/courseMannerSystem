@@ -86,3 +86,21 @@ export function sendMailToGroup(data) {
     data
   })
 }
+
+export function getNotice(userId) {
+  return request({
+    url: '/test/getNoticeServlet',
+    method: 'get',
+    params: {
+      userId
+    }
+  })
+}
+
+export function sendNotice(data) {
+  return request({
+    url: '/test/SendNoticeWhenuploadFileServlet',
+    method: 'post',
+    data
+  })
+}

@@ -88,7 +88,7 @@ export default {
       endTime: '',
       noticeStudent: false,
       roleNum: this.$store.getters.roleNum,
-      postAction: process.env.VUE_APP_BASE_API + `/test/uploadNoticeFileServlet`,
+      postAction: `/test/uploadNoticeFileServlet`,
       uploadParams: {
         teacherId: this.$store.getters.user.id,
         teacherName: this.$store.getters.user.name
@@ -119,7 +119,6 @@ export default {
       if (this.noticeStudent) {
         this.sendMail()
       }
-      this.closeDialog()
     },
     async sendMail() {
       const data = {
@@ -132,23 +131,23 @@ export default {
         })
     },
     closeDialog() {
-      this.$emit('close')
       this.$emit('refresh')
+      this.$emit('close')
       this.$refs.dataForm.clearValidate()
     },
     successResources(response) {
       console.log(response)
-
       this.$message({
         type: 'success',
         message: '上传成功！'
       })
+      this.closeDialog()
       this.$refs.upload.clearFiles()
     },
     beforeUpload(file) {
-      const isLt5M = file.size / 1024 / 1024 < 1
+      const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
-        this.$message.error('上传图片大小不能超过 1MB!')
+        this.$message.error('上传图片大小不能超过 5MB!')
       }
       return isLt5M
     }

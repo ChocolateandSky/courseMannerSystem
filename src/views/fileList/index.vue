@@ -33,7 +33,7 @@
         >
           <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="DownloadFile(row)">下载</el-button>
-            <el-button v-if="roleNum!==0" type="warning" size="mini">删除</el-button>
+            <el-button v-if="roleNum!==0" type="warning" size="mini" @click="deleteFile(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -49,7 +49,7 @@
 <script>
 import uploadFile from './components/uploadFile'
 // eslint-disable-next-line no-unused-vars
-import { getNoticeFileList, downloadFile } from '@/api/file'
+import { getNoticeFileList, downloadFile, deleteFile } from '@/api/file'
 export default {
   components: {
     uploadFile
@@ -67,6 +67,27 @@ export default {
     this.getNoticeFileList()
   },
   methods: {
+    deleteFile(row) {
+      this.$confirm('你确定要删除该文件吗', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteFile(row.id)
+          .then(res => {
+            this.$message.success('删除成功')
+            this.getNoticeFileList()
+          }).catch(err => {
+            console.log(err)
+            this.$message.error('删除失败')
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'warning',
+          message: '已取消删除操作'
+        })
+      })
+    },
     getNoticeFileList() {
       this.loading = true
       getNoticeFileList().then(res => {
