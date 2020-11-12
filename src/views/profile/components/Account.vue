@@ -46,7 +46,7 @@
       <el-col :span="11">
         <el-card :body-style="{ padding: '0px' }">
           <el-image
-            :src="require('@/assets/profile.png')"
+            :src="require('../img/profile.png')"
             fit="fill"
           />
         </el-card>

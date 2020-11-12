@@ -138,11 +138,6 @@ export default {
     this.loading = true
     this.judgeFirstLogin()
     this.judgeRole()
-    if (this.$store.getters.roleNum === 0) {
-      this.getHomeListInStudent(this.$store.getters.user.id)
-    } else {
-      this.getGroupList(this.$store.getters.user.id)
-    }
     this.getBaseIfo()
     this.getAutoHeight()
     window.onresize = () => {
@@ -197,7 +192,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
+      }).then((res) => {
         deleteGroup(item.id).then(res => {
           this.$message.success('删除成功')
           this.getBaseIfo()
@@ -221,6 +216,11 @@ export default {
         })
     },
     async getBaseIfo() {
+      if (this.$store.getters.roleNum === 0) {
+        this.getHomeListInStudent(this.$store.getters.user.id)
+      } else {
+        this.getGroupList(this.$store.getters.user.id)
+      }
       await getTeacherList().then(res => {
         this.teacherList = res.data
       })
