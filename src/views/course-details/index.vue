@@ -18,7 +18,9 @@
         </el-tabs>
       </el-col>
       <el-col :span="12">
-        <div class="right" />
+        <div class="right">
+          <img style="width:100%;height:300px;padding:15px" src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
+        </div>
       </el-col>
     </el-row>
     <el-row type="flex" justify="center">
