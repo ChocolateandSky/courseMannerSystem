@@ -125,7 +125,9 @@
                     placeholder="请输入内容"
                     class="emailInput"
                   />
-                  <el-button :disabled="!roleNum" class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
+                  <div v-show="roleNum">
+                    <el-button :disabled="!roleNum" class="pan-btn green-btn message-btn" @click="handlePostMessage">发送消息</el-button>
+                  </div>
                 </div>
               </el-card>
             </div>

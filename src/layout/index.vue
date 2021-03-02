@@ -8,9 +8,6 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-      <!-- <right-panel v-if="showSettings">
-        <settings />
-      </right-panel> -->
     </div>
     <div class="rs-footer">
       <div class="footer-content" :class="footerClass">
@@ -23,7 +20,7 @@
 
 <script>
 import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
@@ -35,7 +32,6 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     RightPanel,
     // eslint-disable-next-line vue/no-unused-components
-    Settings,
     Sidebar,
     TagsView
   },

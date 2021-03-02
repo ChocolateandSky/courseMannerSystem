@@ -24,7 +24,6 @@
     "default-passive-events": "^2.0.0",
     "driver.js": "0.9.5",
     "dropzone": "5.5.1",
-    "echarts": "4.2.1",
     "element-ui": "2.13.2",
     "file-saver": "^2.0.2",
     "fs": "0.0.1-security",

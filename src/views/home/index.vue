@@ -217,9 +217,9 @@ export default {
     },
     async getBaseIfo() {
       if (this.$store.getters.roleNum === 0) {
-        this.getHomeListInStudent(this.$store.getters.user.id)
+        await this.getHomeListInStudent(this.$store.getters.user.id)
       } else {
-        this.getGroupList(this.$store.getters.user.id)
+        await this.getGroupList(this.$store.getters.user.id)
       }
       await getTeacherList().then(res => {
         this.teacherList = res.data

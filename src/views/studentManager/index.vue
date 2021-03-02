@@ -171,7 +171,6 @@ export default {
   },
   methods: {
     handlePostMessage() {
-      console.log('adwqq')
       this.dialogShow = true
     },
     close() {
