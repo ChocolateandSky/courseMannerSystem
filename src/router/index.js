@@ -102,6 +102,21 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 后台管理端
+  {
+    path: '/',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['superAdmin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/superAdminView/index'),
+        name: 'superAdmin',
+        meta: { title: '学生用户', icon: 'clipboard', noCache: true, roles: ['superAdmin'] }
+      }
+    ]
+  },
   // 管理员端
   {
     path: '/scheduing',
@@ -148,6 +163,7 @@ export const asyncRoutes = [
     path: '/fileList',
     component: Layout,
     hidden: false,
+    meta: { roles: ['student', 'teacher', 'admin'] },
     children: [
       {
         path: 'index',

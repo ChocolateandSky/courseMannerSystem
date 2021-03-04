@@ -19,7 +19,6 @@ router.beforeEach(async(to, from, next) => {
   document.title = '桂电课设管理系统'
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
