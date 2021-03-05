@@ -4,17 +4,17 @@
       <div class="header">
         <div class="searchBox">
           <el-input
-            v-model="studentId"
+            v-model="teacherId"
             clearable
-            placeholder="输入学生账号"
+            placeholder="输入教师账号"
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px 0px 0px'} "
           />
           <el-button style="margin-right:30px" icon="el-icon-search" circle @click="seacherByid" />
           <el-input
-            v-model="studentName"
+            v-model="teacherName"
             clearable
-            placeholder="输入学生姓名"
+            placeholder="输入教师姓名"
             prefix-icon="el-icon-search"
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
@@ -23,7 +23,7 @@
       </div>
       <el-table
         v-loading="loading"
-        :data="studentUserList"
+        :data="teacherUserList"
         highlight-current-row
         height="250"
         :header-cell-style="{background:'#f0f9eb'}"
@@ -51,6 +51,11 @@
           align="center"
         />
         <el-table-column
+          prop="college"
+          label="所属学院"
+          align="center"
+        />
+        <el-table-column
           prop="phone"
           label="联系方式"
           align="center"
@@ -74,7 +79,7 @@
 </template>
 
 <script>
-import { getStudentsUsers, resetPassword } from '@/api/superAdmin'
+import { getTeacherUsers, resetPassword } from '@/api/superAdmin'
 
 export default {
   components: {
@@ -83,24 +88,21 @@ export default {
   data() {
     return {
       loading: false,
-      studentUserList: [],
+      teacherUserList: [],
       tableData: [],
-      studentId: '',
-      studentName: ''
+      teacherId: '',
+      teacherName: ''
     }
   },
-  created() {
-    this.getStudentUsers()
+  mounted() {
+    this.getTeacherUsers()
   },
   methods: {
-    getStudentUsers() {
+    getTeacherUsers() {
       this.loading = true
-      getStudentsUsers().then((res) => {
+      getTeacherUsers().then(res => {
         this.tableData = res.data
-        this.studentUserList = res.data
-        this.loading = false
-      }).catch(err => {
-        console.log(err)
+        this.teacherUserList = res.data
         this.loading = false
       })
     },
@@ -121,26 +123,26 @@ export default {
       })
     },
     seacherByid() {
-      this.studentUserList = []
-      if (this.studentId === '') {
-        this.studentUserList = [...this.tableData]
+      this.teacherUserList = []
+      if (this.teacherId === '') {
+        this.teacherUserList = [...this.tableData]
       } else {
         this.tableData.forEach(el => {
-          if (el.id.includes(this.studentId)) {
-            this.studentUserList.push(el)
+          if (el.id.includes(this.teacherId)) {
+            this.teacherUserList.push(el)
             return
           }
         })
       }
     },
     seacherByName() {
-      this.studentUserList = []
-      if (this.studentName === '') {
-        this.studentUserList = [...this.tableData]
+      this.teacherUserList = []
+      if (this.teacherName === '') {
+        this.teacherUserList = [...this.tableData]
       } else {
         this.tableData.forEach(el => {
-          if (el.realName.includes(this.studentName)) {
-            this.studentUserList.push(el)
+          if (el.realName.includes(this.teacherName)) {
+            this.teacherUserList.push(el)
             return
           }
         })

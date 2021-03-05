@@ -106,14 +106,29 @@ export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
+    redirect: '/studentManger',
+    hidden: false,
+    meta: { roles: ['superAdmin'] },
+    children: [
+      {
+        path: 'studentManger',
+        component: () => import('@/views/superAdminView/index'),
+        name: 'superAdmin',
+        meta: { title: '学生用户', icon: 'clipboard', noCache: true, roles: ['superAdmin'] }
+      }
+    ]
+  },
+  {
+    path: '/teacherManager',
+    component: Layout,
     hidden: false,
     meta: { roles: ['superAdmin'] },
     children: [
       {
         path: 'index',
-        component: () => import('@/views/superAdminView/index'),
-        name: 'superAdmin',
-        meta: { title: '学生用户', icon: 'clipboard', noCache: true, roles: ['superAdmin'] }
+        component: () => import('@/views/superAdminView/components/teacherManager'),
+        name: 'teacherManager',
+        meta: { title: '教师用户', icon: 'el-icon-document-copy', noCache: true, roles: ['superAdmin'] }
       }
     ]
   },
