@@ -45,6 +45,22 @@
       </el-tooltip>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button type="text" @click="dialogFormVisible = true">注册</el-button>
+      <el-dialog
+        title="注册"
+        :visible.sync="dialogFormVisible"
+        width="35%"
+      >
+        <el-form ref="registerForm" :model="registerForm" label-position="left" label-width="50px">
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="registerForm.name" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
     </el-form>
   </div>
 </template>
@@ -73,6 +89,15 @@ export default {
     //   }
     // }
     return {
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      registerForm: {
+        name: '',
+        numbers: '',
+        password: '',
+        checkpassword: '',
+        email: ''
+      },
       loginForm: {
         username: '',
         password: ''
@@ -116,6 +141,8 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    open() {
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
