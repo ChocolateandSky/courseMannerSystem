@@ -4,10 +4,9 @@
       v-loading="loading"
       class="filter-container"
     >
-      <el-button v-if="roleNum!==0" class="pan-btn green-btn message-btn" @click="uploadFile">上传文件</el-button>
       <el-divider />
       <el-table
-        :data="fileList"
+        :data="groupfileList"
         :header-cell-style="{background:'#f0f9eb'}"
         highlight-current-row
         style="width: 100%"
@@ -18,7 +17,7 @@
           align="center"
         />
         <el-table-column
-          prop="teacherName"
+          prop="userName"
           label="上传人"
           align="center"
         />
@@ -33,40 +32,37 @@
         >
           <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="DownloadFile(row)">下载</el-button>
-            <el-button v-if="roleNum!==0" type="warning" size="mini" @click="deleteFile(row)">删除</el-button>
+            <el-button type="warning" size="mini" @click="deleteFile(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <upload-file
-      :dialog-table-visible="uploadDialogShow"
-      @close="close"
-      @refresh="refresh"
-    />
   </div>
 </template>
 
 <script>
-import uploadFile from './components/uploadFile'
 // eslint-disable-next-line no-unused-vars
-import { getNoticeFileList, downloadFile, deleteFile } from '@/api/file'
+import { downloadFile, deleteFile } from '@/api/file'
+import { getAllGroupFile } from '@/api/superAdmin'
 export default {
   components: {
-    uploadFile
   },
   data() {
     return {
       loading: false,
-      fileList: [],
-      dialogShow: false,
-      uploadDialogShow: false,
-      roleNum: this.$store.getters.roleNum
+      groupfileList: []
+      // roleNum: this.$store.getters.roleNum
     }
   },
   mounted() {
-    this.getNoticeFileList()
+    this.getAllGroupFile()
   },
   methods: {
+    getAllGroupFile() {
+      getAllGroupFile().then(res => {
+        this.groupfileList = res.data
+      })
+    },
     deleteFile(row) {
       this.$confirm('你确定要删除该文件吗', '提示', {
         confirmButtonText: '确定',
@@ -89,21 +85,6 @@ export default {
           message: '已取消删除操作'
         })
       })
-    },
-    getNoticeFileList() {
-      this.loading = true
-      getNoticeFileList().then(res => {
-        console.log(res)
-        this.fileList = res.data
-        this.loading = false
-      })
-    },
-    close() {
-      this.dialogShow = false
-      this.uploadDialogShow = false
-    },
-    uploadFile() {
-      this.uploadDialogShow = true
     },
     refresh() {
       this.getNoticeFileList()

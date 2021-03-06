@@ -19,15 +19,15 @@
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
           <el-button style="margin-right:30px" icon="el-icon-search" circle @click="seacherByName" />
+          <el-button type="primary" @click="dialogFormVisible =true">添加教师账号</el-button>
         </div>
       </div>
       <el-table
         v-loading="loading"
         :data="teacherUserList"
         highlight-current-row
-        height="250"
         :header-cell-style="{background:'#f0f9eb'}"
-        style="width: 100%"
+        style="width: 100%;"
         row-key="id"
       >
         <el-table-column label="序号" align="center" width="80">
@@ -75,23 +75,111 @@
         </el-table-column>
       </el-table>
     </div>
+
+    <!-- 添加教师账号对话框 -->
+    <el-dialog class="dialog" title="添加教师账号" :visible.sync="dialogFormVisible" width="30%">
+      <el-form ref="ruleForm" status-icon :model="teacherInfo" :rules="rules">
+        <el-form-item label="账号:" prop="username" :label-width="formLabelWidth">
+          <el-input v-model="teacherInfo.username" autocomplete="off" placeholder="输入账号" />
+        </el-form-item>
+        <el-form-item label="名字:" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="teacherInfo.name" autocomplete="off" placeholder="输入名字" />
+        </el-form-item>
+        <el-form-item label="性别:" :label-width="formLabelWidth">
+          <el-radio v-model="gender" label="男">男</el-radio>
+          <el-radio v-model="gender" label="女">女</el-radio>
+        </el-form-item>
+
+        <!-- <el-form-item label="密码:" :label-width="formLabelWidth">
+          <el-input v-model="teacherInfo.password" show-password autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="再次确认密码:" :label-width="formLabelWidth">
+          <el-input v-model="doPassword" show-password autocomplete="off" />
+        </el-form-item> -->
+        <el-form-item label="学院:" prop="college" :label-width="formLabelWidth">
+          <el-select v-model="teacherInfo.college" placeholder="请选择学院">
+            <el-option
+              v-for="item in collegeList"
+              :key="item.index"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="专业:" prop="major" :label-width="formLabelWidth">
+          <el-select v-model="teacherInfo.major" placeholder="请选择专业">
+            <el-option
+              v-for="item in majorList"
+              :key="item.index"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTeacherUserServlet('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getTeacherUsers, resetPassword } from '@/api/superAdmin'
+import { getTeacherUsers, resetPassword, addTeacherUserServlet } from '@/api/superAdmin'
 
 export default {
   components: {
 
   },
   data() {
+    var checkUsername = (rule, value, callback) => {
+      const re = /^[0-9a-zA-Z]*$/ // 判断字符串是否为数字和字母组合
+      console.log('sssssss')
+      if (!re.test(value)) {
+        return callback(new Error('账号只能由数字和字母组成'))
+      } else if (value.length < 6) {
+        return callback(new Error('账号长度不能小于6位'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false,
       teacherUserList: [],
       tableData: [],
       teacherId: '',
-      teacherName: ''
+      teacherName: '',
+      dialogFormVisible: false,
+      teacherInfo: {},
+      formLabelWidth: '120px',
+      doPassword: '',
+      gender: '男',
+      // college: '',
+      // major: '',
+      collegeList: [{
+        value: 'sdf',
+        label: 'gfggffg'
+      }],
+      majorList: [{
+        value: 'sdf',
+        label: 'gfggffg'
+      }],
+      rules: {
+        name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
+        username: [
+          { required: true, validate: checkUsername, trigger: 'blur' }
+        ],
+        college: [
+          { required: true, message: '请选择学院', trigger: 'blur' }
+        ],
+        major: [
+          { required: true, message: '请选择专业', trigger: 'blur' }
+        ]
+      }
     }
   },
   mounted() {
@@ -147,6 +235,22 @@ export default {
           }
         })
       }
+    },
+    addTeacherUserServlet(formName) {
+      console.log(this.teacherInfo)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          addTeacherUserServlet(this.teacherInfo)
+            .then(res => {
+              console.log(res)
+              this.$message.success('添加成功，账号为：' + this.teacherInfo.username + ' , 初始密码为:123456')
+              this.dialogFormVisible = false
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     }
   }
 }
@@ -164,6 +268,14 @@ export default {
       font-size: 14px;
       .header{
         margin-bottom: 1%;
+      }
+    }
+    .dialog{
+      .el-input{
+        width: 80%;
+      }
+      .el-select{
+        width: 80%;
       }
     }
   }
