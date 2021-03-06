@@ -132,6 +132,20 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/allGroupFile',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['superAdmin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/superAdminView/components/allGroupFile'),
+        name: 'allGroupFile',
+        meta: { title: '小组文件', icon: 'el-icon-document-copy', noCache: true, roles: ['superAdmin'] }
+      }
+    ]
+  },
   // 管理员端
   {
     path: '/scheduing',

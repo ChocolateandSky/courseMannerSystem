@@ -19,19 +19,15 @@ export function getGroupFileList(groupId) {
   })
 }
 
-export function deleteFile(id) {
+export function deleteFile(data) {
   return request({
     url: '/test/deleteNoticeFileServlet',
     method: 'post',
-    params: {
-      id
-    }
+    params: data
   })
 }
 
 export function downloadFile(id, name) {
-  console.log(id)
-  console.log(name)
   axios.get('/test/downloadFileServlet', {
     responseType: 'arraybuffer',
     params: {

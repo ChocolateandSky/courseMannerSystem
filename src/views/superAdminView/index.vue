@@ -25,7 +25,6 @@
         v-loading="loading"
         :data="studentUserList"
         highlight-current-row
-        height="250"
         :header-cell-style="{background:'#f0f9eb'}"
         style="width: 100%"
         row-key="id"

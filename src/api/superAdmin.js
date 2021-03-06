@@ -21,3 +21,18 @@ export function getTeacherUsers() {
     method: 'get'
   })
 }
+
+export function addTeacherUserServlet(data) {
+  return request({
+    url: '/test/addTeacherUserServlet',
+    method: 'put',
+    data
+  })
+}
+
+export function getAllGroupFile() {
+  return request({
+    url: '/test/getAllGroup_FileInfoServlet',
+    method: 'get'
+  })
+}
