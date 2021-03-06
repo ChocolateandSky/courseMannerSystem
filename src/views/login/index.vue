@@ -49,11 +49,23 @@
       <el-dialog
         title="注册"
         :visible.sync="dialogFormVisible"
-        width="35%"
+        width="30%"
       >
-        <el-form ref="registerForm" :model="registerForm" label-position="left" label-width="50px">
-          <el-form-item label="姓名" prop="name">
+        <el-form ref="registerForm" :model="registerForm" label-position="left" label-width="90px">
+          <el-form-item class="test" label="姓名:" prop="name">
             <el-input v-model="registerForm.name" />
+          </el-form-item>
+          <el-form-item class="test" label="学号:" prop="numbers">
+            <el-input v-model="registerForm.numbers" />
+          </el-form-item>
+          <el-form-item class="test" label="密码:" prop="password">
+            <el-input v-model="registerForm.password" />
+          </el-form-item>
+          <el-form-item class="test" label="确认密码:" prop="checkpassword">
+            <el-input v-model="registerForm.checkpassword" />
+          </el-form-item>
+          <el-form-item class="test" label="邮箱:" prop="email">
+            <el-input v-model="registerForm.email" />
           </el-form-item>
         </el-form>
         <div slot="footer">
@@ -217,6 +229,26 @@ $cursor: #fff;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+
+.el-form--label-left .test .el-form-item__label {
+    text-align: center;
+    letter-spacing: 4px;
+}
+
+.test .el-form-item__label {
+  // background-color: #fff;
+  color: #606266;
+  line-height:50px;
+  padding: 0;
+}
+
+.test .el-form-item__content .el-input .el-input__inner{
+  height: 50px;
+  color: #606266;
+  caret-color: black;
+  font-weight: bold;
+  padding: 0;
 }
 
 /* reset element-ui css */
