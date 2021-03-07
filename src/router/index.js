@@ -142,7 +142,21 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/superAdminView/components/allGroupFile'),
         name: 'allGroupFile',
-        meta: { title: '小组文件', icon: 'el-icon-document-copy', noCache: true, roles: ['superAdmin'] }
+        meta: { title: '小组文件列表', icon: 'el-icon-collection', noCache: true, roles: ['superAdmin'] }
+      }
+    ]
+  },
+  {
+    path: '/collegeAndmajor',
+    component: Layout,
+    hidden: false,
+    meta: { roles: ['superAdmin'] },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/superAdminView/components/collegeAndmajor'),
+        name: 'collegeAndmajor',
+        meta: { title: '学院专业管理', icon: 'el-icon-collection', noCache: true, roles: ['superAdmin'] }
       }
     ]
   },
@@ -192,13 +206,13 @@ export const asyncRoutes = [
     path: '/fileList',
     component: Layout,
     hidden: false,
-    meta: { roles: ['student', 'teacher', 'admin'] },
+    meta: { roles: ['student', 'teacher', 'admin', 'superAdmin'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/fileList/index'),
         name: 'FileList',
-        meta: { title: '文件列表', icon: 'el-icon-folder', noCache: true }
+        meta: { title: '公告文件列表', icon: 'el-icon-folder', noCache: true }
       }
     ]
   },

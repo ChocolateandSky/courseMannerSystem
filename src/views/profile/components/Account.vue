@@ -32,8 +32,8 @@
               <el-option
                 v-for="item in majorList"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :label="item.major"
+                :value="item.major"
               />
             </el-select>
           </el-form-item>
@@ -59,6 +59,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
+import { getMajorInfoServlet, getCollegeInfoServlet } from '@/api/superAdmin'
 import UpdatePassword from '@/components/UpdatePassword/index'
 export default {
   components: {
@@ -96,22 +97,8 @@ export default {
   },
   data() {
     return {
-      majorList: [{
-        value: '软件工程',
-        label: '软件工程'
-      }, {
-        value: '计算机科学与技术',
-        label: '计算机科学与技术'
-      }, {
-        value: '物联网工程',
-        label: '物联网工程'
-      }, {
-        value: '智能科学与技术',
-        label: '智能科学与技术'
-      }, {
-        value: '信息安全',
-        label: '信息安全'
-      }],
+      majorList: [],
+      collegeIdfromUser: '',
       showDialog: false,
       id: '',
       roleNum: this.$store.getters.roleNum
@@ -125,7 +112,23 @@ export default {
   created() {
     this.id = this.user.id
   },
+  mounted() {
+    this.getMajorInfoServlet(this.$store.getters.user.college)
+  },
   methods: {
+    async getMajorInfoServlet(college) {
+      await getCollegeInfoServlet().then(res => {
+        res.data.forEach(el => {
+          if (el.college === college) {
+            this.collegeIdfromUser = el.id
+          }
+        })
+      })
+      getMajorInfoServlet(this.collegeIdfromUser).then(res => {
+        console.log(res)
+        this.majorList = res.data
+      })
+    },
     submitPsw() {
       this.showDialog = true
     },

@@ -28,22 +28,23 @@
                     <el-option
                       v-for="item in collegeList"
                       :key="item.index"
-                      :label="item"
-                      :value="item"
+                      :label="item.college"
+                      :value="item.college"
                     />
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="课程代码、名称:" prop="practName">
-                  <el-select v-model="ruleForm.practName" filterable placeholder="请选择课程代码">
+                  <el-input v-model="ruleForm.practName" placeholder="请选择课程代码" clearable />
+                  <!-- <el-select v-model="ruleForm.practName" filterable placeholder="请选择课程代码">
                     <el-option
                       v-for="item in courseId"
                       :key="item.index"
                       :label="item"
                       :value="item"
                     />
-                  </el-select>
+                  </el-select> -->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -173,12 +174,13 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { exportScheduleWord } from '@/api/file'
+import { getCollegeInfoServlet } from '@/api/superAdmin'
 export default {
   data() {
     return {
       autoHeight: '200px',
-      collegeList: ['软件工程', '计算机科学与技术'],
-      courseId: ['软件工程课程设计AT1000', '嵌入式课程设计AT1001'],
+      collegeList: [],
+      // courseId: ['软件工程课程设计AT1000', '嵌入式课程设计AT1001'],
       wokerTable: { subject: '', details: '', edit: true, index: 1 },
       ruleForm: {
         title: '',
@@ -260,12 +262,18 @@ export default {
   },
   mounted() {
     this.getAutoHeight()
+    this.getCollegeInfoServlet()
     window.onresize = () => {
       this.getAutoHeight()
       console.log(this.autoHeight)
     }
   },
   methods: {
+    getCollegeInfoServlet() {
+      getCollegeInfoServlet().then(res => {
+        this.collegeList = res.data
+      })
+    },
     exportWord(formName) {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {

@@ -36,3 +36,46 @@ export function getAllGroupFile() {
     method: 'get'
   })
 }
+
+export function getMajorInfoServlet(collegeId) { // 查询所有专业
+  return request({
+    url: '/test/getMajorInfoServlet',
+    method: 'get',
+    params: { collegeId }
+  })
+}
+
+export function getCollegeInfoServlet() { // 查询所有学院
+  return request({
+    url: '/test/getCollegeInfoServlet',
+    method: 'get'
+  })
+}
+
+export function deleteUserByIdServlet(data) { // 查询所有学院
+  return request({
+    url: '/test/deleteUserByIdServlet',
+    method: 'post',
+    params: {
+      id: data.id,
+      roles: data.roles
+    }
+  })
+}
+
+export function addCollegeInfoServlet(data) { // 查询学院
+  return request({
+    url: '/test/addCollegeInfoServlet',
+    method: 'put',
+    data: { college: data.college }
+  })
+}
+
+export function addMajorInfoServlet(data) { // 添加专业
+  return request({
+    url: '/test/addMajorInfoServlet',
+    method: 'put',
+    data
+  })
+}
+

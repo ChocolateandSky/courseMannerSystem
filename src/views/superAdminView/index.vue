@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { getStudentsUsers, resetPassword } from '@/api/superAdmin'
+import { getStudentsUsers, resetPassword, deleteUserByIdServlet } from '@/api/superAdmin'
 
 export default {
   components: {
@@ -144,6 +144,29 @@ export default {
           }
         })
       }
+    },
+    handleDelete(row) {
+      console.log(row)
+      this.$confirm('此操作将永久删除该账号, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUserByIdServlet({ id: row.id, roles: row.roles })
+          .then(res => {
+            this.$message({
+              message: '删除成功',
+              duration: 5000,
+              type: 'success'
+            })
+            this.getStudentUsers()
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

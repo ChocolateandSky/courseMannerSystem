@@ -58,12 +58,15 @@
                   <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组文件" name="first">
                     <div v-if="fileNum!==0">
-                      <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)">
+
+                      <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)" @contextmenu.prevent.stop="deleteGroupFile(item,$event)">
                         <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
-                        <div class="file-name">
-                          <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
-                          <span style="margin:0 auto">{{ item.date }}</span>
-                        </div>
+                        <el-tooltip class="item" effect="dark" content="右键可删除文件，左键下载文件" placement="right-start">
+                          <div class="file-name">
+                            <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
+                            <span style="margin:0 auto">{{ item.date }}</span>
+                          </div>
+                        </el-tooltip>
                       </div>
                     </div>
                     <div v-else>
@@ -141,7 +144,7 @@
 <script>
 import splitPane from 'vue-splitpane'
 import { getGroupDetail, getMemberList, setStudentWork, setPhase } from '@/api/group'
-import { getGroupFileList, downloadFile } from '@/api/file'
+import { getGroupFileList, downloadFile, deleteGroupFile } from '@/api/file'
 import { sendMailToGroup, sendNotice } from '@/api/user'
 export default {
   name: 'OneGroups',
@@ -195,6 +198,28 @@ export default {
     this.uploadParams.roles = this.roles
   },
   methods: {
+    deleteGroupFile(item, event) {
+      console.log(this.roleNum)
+      if (this.roleNum !== 0) {
+        this.$message.warning('只有小组成员才有权限删除文件')
+      } else {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteGroupFile({ id: item.id, name: item.name }).then(res => {
+            this.$message.success('成功删除')
+            this.getGroupFileList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      }
+    },
     DownloadFile(item) {
       this.$confirm('是否要下载该文件', '提示', {
         confirmButtonText: '是',
@@ -216,7 +241,7 @@ export default {
         message: '上传成功！'
       })
       // this.fileList = []
-      console.log(fileList)
+      // console.log(fileList)
       this.sendNotice(fileList)
       this.getInfo()
     },
@@ -308,7 +333,7 @@ export default {
         } else {
           this.isLeader = false
         }
-        console.log(this.memberWork.stuIdAndWork)
+        // console.log(this.memberWork.stuIdAndWork)
       })
     },
     sendMailToGroup() {
@@ -322,7 +347,7 @@ export default {
         })
     },
     setStudentWork() {
-      console.log(this.memberWork)
+      // console.log(this.memberWork)
       setStudentWork(this.memberWork)
         .then(res => {
           this.$message.success('设置成功')
@@ -359,7 +384,7 @@ export default {
       this.readonly = true
     },
     getGroupFileList() {
-      console.log(this.teamId)
+      // console.log(this.teamId)
       getGroupFileList(this.teamId)
         .then(res => {
           this.groupFileList = res.data
@@ -369,7 +394,7 @@ export default {
             this.fileNum = this.groupFileList.length
             this.matchFileType()
           }
-          console.log(this.groupFileList)
+          // console.log(this.groupFileList)
         })
     },
     matchFileType() {

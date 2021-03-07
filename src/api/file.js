@@ -42,6 +42,14 @@ export function downloadFile(id, name) {
   })
 }
 
+export function deleteGroupFile(data) {
+  return request({
+    url: '/test/deleteGroupFileServlet',
+    method: 'post',
+    params: data
+  })
+}
+
 export function exportScheduleWord(data, fileName) {
   axios.get('/test/exportWordServlet', {
     params: {

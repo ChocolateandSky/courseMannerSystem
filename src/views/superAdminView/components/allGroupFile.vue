@@ -5,38 +5,54 @@
       class="filter-container"
     >
       <el-divider />
-      <el-table
-        :data="groupfileList"
-        :header-cell-style="{background:'#f0f9eb'}"
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="name"
-          label="文件名"
-          align="center"
+      <div class="searchBox">
+        <el-input
+          v-model="uploadUser"
+          clearable
+          placeholder="搜索上传人"
+          prefix-icon="el-icon-search"
+          :style="{width: '250px', 'margin': '0px 10px 10px 0px'} "
         />
-        <el-table-column
-          prop="userName"
-          label="上传人"
-          align="center"
-        />
-        <el-table-column
-          prop="date"
-          label="上传时间"
-          align="center"
-        />
-        <el-table-column
-          label="操作"
-          align="center"
-        >
-          <template slot-scope="{row}">
-            <el-button type="success" size="mini" @click="DownloadFile(row)">下载</el-button>
-            <el-button type="warning" size="mini" @click="deleteFile(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-button style="margin-right:30px" icon="el-icon-search" circle @click="seacherByUploadUser" />
+      </div>
     </div>
+    <el-table
+      :data="groupfileList"
+      :header-cell-style="{background:'#f0f9eb'}"
+      highlight-current-row
+      style="width: 100%"
+    >
+      <el-table-column label="序号" align="center" width="80">
+        <template slot-scope="{$index}">
+          <span>{{ $index + 1 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        label="文件名"
+        align="center"
+      />
+      <el-table-column
+        prop="userName"
+        label="上传人"
+        align="center"
+      />
+      <el-table-column
+        prop="date"
+        label="上传时间"
+        sortable
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+      >
+        <template slot-scope="{row}">
+          <el-button type="success" size="mini" @click="DownloadFile(row)">下载</el-button>
+          <el-button type="warning" size="mini" @click="deleteFile(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -50,8 +66,10 @@ export default {
   data() {
     return {
       loading: false,
-      groupfileList: []
+      groupfileList: [],
+      tableData: [],
       // roleNum: this.$store.getters.roleNum
+      uploadUser: ''
     }
   },
   mounted() {
@@ -59,8 +77,11 @@ export default {
   },
   methods: {
     getAllGroupFile() {
+      this.loading = true
       getAllGroupFile().then(res => {
         this.groupfileList = res.data
+        this.tableData = res.data
+        this.loading = false
       })
     },
     deleteFile(row) {
@@ -91,6 +112,19 @@ export default {
     },
     DownloadFile(row) {
       downloadFile(row.id, row.name)
+    },
+    seacherByUploadUser() {
+      this.groupfileList = []
+      if (this.uploadUser === '') {
+        this.groupfileList = [...this.tableData]
+      } else {
+        this.tableData.forEach(el => {
+          if (el.userName.includes(this.uploadUser)) {
+            this.groupfileList.push(el)
+            return
+          }
+        })
+      }
     }
   }
 }
