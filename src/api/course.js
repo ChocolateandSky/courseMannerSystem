@@ -115,3 +115,26 @@ export function removeLeaderTeam(stuId, practId) {
     params: { stuId, practId }
   })
 }
+
+export function getColleges() {
+  return request({
+    url: '/test/getCollegeInfoServlet',
+    method: 'get'
+  })
+}
+
+export function getMajor(collegeId) {
+  return request({
+    url: '/test/getMajorInfoServlet',
+    method: 'get',
+    params: { collegeId }
+  })
+}
+
+export function putRegisterForm(data) {
+  return request({
+    url: '/test/registerStudentUserServlet',
+    method: 'put',
+    data
+  })
+}

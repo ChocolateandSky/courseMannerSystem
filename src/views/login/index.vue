@@ -50,13 +50,21 @@
         title="注册"
         :visible.sync="dialogFormVisible"
         width="30%"
+        @open.once="handleDialogOpen()"
+        @close="handleDialogClose()"
       >
         <el-form ref="registerForm" :model="registerForm" label-position="left" label-width="90px">
-          <el-form-item class="test" label="姓名:" prop="name">
-            <el-input v-model="registerForm.name" />
+          <el-form-item class="test" label="姓名:" prop="realName">
+            <el-input v-model="registerForm.realName" />
           </el-form-item>
-          <el-form-item class="test" label="学号:" prop="numbers">
-            <el-input v-model="registerForm.numbers" />
+          <el-form-item class="test" label="学号:" prop="userName">
+            <el-input v-model="registerForm.userName" />
+          </el-form-item>
+          <el-form-item class="test" label="性别:" prop="gender">
+            <el-radio-group v-model="registerForm.gender">
+              <el-radio label="男">男</el-radio>
+              <el-radio label="女">女</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item class="test" label="密码:" prop="password">
             <el-input v-model="registerForm.password" />
@@ -64,13 +72,33 @@
           <el-form-item class="test" label="确认密码:" prop="checkpassword">
             <el-input v-model="registerForm.checkpassword" />
           </el-form-item>
+          <el-form-item class="test" label="学院:" prop="college">
+            <el-select v-model="registerForm.college" placeholder="请选择" style="{width: 100%}" @change="getCollegeMajor">
+              <el-option
+                v-for="item in collegeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item class="test" label="专业:" prop="major">
+            <el-select v-model="registerForm.major" placeholder="请选择" style="{width: 100%}">
+              <el-option
+                v-for="item in majorOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item class="test" label="邮箱:" prop="email">
             <el-input v-model="registerForm.email" />
           </el-form-item>
         </el-form>
         <div slot="footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary" @click="handlePutRegisterForm()">确 定</el-button>
         </div>
       </el-dialog>
     </el-form>
@@ -81,6 +109,7 @@
 // eslint-disable-next-line no-unused-vars
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
+import { getColleges, getMajor, putRegisterForm } from '@/api/course'
 export default {
   name: 'Login',
   // eslint-disable-next-line vue/no-unused-components
@@ -103,13 +132,19 @@ export default {
     return {
       dialogFormVisible: false,
       formLabelWidth: '120px',
+      // 注册表单
       registerForm: {
-        name: '',
-        numbers: '',
-        password: '',
-        checkpassword: '',
-        email: ''
+        userName: '', // 用户名
+        realName: '', // 学号
+        password: '', // 密码
+        checkpassword: '', // 确认密码
+        gender: '', // 性别
+        college: '', // 学院
+        major: '', // 专业
+        email: '' // 邮箱
       },
+      collegeOptions: [],
+      majorOptions: [],
       loginForm: {
         username: '',
         password: ''
@@ -194,6 +229,51 @@ export default {
         }
         return acc
       }, {})
+    },
+    // 打开注册对话框
+    handleDialogOpen() {
+      getColleges().then(res => {
+        for (const i in res.data) {
+          this.collegeOptions.push({
+            label: res.data[i].college,
+            value: res.data[i].id
+            // collegeId: res.data[i].id
+          })
+        }
+      })
+    },
+    // 联动学院和专业
+    getCollegeMajor(college) {
+      getMajor(college).then(res => {
+        this.majorOptions = []
+        delete this.registerForm.major
+        for (const i in res.data) {
+          this.majorOptions.push({
+            label: res.data[i].major,
+            value: res.data[i].id
+          })
+        }
+      })
+    },
+    // 关闭注册对话框
+    handleDialogClose() {
+      this.$nextTick(() => {
+        this.$refs['registerForm'].resetFields()
+      })
+    },
+    handlePutRegisterForm() {
+      putRegisterForm(this.registerForm).then(res => {
+        this.$message({
+          type: 'success',
+          message: '创建成功'
+        })
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '创建失败'
+        })
+      })
+      this.dialogFormVisible = false
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
@@ -239,7 +319,7 @@ $cursor: #fff;
 .test .el-form-item__label {
   // background-color: #fff;
   color: #606266;
-  line-height:50px;
+  line-height: 50px;
   padding: 0;
 }
 
