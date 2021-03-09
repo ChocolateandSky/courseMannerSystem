@@ -43,7 +43,7 @@
               v-for="item in collegeList"
               :key="item.index"
               :label="item.college"
-              :value="item.collegeId"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -71,7 +71,7 @@ export default {
       loading: false,
       collegeMajorList: [],
       collegeList: [],
-      tempList: [],
+      // tempList: [],
       dialogCollegeVisible: false,
       collegeform: {},
       dialogMajorVisible: false,
@@ -83,7 +83,11 @@ export default {
     this.getCollegeInfoServlet()
   },
   methods: {
+    resetData() {
+      this.collegeMajorList = []
+    },
     addMajorInfoServlet() {
+      console.log(this.majorform)
       addMajorInfoServlet(this.majorform)
         .then(res => {
           this.$message.success('添加成功')
@@ -109,26 +113,30 @@ export default {
     },
     getCollegeInfoServlet() {
       this.loading = true
+      this.collegeMajorList = []
       getCollegeInfoServlet().then((res) => {
         this.collegeList = res.data
+        console.log(this.collegeList)
         res.data.forEach(async element => {
-          await getMajorInfoServlet(element.id).then(res => {
-            if (res.data.length !== 0) {
-              this.collegeMajorList.push(res.data)
-              this.tempList.push(res.data)
+          await getMajorInfoServlet(element.id).then(res2 => {
+            if (res2.data.length !== 0) {
+              this.collegeMajorList.push(res2.data)
+              // this.tempList.push(res.data)
             } else {
-              const temp = [{
-                college: element.college,
-                collegeId: '',
-                id: '',
-                major: '暂无数据'
-              }]
-              this.collegeMajorList.push(temp)
-              this.tempList.push(res.data)
+              if (element.college !== '') {
+                const temp = [{
+                  college: element.college,
+                  collegeId: '',
+                  id: '',
+                  major: '暂无数据'
+                }]
+                this.collegeMajorList.push(temp)
+                // this.tempList.push(res.data)
+              }
             }
           })
+          this.loading = false
         })
-        this.loading = false
       })
     }
   }
