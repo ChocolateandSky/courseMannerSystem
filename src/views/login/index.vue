@@ -67,10 +67,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item class="test" label="密码:" prop="password">
-            <el-input v-model="registerForm.password" />
-          </el-form-item>
-          <el-form-item class="test" label="确认密码:" prop="checkpassword">
-            <el-input v-model="registerForm.checkpassword" />
+            <el-input v-model="registerForm.password" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
             <el-select v-model="registerForm.college" placeholder="请选择" style="{width: 100%}" @change="getCollegeMajor">
