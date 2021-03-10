@@ -164,6 +164,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
+          this.majorList.splice(this.majorList.indexOf(this.delMajorForm.major), 1)
           this.dialogDelMajorVisible = false
           this.getCollegeInfoServlet()
         }).catch(res => {
@@ -181,6 +182,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
+          this.collegeList.splice(this.collegeList.indexOf(this.delCollegeForm.college), 1)
           this.dialogDelMajorVisible = false
           this.getCollegeInfoServlet()
         }).catch(res => {

@@ -2,12 +2,9 @@
   <div>
     <el-container v-loading="loading">
       <el-header>
-        <el-input :style="{ 'width': '350px' }" placeholder="请输入内容">
-          <el-select slot="prepend" v-model="select" class="input-with-select" style="width: 80px" placeholder="筛选" @change="filterData">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-          <el-button slot="append" icon="el-icon-search" />
-        </el-input>
+        <el-select v-model="select" class="input-with-select" style="width: 80px" placeholder="筛选" @change="filterData">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-header>
       <el-main>
         <el-table :data="filterTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" style="width: 100%">

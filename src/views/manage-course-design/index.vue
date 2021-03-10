@@ -4,7 +4,7 @@
       <!-- 头部内容 -->
       <el-header>
         <el-button type="success" icon="el-icon-plus" style="float: left" @click="showAddDialog">新增</el-button>
-        <div class="searchBox">
+        <!-- <div class="searchBox">
           <el-input
             v-model="searchInfo"
             placeholder="请输入内容"
@@ -12,7 +12,7 @@
             :style="{width: '250px', 'margin': '0px 10px'} "
           />
           <el-button icon="el-icon-search" circle />
-        </div>
+        </div> -->
       </el-header>
       <!-- 主要内容 -->
       <el-main>
@@ -137,7 +137,7 @@
 <script>
 // import HeaderContainer from './components/HeaderContainer'
 import { mapGetters } from 'vuex'
-import { getTeacherInfo, createCourse, getCoursesInfo, changeCourseInfo, deleteCourse } from '@/api/course'
+import { getTeacherInfo, createCourse, getCoursesInfo, changeCourseInfo, deleteCourse, getMajor, getColleges } from '@/api/course'
 export default {
   name: 'ManageCourseDesign',
   data() {
@@ -149,6 +149,7 @@ export default {
       },
       userId: '', // 用户id
       userName: '', // 用户名
+      userMajor: '', // 用户专业
       currentPage: 1, // 当前页码，默认为第 1 页
       pageSize: 5, // 每页的大小
       searchInfo: '', // 搜索关键字
@@ -158,19 +159,20 @@ export default {
         value: 'id',
         label: 'name'
       },
-      options: [{
-        value: '计算机与信息安全学院',
-        name: '计算机与信息安全学院',
-        children: [{
-          value: '软件工程',
-          name: '软件工程',
-          children: []
-        }, {
-          value: '计算机科学与技术',
-          name: '计算机科学与技术',
-          children: []
-        }]
-      }],
+      // options: [{
+      //   value: '计算机与信息安全学院',
+      //   name: '计算机与信息安全学院',
+      //   children: [{
+      //     value: '软件工程',
+      //     name: '软件工程',
+      //     children: []
+      //   }, {
+      //     value: '计算机科学与技术',
+      //     name: '计算机科学与技术',
+      //     children: []
+      //   }]
+      // }],
+      options: [],
       // 添加课程设计对话框内容
       // 控制添加课程设计对话框的显示与隐藏，默认为隐藏
       addDialogVisible: false,
@@ -201,15 +203,35 @@ export default {
   },
   created() {
     this.getUser()
+    this.getMajorInfo()
   },
   mounted() {
     this.getTableData(this.userId)
   },
   methods: {
+    // 获取专业
+    getMajorInfo() {
+      getColleges().then(res => {
+        for (const i in res.data) {
+          if (res.data[i].college === this.user.college) {
+            getMajor(res.data[i].id).then(res => {
+              for (const i in res.data) {
+                this.options.push({
+                  name: res.data[i].major,
+                  value: res.data[i].major,
+                  children: []
+                })
+              }
+            })
+          }
+        }
+      })
+    },
     // 获取用户信息
     getUser() {
       this.userId = this.user.id
       this.userName = this.user.name
+      this.userMajor = this.user.major
     },
     // 获取表格内容
     getTableData(id) {
@@ -297,12 +319,14 @@ export default {
     // 展示新建课程设计的对话框
     async showAddDialog() {
       this.$data.addDialogVisible = true
-      getTeacherInfo('软件工程').then(res => {
-        this.options[0].children[0].children = res.data
-      })
-      getTeacherInfo('计算机科学与技术').then(res => {
-        this.options[0].children[1].children = res.data
-      })
+      for (const i in this.options) {
+        getTeacherInfo(this.options[i].name).then(res => {
+          this.options[i].children = res.data
+        }).catch()
+      }
+      // getTeacherInfo('计算机科学与技术').then(res => {
+      //   this.options[0].children[1].children = res.data
+      // })
     },
     // 监听新建课程设计对话框的关闭
     addDialogClosed() {
