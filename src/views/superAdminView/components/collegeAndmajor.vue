@@ -6,7 +6,7 @@
         <div class="searchBox">
           <el-button type="primary" style="margin-right:30px" icon="el-icon-circle-plus-outline" @click="dialogCollegeVisible = true">添加学院</el-button>
           <el-button type="primary" style="margin-right:30px" icon="el-icon-circle-plus-outline" @click="dialogMajorVisible = true">添加专业</el-button>
-          <el-button type="danger" style="margin-right:30px" icon="el-icon-remove-outline" @click="dialogDelMajorVisible = true">删除专业</el-button>
+          <el-button type="danger" style="margin-right:30px" icon="el-icon-remove-outline" @click="dialogDelMajorVisible = true">删除</el-button>
         </div>
       </div>
       <el-collapse class="groupCollapse">
