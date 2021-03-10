@@ -70,12 +70,12 @@
             <el-input v-model="registerForm.password" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
-            <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor">
+            <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor(registerForm.college[1])">
               <el-option
                 v-for="item in collegeOptions"
                 :key="item.index"
                 :label="item.label"
-                :value="item.value"
+                :value="[item.value, item.collegeId]"
               />
             </el-select>
           </el-form-item>
@@ -233,8 +233,8 @@ export default {
         for (const i in res.data) {
           this.collegeOptions.push({
             label: res.data[i].college,
-            value: res.data[i].id
-            // collegeId: res.data[i].id
+            value: res.data[i].college,
+            collegeId: res.data[i].id
           })
         }
       })
@@ -247,7 +247,7 @@ export default {
         for (const i in res.data) {
           this.majorOptions.push({
             label: res.data[i].major,
-            value: res.data[i].id
+            value: res.data[i].major
           })
         }
       })
@@ -259,7 +259,16 @@ export default {
       })
     },
     handlePutRegisterForm() {
-      putRegisterForm(this.registerForm).then(res => {
+      putRegisterForm({
+        userName: this.registerForm.userName, // 用户名
+        realName: this.registerForm.realName, // 学号
+        password: this.registerForm.password, // 密码
+        gender: this.registerForm.gender, // 性别
+        college: this.registerForm.college[0], // 学院
+        major: this.registerForm.major, // 专业
+        email: this.registerForm.email // 邮箱
+      }).then(res => {
+        // console.log(this.registerForm)
         this.$message({
           type: 'success',
           message: '创建成功'
