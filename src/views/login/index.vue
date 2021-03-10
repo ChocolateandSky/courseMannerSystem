@@ -278,15 +278,11 @@ export default {
         // console.log(this.registerForm)
         this.$message({
           type: 'success',
-          message: '创建成功'
+          message: '注册成功'
         })
-      }).catch(res => {
-        this.$message({
-          type: 'error',
-          message: '创建失败'
-        })
+        this.dialogFormVisible = false
       })
-      this.dialogFormVisible = false
+      // this.dialogFormVisible = false
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
