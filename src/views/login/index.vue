@@ -173,6 +173,15 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    getColleges().then(res => {
+      for (const i in res.data) {
+        this.collegeOptions.push({
+          label: res.data[i].college,
+          value: res.data[i].college,
+          collegeId: res.data[i].id
+        })
+      }
+    })
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -185,8 +194,6 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    open() {
-    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -229,15 +236,15 @@ export default {
     },
     // 打开注册对话框
     handleDialogOpen() {
-      getColleges().then(res => {
-        for (const i in res.data) {
-          this.collegeOptions.push({
-            label: res.data[i].college,
-            value: res.data[i].college,
-            collegeId: res.data[i].id
-          })
-        }
-      })
+      // getColleges().then(res => {
+      //   for (const i in res.data) {
+      //     this.collegeOptions.push({
+      //       label: res.data[i].college,
+      //       value: res.data[i].college,
+      //       collegeId: res.data[i].id
+      //     })
+      //   }
+      // })
     },
     // 联动学院和专业
     getCollegeMajor(college) {
