@@ -6,6 +6,7 @@
         <div class="searchBox">
           <el-button type="primary" style="margin-right:30px" icon="el-icon-circle-plus-outline" @click="dialogCollegeVisible = true">添加学院</el-button>
           <el-button type="primary" style="margin-right:30px" icon="el-icon-circle-plus-outline" @click="dialogMajorVisible = true">添加专业</el-button>
+          <el-button type="danger" style="margin-right:30px" icon="el-icon-remove-outline" @click="dialogDelMajorVisible = true">删除专业</el-button>
         </div>
       </div>
       <el-collapse class="groupCollapse">
@@ -57,32 +58,141 @@
       </div>
     </el-dialog>
 
+    <!-- 删除 -->
+    <el-dialog width="25%" :visible.sync="dialogDelMajorVisible" @close="handleDialogClose()">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="删除专业" name="first">
+          <el-form ref="delMajorForm" :model="delMajorForm">
+            <el-form-item label="学 院:" label-width="90px" prop="collegeId">
+              <el-select v-model="delMajorForm.collegeId" placeholder="请选择学院" style="width:100%" @change="getCollegeMajor">
+                <el-option
+                  v-for="item in collegeList"
+                  :key="item.index"
+                  :label="item.college"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="专 业:" label-width="90px" prop="major">
+              <el-select v-model="delMajorForm.major" placeholder="请选择专业" style="width:100%">
+                <el-option
+                  v-for="item in majorList"
+                  :key="item.index"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="删除学院" name="second">
+          <el-form ref="delCollegeForm" :model="delCollegeForm">
+            <el-form-item label="学 院:" label-width="90px" prop="collegeId">
+              <el-select v-model="delCollegeForm.collegeId" placeholder="请选择学院" style="width:100%" @change="getCollegeMajor">
+                <el-option
+                  v-for="item in collegeList"
+                  :key="item.index"
+                  :label="item.college"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogDelMajorVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteMajor()">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getMajorInfoServlet, getCollegeInfoServlet, addCollegeInfoServlet, addMajorInfoServlet } from '@/api/superAdmin'
+import { getMajorInfoServlet, getCollegeInfoServlet, addCollegeInfoServlet, addMajorInfoServlet, delMajorInfoServlet, delCollegeInfoServlet } from '@/api/superAdmin'
 export default {
   components: {
 
   },
   data() {
     return {
+      activeName: 'first',
       loading: false,
       collegeMajorList: [],
       collegeList: [],
+      majorList: [],
       // tempList: [],
       dialogCollegeVisible: false,
       collegeform: {},
       dialogMajorVisible: false,
       formLabelWidth: '80px',
-      majorform: {}
+      majorform: {},
+      dialogDelMajorVisible: false,
+      delMajorForm: {},
+      delCollegeForm: {}
     }
   },
   created() {
     this.getCollegeInfoServlet()
   },
   methods: {
+    handleDialogClose() {
+      this.$nextTick(() => {
+        this.$refs['delMajorForm'].resetFields()
+        this.$refs['delCollegeForm'].resetFields()
+      })
+    },
+    getCollegeMajor(college) {
+      getMajorInfoServlet(college).then(res => {
+        this.majorList = []
+        delete this.delMajorForm.major
+        for (const i in res.data) {
+          this.majorList.push({
+            label: res.data[i].major,
+            value: res.data[i].id
+          })
+        }
+      })
+    },
+    deleteMajor() {
+      if (this.activeName === 'first') {
+        // console.log('first')
+        delMajorInfoServlet(this.delMajorForm.major).then(res => {
+        // console.log(this.delMajorForm.major)
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.dialogDelMajorVisible = false
+          this.getCollegeInfoServlet()
+        }).catch(res => {
+          this.$message({
+            type: 'error',
+            message: '删除失败'
+          })
+          this.dialogDelMajorVisible = false
+          this.getCollegeInfoServlet()
+        })
+      } else {
+        // console.log('second')
+        delCollegeInfoServlet(this.delCollegeForm.collegeId).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.dialogDelMajorVisible = false
+          this.getCollegeInfoServlet()
+        }).catch(res => {
+          this.$message({
+            type: 'error',
+            message: '删除失败'
+          })
+          this.dialogDelMajorVisible = false
+          this.getCollegeInfoServlet()
+        })
+      }
+    },
     resetData() {
       this.collegeMajorList = []
     },

@@ -79,3 +79,18 @@ export function addMajorInfoServlet(data) { // 添加专业
   })
 }
 
+export function delMajorInfoServlet(id) { // 删除专业
+  return request({
+    url: '/test/removeMajorInfoServlet',
+    method: 'post',
+    params: { id }
+  })
+}
+
+export function delCollegeInfoServlet(id) { // 删除学院
+  return request({
+    url: '/test/removeCollegeInfoServlet',
+    method: 'post',
+    params: { id }
+  })
+}

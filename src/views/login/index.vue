@@ -70,20 +70,20 @@
             <el-input v-model="registerForm.password" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
-            <el-select v-model="registerForm.college" placeholder="请选择" style="{width: 100%}" @change="getCollegeMajor">
+            <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor">
               <el-option
                 v-for="item in collegeOptions"
-                :key="item.value"
+                :key="item.index"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
           <el-form-item class="test" label="专业:" prop="major">
-            <el-select v-model="registerForm.major" placeholder="请选择" style="{width: 100%}">
+            <el-select v-model="registerForm.major" placeholder="请选择专业" style="width: 100%">
               <el-option
                 v-for="item in majorOptions"
-                :key="item.value"
+                :key="item.index"
                 :label="item.label"
                 :value="item.value"
               />
