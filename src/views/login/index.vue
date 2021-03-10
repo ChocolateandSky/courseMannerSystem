@@ -53,12 +53,12 @@
         @open.once="handleDialogOpen()"
         @close="handleDialogClose()"
       >
-        <el-form ref="registerForm" :model="registerForm" label-position="left" label-width="90px">
+        <el-form ref="registerForm" :model="registerForm" :rules="registerRules" label-position="left" label-width="90px">
           <el-form-item class="test" label="姓名:" prop="realName">
             <el-input v-model="registerForm.realName" />
           </el-form-item>
           <el-form-item class="test" label="学号:" prop="userName">
-            <el-input v-model="registerForm.userName" />
+            <el-input v-model.number="registerForm.userName" />
           </el-form-item>
           <el-form-item class="test" label="性别:" prop="gender">
             <el-radio-group v-model="registerForm.gender">
@@ -68,6 +68,9 @@
           </el-form-item>
           <el-form-item class="test" label="密码:" prop="password">
             <el-input v-model="registerForm.password" show-password />
+          </el-form-item>
+          <el-form-item class="test" label="确认密码:" prop="checkpassword">
+            <el-input v-model="registerForm.checkpassword" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
             <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor(registerForm.college[1])">
@@ -126,19 +129,62 @@ export default {
     //     callback()
     //   }
     // }
+    const checkEmail = (rule, value, callback) => {
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+      // if (!value) {
+      //   return callback(new Error('邮箱不能为空'))
+      // }
+      setTimeout(() => {
+        if (mailReg.test(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的邮箱格式'))
+        }
+      }, 100)
+    }
+    // 校验密码
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致,请重新输入'))
+      } else {
+        callback()
+      }
+    }
     return {
       dialogFormVisible: false,
       formLabelWidth: '120px',
       // 注册表单
       registerForm: {
-        userName: '', // 用户名
-        realName: '', // 学号
+        userName: '', // 学号
+        realName: '', // 姓名
         password: '', // 密码
         checkpassword: '', // 确认密码
         gender: '', // 性别
         college: '', // 学院
         major: '', // 专业
         email: '' // 邮箱
+      },
+      registerRules: {
+        realName: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { pattern: /[\u4e00-\u9fa5]/, message: '只能输入中文', trigger: 'blur' }
+        ],
+        userName: [
+          { required: true, message: '请输入学号', trigger: 'blur' },
+          // { min: 10, message: '请输入10位学号', trigger: 'blur' },
+          { type: 'number', message: '学号只能是数字' }
+        ],
+        gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        checkpassword: [{ validator: validatePass, trigger: 'blur' }],
+        college: [{ required: true, message: '请选择所属学院', trigger: 'change' }],
+        major: [{ required: true, message: '请选择所属专业', trigger: 'change' }],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
+        ]
       },
       collegeOptions: [],
       majorOptions: [],
@@ -266,21 +312,25 @@ export default {
       })
     },
     handlePutRegisterForm() {
-      putRegisterForm({
-        userName: this.registerForm.userName, // 用户名
-        realName: this.registerForm.realName, // 学号
-        password: this.registerForm.password, // 密码
-        gender: this.registerForm.gender, // 性别
-        college: this.registerForm.college[0], // 学院
-        major: this.registerForm.major, // 专业
-        email: this.registerForm.email // 邮箱
-      }).then(res => {
-        // console.log(this.registerForm)
-        this.$message({
-          type: 'success',
-          message: '注册成功'
-        })
-        this.dialogFormVisible = false
+      this.$refs['registerForm'].validate(valid => {
+        if (valid) {
+          putRegisterForm({
+            userName: this.registerForm.userName, // 用户名
+            realName: this.registerForm.realName, // 学号
+            password: this.registerForm.password, // 密码
+            gender: this.registerForm.gender, // 性别
+            college: this.registerForm.college[0], // 学院
+            major: this.registerForm.major, // 专业
+            email: this.registerForm.email // 邮箱
+          }).then(res => {
+            // console.log(this.registerForm)
+            this.$message({
+              type: 'success',
+              message: '注册成功'
+            })
+            this.dialogFormVisible = false
+          })
+        } else { return false }
       })
       // this.dialogFormVisible = false
     }
