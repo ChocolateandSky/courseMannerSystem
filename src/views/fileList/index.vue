@@ -93,7 +93,6 @@ export default {
     getNoticeFileList() {
       this.loading = true
       getNoticeFileList().then(res => {
-        console.log(res)
         this.fileList = res.data
         this.loading = false
       })
