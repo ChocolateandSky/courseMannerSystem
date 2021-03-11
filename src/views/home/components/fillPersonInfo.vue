@@ -44,6 +44,7 @@
 // eslint-disable-next-line no-unused-vars
 import { mapGetters } from 'vuex'
 import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
+import { getMajorInfoServlet } from '@/api/superAdmin'
 export default {
   props: {
     dialogFormVisible: {
@@ -84,22 +85,7 @@ export default {
           { required: true, message: '请填写所管理年级', trigger: 'blur' }
         ]
       },
-      majorList: [{
-        value: '软件工程',
-        label: '软件工程'
-      }, {
-        value: '计算机科学与技术',
-        label: '计算机科学与技术'
-      }, {
-        value: '物联网工程',
-        label: '物联网工程'
-      }, {
-        value: '智能科学与技术',
-        label: '智能科学与技术'
-      }, {
-        value: '信息安全',
-        label: '信息安全'
-      }]
+      majorList: []
     }
   },
   computed: {
@@ -119,9 +105,17 @@ export default {
     }
   },
   mounted() {
-    console.log(this.user)
+    this.getMajorInfoServlet(this.user.collegeId)
   },
   methods: {
+    getMajorInfoServlet(id) {
+      this.majorList = []
+      this.$set(this.teacherInfo, 'major', '')
+      // console.log(this.teacherInfo)
+      getMajorInfoServlet(id).then(res => {
+        this.majorList = res.data
+      })
+    },
     updateStudentIfo() {
       updateStudentIfo(this.user)
         .then(res => {

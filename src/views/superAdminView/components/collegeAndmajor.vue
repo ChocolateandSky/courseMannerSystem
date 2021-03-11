@@ -228,7 +228,10 @@ export default {
       this.collegeMajorList = []
       getCollegeInfoServlet().then((res) => {
         this.collegeList = res.data
-        console.log(this.collegeList)
+        if (this.collegeList.length === 0) {
+          this.loading = false
+          return
+        }
         res.data.forEach(async element => {
           await getMajorInfoServlet(element.id).then(res2 => {
             if (res2.data.length !== 0) {
@@ -249,6 +252,9 @@ export default {
           })
           this.loading = false
         })
+      }).catch(err => {
+        console.log(err)
+        this.loading = false
       })
     }
   }
