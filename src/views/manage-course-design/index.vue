@@ -337,11 +337,17 @@ export default {
     },
     // 添加课程设计
     addCourse() {
+      // console.log(this.addForm.optionValue)
+      // this.addForm.value = []
+      // for (const i in this.addForm.optionValue) {
+      //   this.addForm.value.push(this.addForm.optionValue[i][1])
+      // }
+      // console.log(this.addForm.value)
       this.$refs.addFormRef.validate(valid => {
         if (valid) {
           this.addForm.value = []
           for (const i in this.addForm.optionValue) {
-            this.addForm.value.push(this.addForm.optionValue[i][2])
+            this.addForm.value.push(this.addForm.optionValue[i][1])
           }
           const temp = {
             'practName': this.addForm.courseName,
