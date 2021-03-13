@@ -58,7 +58,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { downloadFile, deleteFile } from '@/api/file'
+import { downloadFile, deleteGroupFile } from '@/api/file'
 import { getAllGroupFile } from '@/api/superAdmin'
 export default {
   components: {
@@ -92,7 +92,7 @@ export default {
       }).then(() => {
         const data = { id: row.id, name: row.name }
         console.log(data)
-        deleteFile(data)
+        deleteGroupFile(data)
           .then(res => {
             this.$message.success('删除成功')
             this.getNoticeFileList()

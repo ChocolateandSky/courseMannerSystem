@@ -74,14 +74,12 @@ export default {
         type: 'warning'
       }).then(() => {
         const data = { id: row.id, name: row.name }
-        console.log(data)
         deleteFile(data)
           .then(res => {
             this.$message.success('删除成功')
             this.getNoticeFileList()
           }).catch(err => {
             console.log(err)
-            this.$message.error('删除失败')
           })
       }).catch(() => {
         this.$message({
@@ -94,6 +92,8 @@ export default {
       this.loading = true
       getNoticeFileList().then(res => {
         this.fileList = res.data
+        this.loading = false
+      }).catch(() => {
         this.loading = false
       })
     },
