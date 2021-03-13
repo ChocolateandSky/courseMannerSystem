@@ -77,7 +77,7 @@
     </div>
 
     <!-- 添加教师账号对话框 -->
-    <el-dialog class="dialog" title="添加教师账号" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog class="dialog" title="添加教师账号" :visible.sync="dialogFormVisible" width="30%" @close="closeDialog">
       <el-form ref="ruleForm" status-icon :model="teacherInfo" :rules="rules">
         <el-form-item label="账号:" prop="username" :label-width="formLabelWidth">
           <el-input v-model="teacherInfo.username" autocomplete="off" placeholder="输入账号" />
@@ -97,7 +97,7 @@
           <el-input v-model="doPassword" show-password autocomplete="off" />
         </el-form-item> -->
         <el-form-item label="学院:" prop="collegeId" :label-width="formLabelWidth">
-          <el-select v-model="teacherInfo.collegeId" placeholder="请选择学院" @change="getMajorInfoServlet(teacherInfo.collegeId)">
+          <el-select v-model="teacherInfo.collegeId" clearable placeholder="请选择学院" @change="getMajorInfoServlet(teacherInfo.collegeId)">
             <el-option
               v-for="item in collegeList"
               :key="item.index"
@@ -107,12 +107,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="专业:" prop="major" :label-width="formLabelWidth">
-          <el-select v-model="teacherInfo.major" placeholder="请选择专业">
+          <el-select v-model="teacherInfo.major" clearable :placeholder="testTooltip">
             <el-option
               v-for="item in majorList"
               :key="item.index"
               :label="item.major"
-              :value="item.id"
+              :value="item.major"
             />
           </el-select>
         </el-form-item>
@@ -147,6 +147,7 @@ export default {
     }
     return {
       loading: false,
+      testTooltip: '请输入专业',
       teacherUserList: [],
       tableData: [],
       teacherId: '',
@@ -178,9 +179,14 @@ export default {
   mounted() {
     this.getTeacherUsers()
     this.getCollegeInfoServlet()
-    this.getMajorInfoServlet()
   },
   methods: {
+    closeDialog() {
+      console.log('sss')
+      this.teacherUserList = []
+      this.tableData = []
+      this.teacherInfo = { gender: '男' }
+    },
     handleDelete(row) {
       console.log(row)
       this.$confirm('此操作将永久删除该账号, 是否继续?', '提示', {
@@ -205,11 +211,16 @@ export default {
       })
     },
     getMajorInfoServlet(id) {
+      this.testTooltip = '获取专业中..'
       this.majorList = []
       this.$set(this.teacherInfo, 'major', '')
       // console.log(this.teacherInfo)
       getMajorInfoServlet(id).then(res => {
-        this.majorList = res.data
+        if (res.data.length === 0) {
+          this.testTooltip = '该学院未开设专业'
+        } else {
+          this.majorList = res.data
+        }
       })
     },
     getCollegeInfoServlet() {
@@ -222,6 +233,8 @@ export default {
       getTeacherUsers().then(res => {
         this.tableData = res.data
         this.teacherUserList = res.data
+        this.loading = false
+      }).catch(() => {
         this.loading = false
       })
     },
@@ -276,7 +289,7 @@ export default {
               console.log(res)
               this.$message({
                 message: '添加成功，账号为：' + this.teacherInfo.username + ' , 初始密码为:123456',
-                duration: 6000,
+                duration: 5000,
                 type: 'success'
               })
               this.dialogFormVisible = false

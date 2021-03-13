@@ -1,6 +1,7 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import { login, logout, getInfo, getNotice } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+// import { getCollegeInfoServlet } from '@/api/superAdmin'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -12,6 +13,7 @@ const state = {
   user: {},
   roleNum: 0,
   loginCount: 1,
+  collegeList: [],
   notice: []
 }
 
@@ -42,6 +44,9 @@ const mutations = {
   },
   SET_LOGINCOUNT: (state, loginCount) => {
     state.loginCount = loginCount
+  },
+  SET_COLLEGELIST: (state, collegeList) => {
+    state.collegeList = collegeList
   }
 }
 
@@ -53,7 +58,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ userName: username.trim(), password: password }).then(response => {
         const { data } = response
-        console.log(data)
         commit('SET_TOKEN', data.token)
         commit('SET_LOGINCOUNT', data.loginCount)
         setToken(data.token)
@@ -105,7 +109,6 @@ const actions = {
       })
     })
   },
-
   logout({ commit, dispatch }) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async(resolve) => {

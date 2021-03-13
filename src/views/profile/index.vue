@@ -65,7 +65,7 @@ export default {
     this.loading = false
   },
   mounted() {
-    console.log(this.userIfo)
+    // console.log(this.userIfo)
   },
   methods: {
     getUser() {
@@ -82,6 +82,7 @@ export default {
           grade: this.user.grade,
           introduction: this.user.introduction
         }
+        console.log(this.userIfo)
       } else {
         this.userIfo = this.user
       }

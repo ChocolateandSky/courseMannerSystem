@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <el-dialog
-      title="填写个人信息"
+      title="填写个人信息(必填)"
       :visible.sync="visible"
       width="600px"
       :close-on-press-escape="false"
-      :show-close="true"
+      :show-close="false"
       :close-on-click-modal="false"
     >
       <el-form ref="ruleForm" label-width="120px" :model="user" :rules="rules" class="demo-ruleForm">
@@ -25,9 +25,9 @@
           <el-select v-model.trim="user.major" filterable placeholder="请选择">
             <el-option
               v-for="item in majorList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.index"
+              :label="item.major"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -44,7 +44,7 @@
 // eslint-disable-next-line no-unused-vars
 import { mapGetters } from 'vuex'
 import { updateTeacherIfo, updateStudentIfo } from '@/api/user'
-import { getMajorInfoServlet } from '@/api/superAdmin'
+import { getMajorInfoServlet, getCollegeInfoServlet } from '@/api/superAdmin'
 export default {
   props: {
     dialogFormVisible: {
@@ -85,7 +85,8 @@ export default {
           { required: true, message: '请填写所管理年级', trigger: 'blur' }
         ]
       },
-      majorList: []
+      majorList: [],
+      collegeList: []
     }
   },
   computed: {
@@ -105,15 +106,27 @@ export default {
     }
   },
   mounted() {
-    this.getMajorInfoServlet(this.user.collegeId)
+    this.getCollegeInfoServlet()
   },
   methods: {
-    getMajorInfoServlet(id) {
-      this.majorList = []
-      this.$set(this.teacherInfo, 'major', '')
-      // console.log(this.teacherInfo)
-      getMajorInfoServlet(id).then(res => {
-        this.majorList = res.data
+    getCollegeInfoServlet() {
+      getCollegeInfoServlet().then(res => {
+        this.collegeList = res.data
+        this.getMajorInfoServlet()
+      })
+    },
+    getMajorInfoServlet() {
+      console.log(this.collegeList)
+      let id = ''
+      this.collegeList.forEach(el => {
+        console.log(el)
+        if (this.user.college === el.college) {
+          id = el.id
+          getMajorInfoServlet(id).then(res => {
+            console.log(res)
+            this.majorList = res.data
+          })
+        }
       })
     },
     updateStudentIfo() {

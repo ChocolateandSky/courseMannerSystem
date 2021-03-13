@@ -15,5 +15,6 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   loginCount: state => state.user.loginCount,
   notice: state => state.user.notice
+  // collegeList: state => state.user.collegeList
 }
 export default getters

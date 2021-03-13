@@ -134,15 +134,18 @@ export default {
       this.loading = false
     }
   },
+  created() {
+    // this.judgeFirstLogin()
+  },
   mounted() {
     this.loading = true
     this.judgeFirstLogin()
-    this.judgeRole()
-    this.getBaseIfo()
     this.getAutoHeight()
     window.onresize = () => {
       this.getAutoHeight()
     }
+    this.judgeRole()
+    this.getBaseIfo()
   },
   methods: {
     judgeRole() {
@@ -166,7 +169,8 @@ export default {
       })
     },
     judgeFirstLogin() {
-      if (this.$store.getters.user.email === 'null') {
+      console.log(this.$store.getters.user)
+      if (this.$store.getters.user.email === 'null' || this.$store.getters.user.email === '') {
         this.dialogFormVisible = true
       }
     },

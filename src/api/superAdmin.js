@@ -52,7 +52,7 @@ export function getCollegeInfoServlet() { // 查询所有学院
   })
 }
 
-export function deleteUserByIdServlet(data) { // 查询所有学院
+export function deleteUserByIdServlet(data) { // 删除某个学院
   return request({
     url: '/test/deleteUserByIdServlet',
     method: 'post',

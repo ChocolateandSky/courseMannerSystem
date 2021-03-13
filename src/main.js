@@ -46,7 +46,11 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-
+Vue.directive('title', {
+  inserted: function(el, binding) {
+    document.title = el.dataset.title
+  }
+})
 new Vue({
   el: '#app',
   router,
