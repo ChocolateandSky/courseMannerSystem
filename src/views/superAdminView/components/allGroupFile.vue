@@ -91,14 +91,12 @@ export default {
         type: 'warning'
       }).then(() => {
         const data = { id: row.id, name: row.name }
-        console.log(data)
         deleteGroupFile(data)
           .then(res => {
             this.$message.success('删除成功')
-            this.getNoticeFileList()
+            this.getAllGroupFile()
           }).catch(err => {
             console.log(err)
-            this.$message.error('删除失败')
           })
       }).catch(() => {
         this.$message({
@@ -108,7 +106,7 @@ export default {
       })
     },
     refresh() {
-      this.getNoticeFileList()
+      this.getAllGroupFile()
     },
     DownloadFile(row) {
       downloadFile(row.id, row.name)

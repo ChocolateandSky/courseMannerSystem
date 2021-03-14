@@ -32,7 +32,7 @@
               </div>
               <el-divider style="margin-bootom:30px" />
               <div>
-                <span style="font-size:18px;color:rgb(100,217,214);">团队成员:</span>
+                <span style="font-size:18px;color:rgb(100,217,214);">团队成员及任务分配:</span>
                 <el-collapse v-for="(item,index) in member" :key="index" style="margin-top:10px;">
                   <el-collapse-item>
                     <div slot="title">
@@ -57,8 +57,9 @@
                 <el-tabs v-model="fileActiveName">
                   <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组文件" name="first">
+                    <el-tag type="warning">右键可删除文件，左键下载文件</el-tag>
+                    <!-- <span></span> -->
                     <div v-if="fileNum!==0">
-
                       <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)" @contextmenu.prevent.stop="deleteGroupFile(item,$event)">
                         <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
                         <el-tooltip class="item" effect="dark" content="右键可删除文件，左键下载文件" placement="right-start">
@@ -199,7 +200,7 @@ export default {
   },
   methods: {
     deleteGroupFile(item, event) {
-      console.log(this.roleNum)
+      console.log(item)
       if (this.roleNum !== 0) {
         this.$message.warning('只有小组成员才有权限删除文件')
       } else {
@@ -211,6 +212,7 @@ export default {
           deleteGroupFile({ id: item.id, name: item.name }).then(res => {
             this.$message.success('成功删除')
             this.getGroupFileList()
+            this.sendDeletFileNotice(item)
           })
         }).catch(() => {
           this.$message({
@@ -256,6 +258,18 @@ export default {
       fileList.forEach(el => {
         data.body = data.body + el.name + '  ,  '
       })
+      sendNotice(data).then(res => {
+        console.log(res)
+      })
+    },
+    sendDeletFileNotice(item) {
+      const data = {
+        userId: this.$store.getters.user.id,
+        userName: this.$store.getters.user.name,
+        roles: this.role,
+        groupId: this.$route.query.teamId,
+        body: item.userName + '删除了文件  ' + item.name
+      }
       sendNotice(data).then(res => {
         console.log(res)
       })

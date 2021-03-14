@@ -65,6 +65,14 @@ export default {
         callback()
       }
     }
+    var checkEmail = (rule, value, callback) => {
+      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+      if (!reg.test(value)) {
+        return callback(new Error('抱歉，输入的邮箱格式错误'))
+      } else {
+        callback()
+      }
+    }
     return {
       newPassword: '',
       roleNum: this.$store.getters.roleNum,
@@ -73,7 +81,7 @@ export default {
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请填入邮箱', trigger: 'blur' }
+          { required: true, validator: checkEmail, trigger: 'blur' }
         ],
         major: [
           { required: true, message: '请选择所属专业', trigger: 'blur' }
