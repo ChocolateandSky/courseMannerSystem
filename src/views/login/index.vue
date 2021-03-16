@@ -55,10 +55,10 @@
       >
         <el-form ref="registerForm" :model="registerForm" :rules="registerRules" label-position="left" label-width="90px">
           <el-form-item class="test" label="姓名:" prop="realName">
-            <el-input v-model="registerForm.realName" />
+            <el-input v-model.trim="registerForm.realName" />
           </el-form-item>
           <el-form-item class="test" label="学号:" prop="userName">
-            <el-input v-model.number="registerForm.userName" />
+            <el-input v-model.number.trim="registerForm.userName" />
           </el-form-item>
           <el-form-item class="test" label="性别:" prop="gender">
             <el-radio-group v-model="registerForm.gender">
@@ -67,10 +67,10 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item class="test" label="密码:" prop="password">
-            <el-input v-model="registerForm.password" show-password />
+            <el-input v-model.trim="registerForm.password" show-password />
           </el-form-item>
           <el-form-item class="test" label="确认密码:" prop="checkpassword">
-            <el-input v-model="registerForm.checkpassword" show-password />
+            <el-input v-model.trim="registerForm.checkpassword" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
             <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor(registerForm.college[1])">
@@ -93,7 +93,7 @@
             </el-select>
           </el-form-item>
           <el-form-item class="test" label="邮箱:" prop="email">
-            <el-input v-model="registerForm.email" />
+            <el-input v-model.trim="registerForm.email" />
           </el-form-item>
         </el-form>
         <div slot="footer">
