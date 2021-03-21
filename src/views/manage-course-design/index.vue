@@ -40,8 +40,11 @@
           <el-table-column label="管理员" width="150" prop="managerName" align="center" />
           <el-table-column label="操作" width="250" align="center" fixed="right">
             <template slot-scope="scope">
-              <el-button size="medium" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="medium" type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
+              <el-button v-if="scope.row.managerName != userName" size="medium" type="info" icon="el-icon-view" @click="showEditDialog(scope.$index, scope.row)">查看</el-button>
+              <div v-else>
+                <el-button size="medium" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="medium" type="danger" icon="el-icon-delete" @click.native.prevent="deleteRow(scope.$index, scope.row)">删除</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -106,10 +109,10 @@
     >
       <el-form ref="editFormRef" :model="editForm" :rules="rules" label-position="right" label-width="80px">
         <el-form-item label="课设名称" prop="courseName">
-          <el-input v-model="editForm.courseName" />
+          <el-input v-model="editForm.courseName" :disabled="noInput" />
         </el-form-item>
         <el-form-item label="学生容量" prop="sum">
-          <el-input-number v-model="editForm.sum" controls-position="right" :min="1" />
+          <el-input-number v-model="editForm.sum" controls-position="right" :min="1" :disabled="noInput" />
         </el-form-item>
         <el-form-item label="时间" prop="date">
           <el-date-picker
@@ -120,13 +123,14 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            :disabled="noInput"
           />
         </el-form-item>
         <el-form-item label="简介" prop="desc">
-          <el-input v-model="editForm.desc" type="textarea" maxlength="150" show-word-limit resize="none" rows="6" />
+          <el-input v-model="editForm.desc" type="textarea" maxlength="150" show-word-limit resize="none" rows="6" :disabled="noInput" />
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span v-if="!noInput" slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleCourseInfoChange()">确 定</el-button>
       </span>
@@ -147,6 +151,7 @@ export default {
         date: [{ required: true, message: '请选择日期', trigger: 'blur' }],
         optionValue: [{ required: true, message: '请选择指导老师', trigger: 'change' }]
       },
+      noInput: true, // 禁止输入
       userId: '', // 用户id
       userName: '', // 用户名
       userMajor: '', // 用户专业
@@ -286,6 +291,9 @@ export default {
       this.editForm.date = [row.beginTime, row.endTime]
       this.editForm.desc = row.introduction
       this.editDialogVisible = true
+      if (row.managerName === this.userName) {
+        this.noInput = false
+      }
     },
     handleCourseInfoChange() {
       this.$refs.editFormRef.validate(valid => {
@@ -379,6 +387,9 @@ export default {
         }
       })
     }
+  },
+  // 不是管理员禁止编辑
+  banEdit(index, row) {
   }
 }
 </script>
