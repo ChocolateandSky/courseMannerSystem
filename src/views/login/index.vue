@@ -83,12 +83,12 @@
             <el-input v-model.trim="registerForm.checkpassword" show-password />
           </el-form-item>
           <el-form-item class="test" label="学院:" prop="college">
-            <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor(registerForm.college[1])">
+            <el-select v-model="registerForm.college" placeholder="请选择学院" style="width: 100%" @change="getCollegeMajor(registerForm.college)">
               <el-option
                 v-for="item in collegeOptions"
                 :key="item.index"
                 :label="item.label"
-                :value="[item.value, item.collegeId]"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -309,16 +309,30 @@ export default {
     },
     // 联动学院和专业
     getCollegeMajor(college) {
-      getMajor(college).then(res => {
-        this.majorOptions = []
-        delete this.registerForm.major
-        for (const i in res.data) {
-          this.majorOptions.push({
-            label: res.data[i].major,
-            value: res.data[i].major
-          })
-        }
-      })
+      // getMajor(college).then(res => {
+      //   this.majorOptions = []
+      //   delete this.registerForm.major
+      //   for (const i in res.data) {
+      //     this.majorOptions.push({
+      //       label: res.data[i].major,
+      //       value: res.data[i].major
+      //     })
+      //   }
+      // })
+      for (const i in this.collegeOptions) {
+        getMajor(this.collegeOptions[i].collegeId).then(res => {
+          this.majorOptions = []
+          delete this.registerForm.major
+          for (const j in res.data) {
+            this.majorOptions.push({
+              label: res.data[j].major,
+              value: res.data[j].major
+            })
+          }
+        })
+        // console.log(college === this.collegeOptions[i].value)
+        // console.log(this.collegeOptions[i].collegeId)
+      }
     },
     // 关闭注册对话框
     // handleDialogClose() {
