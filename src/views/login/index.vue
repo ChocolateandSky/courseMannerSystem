@@ -189,7 +189,10 @@ export default {
           { type: 'number', message: '学号只能是数字' }
         ],
         gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, message: '密码不能小于6位', trigger: 'blur' }
+        ],
         checkpassword: [{ validator: validatePass, trigger: 'blur' }],
         college: [{ required: true, message: '请选择所属学院', trigger: 'change' }],
         major: [{ required: true, message: '请选择所属专业', trigger: 'change' }],
