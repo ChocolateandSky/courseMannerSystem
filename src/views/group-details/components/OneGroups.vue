@@ -11,17 +11,19 @@
               <div>
                 <span style="font-size:18px;color:rgb(100,217,214)">队伍名称：{{ teamData.name }}</span>
                 <el-popover
+                  v-if="roleNum===0&&isGroupMenber"
                   v-model="udpGroNameVisible"
                   placement="top"
+                  style="margin-left:30px"
                   width="300"
                 >
                   <el-input v-model="updateGroupInfo.name" placeholder="输入要修改的队名" />
-                  <div style="text-align: right; margin-top: 20px">
+                  <div style="text-align: right; margin-top: 20px;">
                     <el-button size="mini" type="text" @click="udpGroNameVisible = false">取消</el-button>
-                    <el-button type="primary" size="mini" @click="udpGroNameVisible = false">确定</el-button>
+                    <el-button type="primary" size="mini" @click="updateGroupName">确定</el-button>
                   </div>
-                  <!-- <el-link v-if="roleNum===0&&isGroupMenber" slot="reference" type="primary" style="margin-left:47%" @click="updateGroupName">更改队名</el-link> -->
-                  <el-button v-if="roleNum===0&&isGroupMenber" slot="reference" type="text" style="margin-left:47%">更改队名</el-button>
+                  <el-button slot="reference" type="text">更改队名</el-button>
+                  <!-- <el-button slot="reference">删除</el-button> -->
                 </el-popover>
               </div>
               <el-divider />
@@ -41,7 +43,7 @@
                   style="width:300px;"
                 />
                 <el-link v-if="readonly&&roleNum===0&&isGroupMenber" type="primary" style="margin-left:15%" @click="changeReadonly">设置目前阶段</el-link>
-                <div v-if="!readonly&&roleNum===0" style="display: inline;margin-left:29%">
+                <div v-if="!readonly&&roleNum===0" style="display: inline;margin-left:20%">
                   <el-link type="primary" style="margin-right:2%" @click="chancelPhase">取消</el-link>
                   <el-link type="primary" @click="setPhase">确定</el-link>
                 </div>
@@ -227,7 +229,14 @@ export default {
   },
   methods: {
     updateGroupName() {
-
+      this.updateGroupInfo.id = this.$route.query.teamId
+      if (this.updateGroupInfo.name !== '') {
+        updateGroupName(this.updateGroupInfo).then(() => {
+          this.$message.success('更改成功')
+          this.getInfo()
+          this.udpGroNameVisible = false
+        })
+      }
     },
     deleteGroupFile(item, event) {
       console.log(item)
