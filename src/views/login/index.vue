@@ -46,13 +46,23 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       <el-button type="text" @click="dialogFormVisible = true">注册</el-button>
+
+      <!-- 注册 -->
       <el-dialog
         title="注册"
         :visible.sync="dialogFormVisible"
         width="30%"
+        style="position:fixed ;z-index:1"
         @open.once="handleDialogOpen()"
-        @close="handleDialogClose()"
       >
+        <Vcode
+          :show="showVerificationCode"
+          success-text="验证成功"
+          fail-text="验证失败，请重试"
+          style="position:absolute;z-index:2"
+          @success="success"
+          @close="close"
+        />
         <el-form ref="registerForm" :model="registerForm" :rules="registerRules" label-position="left" label-width="90px">
           <el-form-item class="test" label="姓名:" prop="realName">
             <el-input v-model.trim="registerForm.realName" />
@@ -110,10 +120,11 @@
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
 import { getColleges, getMajor, putRegisterForm } from '@/api/course'
+import Vcode from 'vue-puzzle-vcode'
 export default {
   name: 'Login',
   // eslint-disable-next-line vue/no-unused-components
-  components: { SocialSign },
+  components: { SocialSign, Vcode },
   data() {
     // const validateUsername = (rule, value, callback) => {
     //   if (!validUsername(value)) {
@@ -153,6 +164,7 @@ export default {
       }
     }
     return {
+      showVerificationCode: false,
       dialogFormVisible: false,
       formLabelWidth: '120px',
       // 注册表单
@@ -306,52 +318,44 @@ export default {
       })
     },
     // 关闭注册对话框
-    handleDialogClose() {
-      this.$nextTick(() => {
-        this.$refs['registerForm'].resetFields()
-      })
-    },
+    // handleDialogClose() {
+    //   this.$nextTick(() => {
+    //     this.$refs['registerForm'].resetFields()
+    //   })
+    // },
     handlePutRegisterForm() {
       this.$refs['registerForm'].validate(valid => {
         if (valid) {
-          putRegisterForm({
-            userName: this.registerForm.userName, // 用户名
-            realName: this.registerForm.realName, // 学号
-            password: this.registerForm.password, // 密码
-            gender: this.registerForm.gender, // 性别
-            college: this.registerForm.college[0], // 学院
-            major: this.registerForm.major, // 专业
-            email: this.registerForm.email // 邮箱
-          }).then(res => {
-            // console.log(this.registerForm)
-            this.$message({
-              type: 'success',
-              message: '注册成功'
-            })
-            this.dialogFormVisible = false
-          })
+          this.showVerificationCode = true
+          this.dialogFormVisible = false
         } else { return false }
       })
       // this.dialogFormVisible = false
+    },
+    success(msg) {
+      this.showVerificationCode = false
+      putRegisterForm({
+        userName: this.registerForm.userName, // 用户名
+        realName: this.registerForm.realName, // 学号
+        password: this.registerForm.password, // 密码
+        gender: this.registerForm.gender, // 性别
+        college: this.registerForm.college[0], // 学院
+        major: this.registerForm.major, // 专业
+        email: this.registerForm.email // 邮箱
+      }).then(res => {
+        // console.log(this.registerForm)
+        this.$message({
+          type: 'success',
+          message: '注册成功'
+        })
+        this.handlePutRegisterForm
+        this.dialogFormVisible = false
+      })
+    },
+    close() {
+      this.showVerificationCode = false
+      this.dialogFormVisible = true
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
