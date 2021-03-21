@@ -8,7 +8,22 @@
               <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
             </div>
             <div>
-              <span style="font-size:18px;color:rgb(100,217,214)">队伍名称：{{ teamData.name }}</span>
+              <div>
+                <span style="font-size:18px;color:rgb(100,217,214)">队伍名称：{{ teamData.name }}</span>
+                <el-popover
+                  v-model="udpGroNameVisible"
+                  placement="top"
+                  width="300"
+                >
+                  <el-input v-model="updateGroupInfo.name" placeholder="输入要修改的队名" />
+                  <div style="text-align: right; margin-top: 20px">
+                    <el-button size="mini" type="text" @click="udpGroNameVisible = false">取消</el-button>
+                    <el-button type="primary" size="mini" @click="udpGroNameVisible = false">确定</el-button>
+                  </div>
+                  <!-- <el-link v-if="roleNum===0&&isGroupMenber" slot="reference" type="primary" style="margin-left:47%" @click="updateGroupName">更改队名</el-link> -->
+                  <el-button v-if="roleNum===0&&isGroupMenber" slot="reference" type="text" style="margin-left:47%">更改队名</el-button>
+                </el-popover>
+              </div>
               <el-divider />
               <span style="font-size:18px;color:rgb(100,217,214)">项目简单介绍:</span>
               <p style="padding:0 10px;  line-height:25px;">
@@ -151,7 +166,8 @@
 
 <script>
 import splitPane from 'vue-splitpane'
-import { getGroupDetail, getMemberList, setStudentWork, setPhase } from '@/api/group'
+// eslint-disable-next-line no-unused-vars
+import { getGroupDetail, getMemberList, setStudentWork, setPhase, updateGroupName } from '@/api/group'
 import { getGroupFileList, downloadFile, deleteGroupFile } from '@/api/file'
 import { sendMailToGroup, sendNotice } from '@/api/user'
 export default {
@@ -159,6 +175,8 @@ export default {
   components: { splitPane },
   data() {
     return {
+      udpGroNameVisible: false,
+      updateGroupInfo: { id: '', name: '' },
       scrollHeight: '0px',
       fileActiveName: 'first',
       fileList: [],
@@ -208,6 +226,9 @@ export default {
     this.uploadParams.roles = this.roles
   },
   methods: {
+    updateGroupName() {
+
+    },
     deleteGroupFile(item, event) {
       console.log(item)
       if (this.roleNum !== 0) {
