@@ -36,7 +36,7 @@
                 <span style="margin-right:5px">{{ item.subName }}</span>
                 <span style="color:rgb(66,185,131)">({{ item.practName }})</span>
               </div>
-              <div style="padding: 20px;">
+              <div style="padding: 20px;padding-bottom:0px;height:220px">
                 <p style="color:rgb(66,185,131)">指导老师：{{ item.teacherName }}</p>
                 <p>小组名称：{{ item.name }}</p>
                 <p>组长名字：{{ item.leaderName }}</p>

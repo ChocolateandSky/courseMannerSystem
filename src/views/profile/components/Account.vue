@@ -3,7 +3,10 @@
     <el-row>
       <el-col :span="11" style="margin-right: 40px">
         <el-form label-width="100px" style="flex:1" :model="user">
-          <el-form-item label="教师编号:" prop="id">
+          <el-form-item v-if="roleNum!==0" label="教师编号:" prop="id">
+            <el-input v-model.trim="user.id" :disabled="true" />
+          </el-form-item>
+          <el-form-item v-else label="学号:" prop="id">
             <el-input v-model.trim="user.id" :disabled="true" />
           </el-form-item>
           <el-form-item label="姓名:" prop="name">

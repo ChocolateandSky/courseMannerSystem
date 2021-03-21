@@ -8,8 +8,9 @@
               <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
             </div>
             <div>
-              <span style="font-size:18px;color:rgb(100,217,214)">项目简单介绍:</span>
+              <span style="font-size:18px;color:rgb(100,217,214)">队伍名称：{{ teamData.name }}</span>
               <el-divider />
+              <span style="font-size:18px;color:rgb(100,217,214)">项目简单介绍:</span>
               <p style="padding:0 10px;  line-height:25px;">
                 {{ teamData.introduction }}
               </p>
@@ -33,16 +34,22 @@
               <el-divider style="margin-bootom:30px" />
               <div>
                 <span style="font-size:18px;color:rgb(100,217,214);">团队成员及任务分配:</span>
-                <el-collapse v-for="(item,index) in member" :key="index" style="margin-top:10px;">
-                  <el-collapse-item>
-                    <div slot="title">
-                      <span v-if="item.leader===1" style="color:rgb(28,120,194)">组长：{{ item.stuName }}</span>
-                      <span v-else>组员：{{ item.stuName }}</span>
-                    </div>
-                    <div>学号：{{ item.stuId }}</div>
-                    <div>任务：{{ item.work }}</div>
-                  </el-collapse-item>
-                </el-collapse>
+                <el-scrollbar
+                  ref="scrollbarContainer"
+                  wrap-class="scrollbar-wrap"
+                  :style="{height: scrollHeight}"
+                >
+                  <el-collapse v-for="(item,index) in member" :key="index" style="margin-top:10px;">
+                    <el-collapse-item>
+                      <div slot="title">
+                        <span v-if="item.leader===1" style="color:rgb(28,120,194)">组长：{{ item.stuName }}</span>
+                        <span v-else>组员：{{ item.stuName }}</span>
+                      </div>
+                      <div>学号：{{ item.stuId }}</div>
+                      <div>任务：{{ item.work }}</div>
+                    </el-collapse-item>
+                  </el-collapse>
+                </el-scrollbar>
               </div>
             </div>
           </el-card>
@@ -152,6 +159,7 @@ export default {
   components: { splitPane },
   data() {
     return {
+      scrollHeight: '0px',
       fileActiveName: 'first',
       fileList: [],
       groupFileList: [],
@@ -175,7 +183,7 @@ export default {
         teacherId: this.$store.getters.user.id,
         body: ''
       },
-      postAction: `/test/uploadGroupFileServlet`,
+      postAction: `/api/uploadGroupFileServlet`,
       uploadParams: {
         groupId: this.$route.query.teamId,
         userId: this.$store.getters.user.id,
@@ -196,6 +204,7 @@ export default {
   },
   mounted() {
     this.getInfo()
+    this.scrollHeight = window.innerHeight * 0.3 + 'px'
     this.uploadParams.roles = this.roles
   },
   methods: {
@@ -436,6 +445,15 @@ export default {
 
 <style  lang="scss">
 
+.el-scrollbar{
+      height: 90%;
+      .scrollbar-wrap{
+        overflow-x: hidden;
+      }
+      .el-scrollbar__bar{
+
+      }
+    }
 .phase{
   .active{
   border: solid 0.5px;

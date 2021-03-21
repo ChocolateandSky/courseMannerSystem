@@ -88,7 +88,7 @@ export default {
       endTime: '',
       noticeStudent: false,
       roleNum: this.$store.getters.roleNum,
-      postAction: `/test/uploadNoticeFileServlet`,
+      postAction: `/api/uploadNoticeFileServlet`,
       uploadParams: {
         teacherId: this.$store.getters.user.id,
         teacherName: this.$store.getters.user.name

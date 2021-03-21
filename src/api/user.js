@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/test/loginServlet',
+    url: '/api/loginServlet',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/test/getUserInfoServletByToken',
+    url: '/api/getUserInfoServletByToken',
     method: 'get',
     params: { token }
   })
@@ -18,7 +18,7 @@ export function getInfo(token) {
 
 export function logout(token) {
   return request({
-    url: '/test/loginOutServlet',
+    url: '/api/loginOutServlet',
     method: 'post',
     params: { token }
   })
@@ -26,7 +26,7 @@ export function logout(token) {
 
 export function updatePassword(data) {
   return request({
-    url: '/test/changePasswordServlet',
+    url: '/api/changePasswordServlet',
     method: 'post',
     params: {
       id: data.id,
@@ -38,7 +38,7 @@ export function updatePassword(data) {
 
 export function sendMail(data) {
   return request({
-    url: '/test/mailForEveryStudentServlet',
+    url: '/api/mailForEveryStudentServlet',
     method: 'post',
     params: {
       id: data.id,
@@ -48,7 +48,7 @@ export function sendMail(data) {
 }
 export function updateTeacherIfo(data) {
   return request({
-    url: '/test/updateTeacherInfoServlet',
+    url: '/api/updateTeacherInfoServlet',
     method: 'put',
     data
   })
@@ -56,7 +56,7 @@ export function updateTeacherIfo(data) {
 
 export function updateStudentIfo(data) {
   return request({
-    url: '/test/updateStudentInfoServlet',
+    url: '/api/updateStudentInfoServlet',
     method: 'put',
     data
   })
@@ -64,21 +64,21 @@ export function updateStudentIfo(data) {
 
 export function getTeacherList() {
   return request({
-    url: '/test/getALLInstructorInfoServlet',
+    url: '/api/getALLInstructorInfoServlet',
     method: 'get'
   })
 }
 
 export function getAllPracticum() {
   return request({
-    url: '/test/getAllPracticumInfoServlet',
+    url: '/api/getAllPracticumInfoServlet',
     method: 'get'
   })
 }
 
 export function getAllStudentList(teacherId, roles) {
   return request({
-    url: '/test/getStudent_PracticumInfoServlet',
+    url: '/api/getStudent_PracticumInfoServlet',
     method: 'get',
     params: {
       teacherId,
@@ -89,7 +89,7 @@ export function getAllStudentList(teacherId, roles) {
 
 export function sendMailToGroup(data) {
   return request({
-    url: '/test/mailForGroupMemberServlet',
+    url: '/api/mailForGroupMemberServlet',
     method: 'post',
     data
   })
@@ -97,7 +97,7 @@ export function sendMailToGroup(data) {
 
 export function getNotice(userId) {
   return request({
-    url: '/test/getNoticeServlet',
+    url: '/api/getNoticeServlet',
     method: 'get',
     params: {
       userId
@@ -107,7 +107,7 @@ export function getNotice(userId) {
 
 export function sendNotice(data) {
   return request({
-    url: '/test/SendNoticeWhenuploadFileServlet',
+    url: '/api/SendNoticeWhenuploadFileServlet',
     method: 'post',
     data
   })
@@ -115,7 +115,7 @@ export function sendNotice(data) {
 
 export function readNotice(data) {
   return request({
-    url: '/test/readNoticeServlet',
+    url: '/api/readNoticeServlet',
     method: 'post',
     data
   })

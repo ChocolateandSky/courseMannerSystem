@@ -37,12 +37,21 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/test': {
-        target: 'http://47.115.127.25:8881',
+      '/api': {
+        // target: 'http://120.25.213.148',
+        target: 'http://47.115.127.25',
         secure: false,
         changeOrigin: true,
-        pathRewrite: { '^/': '' }
+        pathRewrite: { '^/api': '/test' }
+        // pathRewrite: { '^/test': '/api' }
       }
+      // '/api': {
+      //   target: 'http://120.25.213.148',
+      //   secure: false,
+      //   changeOrigin: true,
+      //   // pathRewrite: { '^/': '' }
+      //   pathRewrite: { '^/': '' }
+      // }
     }
     // after: require('./mock/mock-server.js')
   },

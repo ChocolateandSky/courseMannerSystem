@@ -56,7 +56,7 @@ const actions = {
     const { username, password } = userInfo
     console.log('开始登陆')
     return new Promise((resolve, reject) => {
-      login({ userName: username.trim(), password: password }).then(response => {
+      login({ userName: username.replace(/\s*/g, ''), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         commit('SET_LOGINCOUNT', data.loginCount)
@@ -74,7 +74,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-        console.log(data)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
@@ -122,7 +121,6 @@ const actions = {
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
       dispatch('tagsView/delAllViews', null, { root: true })
       await dispatch('settings/changeSetting', { key: 'activeRole', value: [] }, { root: true })
-      console.log('sss')
       resolve()
     })
   },

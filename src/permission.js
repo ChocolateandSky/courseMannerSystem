@@ -16,7 +16,7 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
 
   // set page title
-  document.title = '桂电课设管理系统'
+  // document.title = '桂电课设管理系统'
   // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {

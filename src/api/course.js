@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function createCourse(data) {
   return request({
-    url: '/test/addSubjectDesignByTeacher',
+    url: '/api/addSubjectDesignByTeacher',
     headers: { 'Content-Type': 'application/json' },
     method: 'put',
     data
@@ -11,7 +11,7 @@ export function createCourse(data) {
 
 export function getTeacherInfo(id) {
   return request({
-    url: '/test/getTeacherInfoByMajor',
+    url: '/api/getTeacherInfoByMajor',
     method: 'get',
     params: {
       major: id
@@ -21,7 +21,7 @@ export function getTeacherInfo(id) {
 
 export function getCoursesInfo(id) {
   return request({
-    url: '/test/getPracticumInfoServlet',
+    url: '/api/getPracticumInfoServlet',
     method: 'get',
     params: {
       teacherId: id
@@ -31,7 +31,7 @@ export function getCoursesInfo(id) {
 
 export function getStuChosenCourseInfo(id) {
   return request({
-    url: '/test/getSelectedPracticumInfoByStudentServlet',
+    url: '/api/getSelectedPracticumInfoByStudentServlet',
     method: 'get',
     params: {
       stuId: id
@@ -41,7 +41,7 @@ export function getStuChosenCourseInfo(id) {
 
 export function getStuNotChosenCourseInfo(id) {
   return request({
-    url: '/test/getUnselectedPracticumInfoByStudentServlet',
+    url: '/api/getUnselectedPracticumInfoByStudentServlet',
     method: 'get',
     params: {
       stuId: id
@@ -51,7 +51,7 @@ export function getStuNotChosenCourseInfo(id) {
 
 export function studentAddCourse(data) {
   return request({
-    url: '/test/selectPracticumByStudentServlet',
+    url: '/api/selectPracticumByStudentServlet',
     headers: { 'Content-Type': 'text/plain' },
     method: 'put',
     data
@@ -60,7 +60,7 @@ export function studentAddCourse(data) {
 
 export function studentExitCourse(data) {
   return request({
-    url: '/test/dropOutOfPractcumServlet',
+    url: '/api/dropOutOfPractcumServlet',
     method: 'post',
     params: {
       stuId: data.stuId,
@@ -71,7 +71,7 @@ export function studentExitCourse(data) {
 
 export function changeCourseInfo(data) {
   return request({
-    url: '/test/changePracticumByAdmin',
+    url: '/api/changePracticumByAdmin',
     method: 'post',
     params: {
       practName: data.practName,
@@ -86,7 +86,7 @@ export function changeCourseInfo(data) {
 
 export function deleteCourse(id) {
   return request({
-    url: 'test/deletePracticumServlet',
+    url: '/api/deletePracticumServlet',
     method: 'post',
     params: { practId: id }
   })
@@ -94,7 +94,7 @@ export function deleteCourse(id) {
 
 export function checkIsClassLeader(stuId, practId) {
   return request({
-    url: '/test/judgeLeaderServlet',
+    url: '/api/judgeLeaderServlet',
     method: 'get',
     params: { stuId, practId }
   })
@@ -102,7 +102,7 @@ export function checkIsClassLeader(stuId, practId) {
 
 export function removeTeam(id) {
   return request({
-    url: '/test/removeGroupServlet',
+    url: '/api/removeGroupServlet',
     method: 'post',
     params: { groupId: id }
   })
@@ -110,7 +110,7 @@ export function removeTeam(id) {
 
 export function removeLeaderTeam(stuId, practId) {
   return request({
-    url: '/test/removeGroupByStuIdAndPractIdServlet',
+    url: '/api/removeGroupByStuIdAndPractIdServlet',
     method: 'post',
     params: { stuId, practId }
   })
@@ -118,14 +118,14 @@ export function removeLeaderTeam(stuId, practId) {
 
 export function getColleges() {
   return request({
-    url: '/test/getCollegeInfoServlet',
+    url: '/api/getCollegeInfoServlet',
     method: 'get'
   })
 }
 
 export function getMajor(collegeId) {
   return request({
-    url: '/test/getMajorInfoServlet',
+    url: '/api/getMajorInfoServlet',
     method: 'get',
     params: { collegeId }
   })
@@ -133,7 +133,7 @@ export function getMajor(collegeId) {
 
 export function putRegisterForm(data) {
   return request({
-    url: '/test/registerStudentUserServlet',
+    url: '/api/registerStudentUserServlet',
     method: 'put',
     data
   })

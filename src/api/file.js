@@ -4,14 +4,14 @@ import axios from 'axios'
 
 export function getNoticeFileList() {
   return request({
-    url: '/test/getNotice_FileInfoServlet',
+    url: '/api/getNotice_FileInfoServlet',
     method: 'get'
   })
 }
 
 export function getGroupFileList(groupId) {
   return request({
-    url: '/test/getGroup_FileInfoServlet',
+    url: '/api/getGroup_FileInfoServlet',
     method: 'get',
     params: {
       groupId
@@ -21,14 +21,14 @@ export function getGroupFileList(groupId) {
 
 export function deleteFile(data) {
   return request({
-    url: '/test/deleteNoticeFileServlet',
+    url: '/api/deleteNoticeFileServlet',
     method: 'post',
     params: data
   })
 }
 
 export function downloadFile(id, name) {
-  axios.get('/test/downloadFileServlet', {
+  axios.get('/api/downloadFileServlet', {
     responseType: 'arraybuffer',
     params: {
       id,
@@ -44,14 +44,14 @@ export function downloadFile(id, name) {
 
 export function deleteGroupFile(data) {
   return request({
-    url: '/test/deleteGroupFileServlet',
+    url: '/api/deleteGroupFileServlet',
     method: 'post',
     params: data
   })
 }
 
 export function exportScheduleWord(data, fileName) {
-  axios.get('/test/exportWordServlet', {
+  axios.get('/api/exportWordServlet', {
     params: {
       title: data.title,
       collegeName: data.collegeName,
