@@ -94,6 +94,14 @@
             <el-row style="margin-top: 20px;margin-bottom:10px">
               <el-col :span="24">
                 <el-button size="small" type="success" @click="addRow">新增表格内容</el-button>
+                <el-popconfirm
+                  title="是否要保存以上的内容?"
+                  style="margin-left: 15px"
+                  @onConfirm="$message({type: 'success', message: '保存成功'})"
+                  @onCancel="$message({type: 'info', message: '已取消'})"
+                >
+                  <el-button slot="reference" size="small" type="success" plain>保存</el-button>
+                </el-popconfirm>
               </el-col>
             </el-row>
             <el-row class="workTable">

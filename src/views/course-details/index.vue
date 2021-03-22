@@ -64,7 +64,8 @@
     <el-row type="flex" justify="center">
       <el-col :span="22">
         <div class="tableBox">
-          <el-table :data="tableData" style="width: 100%" max-height="230">
+          <!-- <el-table :data="tableData" style="width: 100%" max-height="230"> -->
+          <el-table :data="tableData" style="width: 100%" max-height="330">
             <el-table-column type="index" width="50" align="center" />
             <el-table-column prop="name" label="小组名称" width="auto" align="center" />
             <el-table-column prop="subject" label="课题" width="auto" align="center" />
@@ -348,7 +349,8 @@ export default {
 <style scoped>
 .tableBox {
   /* width: 100%; */
-  height: 300px;
+  /* height: 300px; */
+  height: 400px;
 }
 
 .el-row {
