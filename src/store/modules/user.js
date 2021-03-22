@@ -100,6 +100,7 @@ const actions = {
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
         getNotice(data.id).then(res => {
+          console.log(res)
           commit('SET_NOTICE', res.data)
         })
         resolve(data)

@@ -107,3 +107,11 @@ export function updateFileHide(data) {
     }
   })
 }
+
+export function sendNoticeForOneGroup(data) { // 发公告给某一个小组
+  return request({
+    url: '/api/sendNoticeForOneGroup',
+    method: 'post',
+    data
+  })
+}

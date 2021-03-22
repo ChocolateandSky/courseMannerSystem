@@ -6,7 +6,7 @@
           <el-card class="notice-card">
             <h4>{{ item.body }}</h4>
             <el-button type="text">{{ item.fromName }}&nbsp;提交于&nbsp;{{ item.date }}</el-button>
-            <svg-icon v-if="item.havaRead===0" class="notice-icon" icon-class="notice" />
+            <svg-icon v-if="item.haveRead===0" class="notice-icon" icon-class="notice" />
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       userId: this.$store.getters.user.id,
-      haveRead: false
+      noticeList: []
     }
   },
   computed: {
@@ -32,13 +32,15 @@ export default {
       'notice'
     ])
   },
+  // mounted() {
+  //   this.noticeList = [...this.notice]
+  // },
   methods: {
     doRead(item) {
-      console.log(item)
+      console.log(this.notice)
       const data = { noticeId: item.id }
       readNotice(data).then((res) => {
-        console.log(res)
-        item.havaRead = 1
+        item.haveRead = 1
       })
     }
   }

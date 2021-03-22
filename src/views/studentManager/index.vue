@@ -68,7 +68,6 @@
 <script>
 import notice from './components/notice'
 import { getAllStudentList, getTeacherList, getAllPracticum } from '@/api/user'
-
 export default {
   components: {
     notice
@@ -189,7 +188,6 @@ export default {
       this.roles = this.roles.toString()
       getAllStudentList(this.teacherId, this.roles)
         .then(res => {
-          console.log(res.data)
           this.dataList = res.data
           this.tempDataList = res.data
           if (this.tempDataList.length === 0) {
@@ -207,6 +205,7 @@ export default {
       await getAllPracticum().then(res => {
         this.practList = res.data
       })
+      console.log(this.dataList)
       this.loading = false
     },
     seacherName() {

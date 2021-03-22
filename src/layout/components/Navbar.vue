@@ -76,7 +76,7 @@ export default {
     NoticeNum() {
       let num = 0
       this.$store.getters.notice.forEach(el => {
-        if (el.havaRead === 0) {
+        if (el.haveRead === 0) {
           num++
         }
       })

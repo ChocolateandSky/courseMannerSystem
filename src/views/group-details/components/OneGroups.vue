@@ -83,16 +83,15 @@
                   <el-tab-pane class="file-pane" label="小组文件" name="first">
                     <el-tag type="warning">右键可删除文件，左键下载文件</el-tag>
 
-                    <span v-show="isGroupMenber" style="color:rgb(255,200,0);margin-left:50%">是否开放文件下载：</span>
+                    <span v-show="isLeader" style="color:rgb(255,200,0);margin-left:50%">是否开放文件下载：</span>
                     <el-switch
-                      v-show="isGroupMenber"
+                      v-show="isLeader"
                       v-model="isFileHide"
                       active-color="#13ce66"
                       inactive-color="#ff4949"
                     />
                     <!-- <span></span> -->
-                    <h2 v-if="teamData.fileHide===1&&!isGroupMenber" style="margin:50px auto auto 29%">该小组已经关闭文件共享</h2>
-                    <div v-else>
+                    <div v-if="(isGroupMenber||teamData.fileHide===0)||(teamData.fileHide===1&&roleNum!==0)">
                       <div v-if="fileNum!==0">
                         <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)" @contextmenu.prevent.stop="deleteGroupFile(item,$event)">
                           <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
@@ -108,6 +107,7 @@
                         <h2 style="margin:50px auto auto 29%">抱歉，目前小组没有上传文件</h2>
                       </div>
                     </div>
+                    <h2 v-else style="margin:50px auto auto 29%">该小组已经关闭文件共享</h2>
                   </el-tab-pane>
                   <!-- 文件上传 -->
                   <el-tab-pane class="file-upload" label="上传文件" name="second">
@@ -148,6 +148,8 @@
               </el-card>
             </div>
           </template>
+
+          <!-- 消息通知 -->
           <template slot="paneR">
             <div class="bottom-container">
               <el-card>
@@ -156,7 +158,7 @@
                 </div>
                 <div class="text item">
                   <el-input
-                    v-model="emailContent.body"
+                    v-model="messageContent.body"
                     type="textarea"
                     :rows="12"
                     :disabled="!roleNum"
@@ -180,9 +182,9 @@
 <script>
 import splitPane from 'vue-splitpane'
 // eslint-disable-next-line no-unused-vars
-import { getGroupDetail, getMemberList, setStudentWork, setPhase, updateGroupName, updateFileHide } from '@/api/group'
+import { getGroupDetail, getMemberList, setStudentWork, setPhase, updateGroupName, updateFileHide, sendNoticeForOneGroup } from '@/api/group'
 import { getGroupFileList, downloadFile, deleteGroupFile } from '@/api/file'
-import { sendMailToGroup, sendNotice } from '@/api/user'
+import { sendNotice } from '@/api/user'
 export default {
   name: 'OneGroups',
   components: { splitPane },
@@ -210,9 +212,11 @@ export default {
       tempPhase: '',
       roleNum: this.$store.getters.roleNum,
       loading: false,
-      emailContent: {
-        stuId: [],
-        teacherId: this.$store.getters.user.id,
+      messageContent: {
+        userId: this.$store.getters.user.id,
+        userName: this.$store.getters.user.name,
+        roles: '',
+        groupId: this.$route.query.teamId,
         body: ''
       },
       postAction: `/api/uploadGroupFileServlet`,
@@ -237,15 +241,18 @@ export default {
   watch: {
     isFileHide: function(newValue, oldValue) {
       const data = { id: this.$route.query.teamId, fileHide: -1 }
-      console.log(newValue)
-      if (newValue === true) {
-        data.fileHide = 1
-      } else {
-        data.fileHide = 0
+      if (this.isLeader) {
+        if (newValue === true) {
+          data.fileHide = 0
+        } else {
+          data.fileHide = 1
+        }
+        updateFileHide(data).then(() => {
+          console.log('你更改了文件下载权限')
+        }).catch(() => {
+          this.isFileHide = oldValue
+        })
       }
-      updateFileHide(data).then(() => {
-        this.$message.info('你更改了文件下载权限')
-      })
     }
   },
   mounted() {
@@ -266,7 +273,7 @@ export default {
     },
     deleteGroupFile(item, event) {
       console.log(item)
-      if (this.roleNum !== 0) {
+      if (!this.isGroupMenber) {
         this.$message.warning('只有小组成员才有权限删除文件')
       } else {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -375,7 +382,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.sendMailToGroup()
+        this.sendNoticeForOneGroup()
       }).catch(() => {
         this.$message({
           type: 'warning',
@@ -407,7 +414,7 @@ export default {
           temp.stuName = el.stuName
           temp.work = el.work
           this.memberWork.stuIdAndWork.push(temp)
-          this.emailContent.stuId.push(el.stuId)
+          // this.emailContent.stuId.push(el.stuId)
           if (el.leader === 1) {
             this.leaderId = el.stuId
             // console.log(this.leaderId)
@@ -421,16 +428,22 @@ export default {
         // console.log(this.memberWork.stuIdAndWork)
       })
     },
-    sendMailToGroup() {
-      sendMailToGroup(this.emailContent)
-        .then(res => {
-          this.$message.success('成功发送')
-        })
-        .catch(err => {
-          console.log(err)
-          this.$message.error('发送失败')
-        })
+    sendNoticeForOneGroup() {
+      this.messageContent.roles = this.role
+      sendNoticeForOneGroup(this.messageContent).then(res => {
+        this.$message.success('成功发送')
+      })
     },
+    // sendMailToGroup() {
+    //   sendMailToGroup(this.emailContent)
+    //     .then(res => {
+    //       this.$message.success('成功发送')
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //       this.$message.error('发送失败')
+    //     })
+    // },
     setStudentWork() {
       // console.log(this.memberWork)
       setStudentWork(this.memberWork)

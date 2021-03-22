@@ -19,7 +19,7 @@ export function getTeacherInfo(id) {
   })
 }
 
-export function getCoursesInfo(id) {
+export function getCoursesInfo(id) { // 根据老师id查询他所带的课设
   return request({
     url: '/api/getPracticumInfoServlet',
     method: 'get',
@@ -138,3 +138,12 @@ export function putRegisterForm(data) {
     data
   })
 }
+
+export function sendNoticeForOnePracticum(data) { // 发公告给某一个课设的全部同学
+  return request({
+    url: '/api/sendNoticeForOnePracticum',
+    method: 'post',
+    data
+  })
+}
+

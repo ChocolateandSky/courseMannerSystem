@@ -48,6 +48,16 @@
           style="margin-left:13%"
         />
       </el-form-item>
+      <el-form-item v-if="roleNum !==0&&noticeStudent" label="课设：" :label-width="formLabelWidth">
+        <el-select v-model="practicumId" style="width:100%" placeholder="请选择你要发送消息的课设">
+          <el-option
+            v-for="item in practicumList"
+            :key="item.value"
+            :label="item.practName"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item v-if="roleNum !==0&&noticeStudent" label="公告：" :label-width="formLabelWidth">
         <el-input
           v-model="form.textarea"
@@ -66,7 +76,7 @@
 
 <script>
 
-import { sendMail } from '@/api/user'
+import { sendNoticeForOnePracticum, getCoursesInfo } from '@/api/course'
 
 export default {
   props: {
@@ -92,7 +102,9 @@ export default {
       uploadParams: {
         teacherId: this.$store.getters.user.id,
         teacherName: this.$store.getters.user.name
-      }
+      },
+      practicumList: [],
+      practicumId: ''
     }
   },
   computed: {
@@ -111,25 +123,49 @@ export default {
         'token': this.$store.getters.token,
         'ContentType': 'multipart/form-data'
       }
+    },
+    role() {
+      return this.$store.getters.roles.toString()
     }
   },
+  mounted() {
+    this.getCoursesInfo()
+  },
   methods: {
+    getCoursesInfo() {
+      getCoursesInfo(this.$store.getters.user.id).then(res => {
+        this.practicumList = res.data
+        console.log(this.practicumList)
+      })
+    },
     submitForm() {
       this.$refs.upload.submit()
       if (this.noticeStudent) {
-        this.sendMail()
+        this.sendNoticeForOnePracticum()
       }
     },
-    async sendMail() {
+    async sendNoticeForOnePracticum() {
       const data = {
-        id: this.$store.getters.user.id,
-        notice: this.form.textarea
+        body: this.form.textarea,
+        userId: this.$store.getters.user.id,
+        userName: this.$store.getters.user.name,
+        roles: this.role,
+        practicumId: this.practicumId
       }
-      await sendMail(data)
-        .then(res => {
-          this.$message.success('已发送通知')
-        })
+      await sendNoticeForOnePracticum(data).then(res => {
+        this.$message.success('已发送通知')
+      })
     },
+    // async sendMail() {
+    //   const data = {
+    //     id: this.$store.getters.user.id,
+    //     notice: this.form.textarea
+    //   }
+    //   await sendMail(data)
+    //     .then(res => {
+    //       this.$message.success('已发送通知')
+    //     })
+    // },
     closeDialog() {
       this.$emit('refresh')
       this.$emit('close')
