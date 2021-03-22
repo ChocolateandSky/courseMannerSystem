@@ -124,7 +124,6 @@ export default {
       })
     },
     getMajorInfoServlet() {
-      console.log(this.collegeList)
       let id = ''
       this.collegeList.forEach(el => {
         console.log(el)

@@ -283,7 +283,6 @@ export default {
       })
     },
     exportScheduleWord() {
-      console.log(this.ruleForm)
       const data = this.ruleForm
       exportScheduleWord(data, '计划安排进度表')
       // exportScheduleWord(this.ruleForm)

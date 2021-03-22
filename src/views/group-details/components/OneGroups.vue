@@ -82,20 +82,31 @@
                   <!-- 小组所上传文件 -->
                   <el-tab-pane class="file-pane" label="小组文件" name="first">
                     <el-tag type="warning">右键可删除文件，左键下载文件</el-tag>
+
+                    <span v-show="isGroupMenber" style="color:rgb(255,200,0);margin-left:50%">是否开放文件下载：</span>
+                    <el-switch
+                      v-show="isGroupMenber"
+                      v-model="isFileHide"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                    />
                     <!-- <span></span> -->
-                    <div v-if="fileNum!==0">
-                      <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)" @contextmenu.prevent.stop="deleteGroupFile(item,$event)">
-                        <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
-                        <el-tooltip class="item" effect="dark" content="右键可删除文件，左键下载文件" placement="right-start">
-                          <div class="file-name">
-                            <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
-                            <span style="margin:0 auto">{{ item.date }}</span>
-                          </div>
-                        </el-tooltip>
-                      </div>
-                    </div>
+                    <h2 v-if="teamData.fileHide===1&&!isGroupMenber" style="margin:50px auto auto 29%">该小组已经关闭文件共享</h2>
                     <div v-else>
-                      <h2 style="margin:50px auto auto 29%">抱歉，目前小组没有上传文件</h2>
+                      <div v-if="fileNum!==0">
+                        <div v-for="(item, index) in groupFileList" :key="index" class="file-div" @click="DownloadFile(item)" @contextmenu.prevent.stop="deleteGroupFile(item,$event)">
+                          <div><svg-icon :icon-class="item.icon" style="width:70px;height:65px;margin: 5px 0" /></div>
+                          <el-tooltip class="item" effect="dark" content="右键可删除文件，左键下载文件" placement="right-start">
+                            <div class="file-name">
+                              <span style="margin: 20px auto 5px auto">{{ item.name }}</span>
+                              <span style="margin:0 auto">{{ item.date }}</span>
+                            </div>
+                          </el-tooltip>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <h2 style="margin:50px auto auto 29%">抱歉，目前小组没有上传文件</h2>
+                      </div>
                     </div>
                   </el-tab-pane>
                   <!-- 文件上传 -->
@@ -141,7 +152,7 @@
             <div class="bottom-container">
               <el-card>
                 <div slot="header" class="clearfix">
-                  <h2 style="text-align: center;margin:0 auto;color:rgb(100,217,214)">邮件通知</h2>
+                  <h2 style="text-align: center;margin:0 auto;color:rgb(100,217,214)">消息通知</h2>
                 </div>
                 <div class="text item">
                   <el-input
@@ -169,7 +180,7 @@
 <script>
 import splitPane from 'vue-splitpane'
 // eslint-disable-next-line no-unused-vars
-import { getGroupDetail, getMemberList, setStudentWork, setPhase, updateGroupName } from '@/api/group'
+import { getGroupDetail, getMemberList, setStudentWork, setPhase, updateGroupName, updateFileHide } from '@/api/group'
 import { getGroupFileList, downloadFile, deleteGroupFile } from '@/api/file'
 import { sendMailToGroup, sendNotice } from '@/api/user'
 export default {
@@ -177,6 +188,7 @@ export default {
   components: { splitPane },
   data() {
     return {
+      isFileHide: false,
       udpGroNameVisible: false,
       updateGroupInfo: { id: '', name: '' },
       scrollHeight: '0px',
@@ -222,6 +234,20 @@ export default {
       return this.$store.getters.roles.toString()
     }
   },
+  watch: {
+    isFileHide: function(newValue, oldValue) {
+      const data = { id: this.$route.query.teamId, fileHide: -1 }
+      console.log(newValue)
+      if (newValue === true) {
+        data.fileHide = 1
+      } else {
+        data.fileHide = 0
+      }
+      updateFileHide(data).then(() => {
+        this.$message.info('你更改了文件下载权限')
+      })
+    }
+  },
   mounted() {
     this.getInfo()
     this.scrollHeight = window.innerHeight * 0.3 + 'px'
@@ -233,7 +259,7 @@ export default {
       if (this.updateGroupInfo.name !== '') {
         updateGroupName(this.updateGroupInfo).then(() => {
           this.$message.success('更改成功')
-          this.getInfo()
+          this.getGroupDetail(this.teamId)
           this.udpGroNameVisible = false
         })
       }
@@ -360,7 +386,13 @@ export default {
     getGroupDetail(id) {
       // console.log(id)
       getGroupDetail(id).then(res => {
+        console.log(res)
         this.teamData = res.data
+        if (this.teamData.fileHide === 1) {
+          this.isFileHide = false
+        } else {
+          this.isFileHide = true
+        }
       })
     },
     getMemberList(id) {

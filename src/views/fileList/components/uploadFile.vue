@@ -16,7 +16,7 @@
         >
           <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div slot="tip" class="el-upload__tip" style="margin-top:0">不超过1Mb(按ctrl+鼠标点击可多选文件)</div>
+          <div slot="tip" class="el-upload__tip" style="margin-top:0">不超过5Mb(按ctrl+鼠标点击可多选文件)</div>
         </el-upload>
       </el-form-item>
       <!-- <el-form-item v-if="roleNum !==0">

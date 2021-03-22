@@ -96,3 +96,14 @@ export function updateGroupName(data) {
     data
   })
 }
+
+export function updateFileHide(data) {
+  return request({
+    url: '/api/updateFileHideInGroupServlet',
+    method: 'put',
+    params: {
+      id: data.id,
+      fileHide: data.fileHide
+    }
+  })
+}
