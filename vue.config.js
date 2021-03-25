@@ -38,11 +38,11 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        // target: 'http://120.25.213.148',
-        target: 'http://47.115.127.25',
+        target: 'http://120.25.213.148',
+        // target: 'http://47.115.127.25',
         secure: false,
         changeOrigin: true,
-        pathRewrite: { '^/api': '/test' }
+        pathRewrite: { '^/api': '/api' }
         // pathRewrite: { '^/test': '/api' }
       }
       // '/api': {
