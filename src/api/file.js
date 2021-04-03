@@ -110,3 +110,20 @@ function doDownload(blob, fileName) {
   document.body.removeChild(dom)
 }
 
+// 保存表单
+export function saveFormInfoServlet(data) {
+  return request({
+    url: '/api/saveFormInfoServlet',
+    method: 'post',
+    params: data
+  })
+}
+
+// 重新加载
+export function reloadExportServlet(data) {
+  return request({
+    url: '/api/reloadExportServlet',
+    method: 'get',
+    params: data
+  })
+}
