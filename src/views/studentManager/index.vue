@@ -37,6 +37,7 @@
           </el-select>
         </div>
         <el-button class="pan-btn green-btn message-btn" style="margin-left:20px" @click="handlePostMessage">发布公告</el-button>
+        <el-button class="pan-btn green-btn message-btn" style="margin-left:20px" @click="exportingStudentListDialog=true">导出学生名单</el-button>
       </div>
       <div>
         <div v-if="empty">
@@ -60,14 +61,38 @@
     </div>
     <notice
       :dialog-table-visible="dialogShow"
+      :practicum-list="practicumList"
       @close="close"
     />
+
+    <!-- 导出课设 -->
+    <el-dialog title="" :visible.sync="exportingStudentListDialog" width="20%">
+      <el-form>
+        <el-form-item label="您所指导的课设：" :label-width="formLabelWidth">
+          <el-select v-model="expostStudentInfo.practId" clearable style="width:100%" placeholder="请选择课设">
+            <el-option
+              v-for="item in practicumList"
+              :key="item.value"
+              :label="item.practName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="exportingStudentListDialog = false">取 消</el-button>
+        <el-button type="primary" @click="exportingStudentList">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import notice from './components/notice'
 import { getAllStudentList, getTeacherList, getAllPracticum } from '@/api/user'
+import { exportingStudentList } from '@/api/file'
+import { getCoursesInfo } from '@/api/course'
 export default {
   components: {
     notice
@@ -75,6 +100,7 @@ export default {
   data() {
     return {
       dialogShow: false,
+      exportingStudentListDialog: false,
       uploadDialogShow: false,
       studentName: '',
       teacherName: '',
@@ -88,7 +114,12 @@ export default {
       practName: '',
       practList: [],
       groupStudent: '',
-      isAddGroup: ['未加入小组学生', '已加入小组学生']
+      isAddGroup: ['未加入小组学生', '已加入小组学生'],
+      expostStudentInfo: {
+        teacherId: '',
+        practId: ''
+      },
+      practicumList: []
     }
   },
   watch: {
@@ -167,8 +198,19 @@ export default {
     this.loading = true
     this.getAllStudentList()
     this.getBaseInfo()
+    this.getCoursesInfo()
   },
   methods: {
+    getCoursesInfo() { // 获取某个老师下的课设
+      getCoursesInfo(this.$store.getters.user.id).then(res => {
+        this.practicumList = res.data
+      })
+    },
+    exportingStudentList() {
+      this.expostStudentInfo.teacherId = this.$store.getters.user.id
+      console.log(this.expostStudentInfo)
+      exportingStudentList(this.expostStudentInfo)
+    },
     handlePostMessage() {
       this.dialogShow = true
     },
@@ -184,7 +226,7 @@ export default {
         }
       })
     },
-    getAllStudentList() {
+    getAllStudentList() { // 获取所有课设
       this.roles = this.roles.toString()
       getAllStudentList(this.teacherId, this.roles)
         .then(res => {

@@ -2,7 +2,7 @@
   <el-dialog title="发送公告" :visible.sync="visible" width="30%">
     <el-form ref="dataForm" :model="form">
       <el-form-item label="课设：" :label-width="formLabelWidth">
-        <el-select v-model="practicumId" style="width:100%" placeholder="请选择你要发送消息的课设">
+        <el-select v-model="practicumId" clearable style="width:100%" placeholder="请选择你要发送消息的课设">
           <el-option
             v-for="item in practicumList"
             :key="item.value"
@@ -30,7 +30,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 // import { sendMail } from '@/api/user'
-import { sendNoticeForOnePracticum, getCoursesInfo } from '@/api/course'
+import { sendNoticeForOnePracticum } from '@/api/course'
 export default {
   props: {
     dialogTableVisible: {
@@ -38,6 +38,13 @@ export default {
       type: Boolean,
       default() {
         return false
+      }
+    },
+    practicumList: {
+      required: true,
+      type: Array,
+      default() {
+        return []
       }
     }
   },
@@ -47,7 +54,6 @@ export default {
         textarea: ''
       },
       formLabelWidth: '90px',
-      practicumList: [],
       practicumId: ''
     }
   },
@@ -66,16 +72,15 @@ export default {
       return this.$store.getters.roles.toString()
     }
   },
-  mounted() {
-    this.getCoursesInfo()
-  },
+  // mounted() {
+  //   this.getCoursesInfo()
+  // },
   methods: {
-    getCoursesInfo() {
-      getCoursesInfo(this.$store.getters.user.id).then(res => {
-        this.practicumList = res.data
-        console.log(this.practicumList)
-      })
-    },
+    // getCoursesInfo() {
+    //   getCoursesInfo(this.$store.getters.user.id).then(res => {
+    //     this.practicumList = res.data
+    //   })
+    // },
     async sendNoticeForOnePracticum() {
       const data = {
         body: this.form.textarea,

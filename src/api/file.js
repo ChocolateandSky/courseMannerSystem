@@ -85,9 +85,22 @@ export function exportScheduleWord(data, fileName) {
   })
 }
 
+export function exportingStudentList(data) {
+  axios.get('/api/exportingStudentList', {
+    params: {
+      teacherId: data.teacherId,
+      practId: data.practId
+    },
+    responseType: 'arraybuffer'
+  }).then(resp => {
+    console.log(resp)
+    const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel;charset=utf-8' }) // 创建一个类文件对象：Blob对象表示一个不可变的、原始数据的类文件对象
+    doDownload(blob, '学生名单')
+  })
+}
+
 function doDownload(blob, fileName) {
   const url = window.URL.createObjectURL(blob)// URL.createObjectURL(object)表示生成一个File对象或Blob对象
-  console.log(url)
   const dom = document.createElement('a')// 设置一个隐藏的a标签，href为输出流，设置download
   dom.style.display = 'none'
   dom.href = url
