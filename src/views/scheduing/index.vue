@@ -97,7 +97,7 @@
                 <el-popconfirm
                   title="是否要保存以上的内容?"
                   style="margin-left: 15px"
-                  @onConfirm="$message({type: 'success', message: '保存成功'})"
+                  @onConfirm="saveForm()"
                   @onCancel="$message({type: 'info', message: '已取消'})"
                 >
                   <el-button slot="reference" size="small" type="success" plain>保存</el-button>
@@ -181,7 +181,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { exportScheduleWord } from '@/api/file'
+import { exportScheduleWord, saveFormInfoServlet, reloadExportServlet } from '@/api/file'
 import { getCollegeInfoServlet } from '@/api/superAdmin'
 export default {
   data() {
@@ -275,6 +275,7 @@ export default {
       this.getAutoHeight()
       console.log(this.autoHeight)
     }
+    this.reRunForm()
   },
   methods: {
     getCollegeInfoServlet() {
@@ -354,6 +355,40 @@ export default {
     getAutoHeight() {
       this.$nextTick(() => {
         this.autoHeight = window.innerHeight - (110) + 'px'
+      })
+    },
+    // 保存表单内容
+    saveForm() {
+      saveFormInfoServlet({
+        title: this.ruleForm.title,
+        collegeName: this.ruleForm.collegeName,
+        practName: this.ruleForm.practName,
+        practNum: this.ruleForm.practNum,
+        major: this.ruleForm.major,
+        stuAmountMax: this.ruleForm.stuAmountMax,
+        time: this.ruleForm.time,
+        // periods: [],
+        period: this.ruleForm.periods[0] + '-' + this.ruleForm.periods[1],
+        teacherName: this.ruleForm.teacherName,
+        address: this.ruleForm.address
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '保存成功'
+        })
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '保存失败'
+        })
+      })
+      console.log(this.ruleForm.periods)
+    },
+    // 重新加载内容
+    reRunForm() {
+      reloadExportServlet(this.ruleForm).then(res => {
+        this.ruleForm = res.data
+        // this.ruleForm.periods = res.data.period.split('-')
       })
     }
   }
