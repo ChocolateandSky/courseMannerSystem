@@ -368,7 +368,7 @@ export default {
         stuAmountMax: this.ruleForm.stuAmountMax,
         time: this.ruleForm.time,
         // periods: [],
-        period: this.ruleForm.periods[0] + '-' + this.ruleForm.periods[1],
+        // period: this.ruleForm.periods[0] + '-' + this.ruleForm.periods[1],
         teacherName: this.ruleForm.teacherName,
         address: this.ruleForm.address
       }).then(res => {
@@ -379,7 +379,7 @@ export default {
       }).catch(res => {
         this.$message({
           type: 'error',
-          message: '保存失败 '
+          message: '保存失败'
         })
       })
       console.log(this.ruleForm.periods)
