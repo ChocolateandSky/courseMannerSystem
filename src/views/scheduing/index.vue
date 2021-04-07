@@ -379,7 +379,7 @@ export default {
       }).catch(res => {
         this.$message({
           type: 'error',
-          message: '保存失败'
+          message: '保存失败 '
         })
       })
       console.log(this.ruleForm.periods)
