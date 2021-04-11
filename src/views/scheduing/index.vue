@@ -181,14 +181,17 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
+import { mapGetters } from 'vuex'
 import { exportScheduleWord, saveFormInfoServlet, reloadExportServlet } from '@/api/file'
 import { getCollegeInfoServlet } from '@/api/superAdmin'
+// import user from 'mock/user'
 export default {
   data() {
     return {
       autoHeight: '200px',
       collegeList: [],
       // courseId: ['软件工程课程设计AT1000', '嵌入式课程设计AT1001'],
+      id: '',
       wokerTable: { subject: '', details: '', edit: true, index: 1 },
       ruleForm: {
         title: '',
@@ -268,6 +271,12 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.getUser()
+  },
   mounted() {
     this.getAutoHeight()
     this.getCollegeInfoServlet()
@@ -278,6 +287,9 @@ export default {
     this.reRunForm()
   },
   methods: {
+    getUser() {
+      this.id = this.user.id
+    },
     getCollegeInfoServlet() {
       getCollegeInfoServlet().then(res => {
         this.collegeList = res.data
@@ -360,9 +372,10 @@ export default {
     // 保存表单内容
     saveForm() {
       saveFormInfoServlet({
+        id: this.id,
         title: this.ruleForm.title,
         collegeName: this.ruleForm.collegeName,
-        practName: this.ruleForm.practName,
+        // practName: this.ruleForm.practName,
         practNum: this.ruleForm.practNum,
         major: this.ruleForm.major,
         stuAmountMax: this.ruleForm.stuAmountMax,
@@ -386,9 +399,10 @@ export default {
     },
     // 重新加载内容
     reRunForm() {
-      reloadExportServlet(this.ruleForm).then(res => {
+      reloadExportServlet(this.id).then(res => {
         this.ruleForm = res.data
         // this.ruleForm.periods = res.data.period.split('-')
+        // console.log(res.data)
       })
     }
   }

@@ -115,15 +115,15 @@ export function saveFormInfoServlet(data) {
   return request({
     url: '/api/saveFormInfoServlet',
     method: 'post',
-    params: data
+    data
   })
 }
 
 // 重新加载
-export function reloadExportServlet(data) {
+export function reloadExportServlet(id) {
   return request({
     url: '/api/reloadExportServlet',
     method: 'get',
-    params: data
+    params: { id }
   })
 }
