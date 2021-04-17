@@ -122,6 +122,7 @@ export function saveFormInfoServlet(data) {
 // 重新加载
 export function reloadExportServlet(id) {
   return request({
+    headers: { 'Content-Type': 'application/json' },
     url: '/api/reloadExportServlet',
     method: 'get',
     params: { id }
